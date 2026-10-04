@@ -13,8 +13,9 @@ rows = [{"model": k, "params (M)": round(v["params"] / 1e6, 3), "GFLOPs": round(
          "throughput (img/s)": round(v["throughput_img_s"]), "final acc (%)": round(v["final_test_acc"], 2),
          "best acc (%)": round(v["best_test_acc"], 2)} for k, v in runs.items()]
 df = pd.DataFrame(rows)
-print(df.to_markdown(index=False) if hasattr(df, "to_markdown") else df.to_string(index=False))
-Path("results/summary.md").write_text(df.to_string(index=False))
+table = df.to_string(index=False)
+print(table)
+Path("results/summary.md").write_text(table + "\n")
 
 fig, ax = plt.subplots(figsize=(5, 3.5))
 for k, v in runs.items():
