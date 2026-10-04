@@ -1,5 +1,7 @@
 # Iterative ViT-Tiny: does reusing one transformer block work?
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/reddy-nithin/Iterative-Transformers/blob/main/notebooks/colab_walkthrough.ipynb)
+
 First test of the "iterative transformer" idea, requested by my supervisor. Not a paper: a quick, clean experiment.
 
 **Question.** Take pretrained ViT-Tiny (12 transformer blocks), keep **one** block and apply that same block 12 times. How much accuracy do we lose in exchange for fewer parameters?
