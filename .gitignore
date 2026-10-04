@@ -7,3 +7,5 @@ wandb/
 .DS_Store
 results/*
 !results/.gitkeep
+notebooks/nb_results/
+notebooks/*.executed.ipynb
