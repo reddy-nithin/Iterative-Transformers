@@ -5,3 +5,5 @@ data/
 checkpoints/
 wandb/
 .DS_Store
+results/*
+!results/.gitkeep
