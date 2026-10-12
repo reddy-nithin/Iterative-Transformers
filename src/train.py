@@ -20,8 +20,13 @@ from src.models import build
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=["baseline", "iterative"], required=True)
-    p.add_argument("--block-idx", type=int, default=0, help="which pretrained block to reuse (iterative)")
+    p.add_argument("--model", choices=["baseline", "scratch", "iterative", "lora"], required=True)
+    p.add_argument("--block-idx", type=int, default=0, help="which pretrained block to reuse (init=block)")
+    p.add_argument("--init", choices=["block", "avg"], default=None,
+                   help="shared block: one pretrained block or the mean of all 12 "
+                        "(default: block for iterative, avg for lora)")
+    p.add_argument("--rank", type=int, default=2, help="LoRA rank per iteration (lora)")
+    p.add_argument("--lora-init", choices=["svd", "zero"], default="svd", help="LoRA start (lora)")
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
@@ -34,6 +39,15 @@ def parse_args():
     p.add_argument("--out-dir", default="results")
     p.add_argument("--tag", default="", help="suffix for output filenames")
     return p.parse_args()
+
+
+def model_kwargs(args) -> dict:
+    if args.model == "iterative":
+        return {"block_idx": args.block_idx, "init": args.init or "block"}
+    if args.model == "lora":
+        return {"block_idx": args.block_idx, "init": args.init or "avg",
+                "rank": args.rank, "lora_init": args.lora_init}
+    return {}
 
 
 def set_seed(seed):
@@ -72,8 +86,7 @@ def main():
     out_dir = Path(args.out_dir)
     out_dir.mkdir(exist_ok=True)
 
-    kwargs = {"block_idx": args.block_idx} if args.model == "iterative" else {}
-    model = build(args.model, **kwargs).to(device)
+    model = build(args.model, **model_kwargs(args)).to(device)
     train_loader, val_loader = make_loaders(
         model, args.data_root, args.batch_size, args.num_workers, args.subset, args.seed
     )
