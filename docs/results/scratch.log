@@ -1,0 +1,11 @@
+[scratch] params=5,543,716 GFLOPs=2.51 throughput=5789 img/s
+[scratch] epoch 1/10 loss=4.3982 acc=9.15 (57s)
+[scratch] epoch 2/10 loss=4.0774 acc=14.98 (55s)
+[scratch] epoch 3/10 loss=3.9000 acc=17.93 (55s)
+[scratch] epoch 4/10 loss=3.7818 acc=20.22 (56s)
+[scratch] epoch 5/10 loss=3.6743 acc=21.40 (55s)
+[scratch] epoch 6/10 loss=3.5912 acc=24.33 (55s)
+[scratch] epoch 7/10 loss=3.5139 acc=26.09 (55s)
+[scratch] epoch 8/10 loss=3.4497 acc=28.04 (54s)
+[scratch] epoch 9/10 loss=3.4045 acc=28.69 (54s)
+[scratch] epoch 10/10 loss=3.3824 acc=28.87 (54s)

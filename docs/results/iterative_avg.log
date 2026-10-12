@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[iterative_avg] params=650,212 GFLOPs=2.51 throughput=5828 img/s
+[iterative_avg] epoch 1/10 loss=4.5260 acc=7.51 (55s)
+[iterative_avg] epoch 2/10 loss=4.1624 acc=13.65 (56s)
+[iterative_avg] epoch 3/10 loss=3.9495 acc=17.76 (54s)
+[iterative_avg] epoch 4/10 loss=3.8100 acc=21.32 (53s)
+[iterative_avg] epoch 5/10 loss=3.6941 acc=23.59 (54s)
+[iterative_avg] epoch 6/10 loss=3.6179 acc=25.76 (53s)
+[iterative_avg] epoch 7/10 loss=3.5570 acc=26.93 (54s)
+[iterative_avg] epoch 8/10 loss=3.5097 acc=28.10 (55s)
+[iterative_avg] epoch 9/10 loss=3.4842 acc=28.32 (54s)
+[iterative_avg] epoch 10/10 loss=3.4722 acc=28.54 (53s)

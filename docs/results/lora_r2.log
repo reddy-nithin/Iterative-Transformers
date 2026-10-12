@@ -1,0 +1,11 @@
+[lora_r2] params=723,940 GFLOPs=2.53 throughput=5352 img/s
+[lora_r2] epoch 1/10 loss=4.5593 acc=5.55 (57s)
+[lora_r2] epoch 2/10 loss=4.2118 acc=12.06 (54s)
+[lora_r2] epoch 3/10 loss=3.9928 acc=16.43 (56s)
+[lora_r2] epoch 4/10 loss=3.8517 acc=20.25 (53s)
+[lora_r2] epoch 5/10 loss=3.7385 acc=22.13 (54s)
+[lora_r2] epoch 6/10 loss=3.6587 acc=24.96 (54s)
+[lora_r2] epoch 7/10 loss=3.5968 acc=26.31 (54s)
+[lora_r2] epoch 8/10 loss=3.5505 acc=27.20 (55s)
+[lora_r2] epoch 9/10 loss=3.5255 acc=27.57 (54s)
+[lora_r2] epoch 10/10 loss=3.5112 acc=27.51 (53s)

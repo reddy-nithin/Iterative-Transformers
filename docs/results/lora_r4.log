@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[lora_r4] params=797,668 GFLOPs=2.55 throughput=5565 img/s
+[lora_r4] epoch 1/10 loss=4.6223 acc=4.35 (55s)
+[lora_r4] epoch 2/10 loss=4.3001 acc=10.77 (53s)
+[lora_r4] epoch 3/10 loss=4.0520 acc=14.94 (54s)
+[lora_r4] epoch 4/10 loss=3.8963 acc=18.73 (55s)
+[lora_r4] epoch 5/10 loss=3.7690 acc=21.32 (53s)
+[lora_r4] epoch 6/10 loss=3.6859 acc=24.44 (53s)
+[lora_r4] epoch 7/10 loss=3.6153 acc=25.48 (53s)
+[lora_r4] epoch 8/10 loss=3.5727 acc=26.40 (53s)
+[lora_r4] epoch 9/10 loss=3.5460 acc=27.17 (54s)
+[lora_r4] epoch 10/10 loss=3.5300 acc=27.22 (53s)
