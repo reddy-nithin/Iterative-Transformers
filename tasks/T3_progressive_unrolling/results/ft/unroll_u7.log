@@ -1,0 +1,11 @@
+[unroll_u7] params=3,319,396 GFLOPs=2.51 throughput=5621 img/s
+[unroll_u7] epoch 1/10 loss=3.7725 acc=51.93 (54s)
+[unroll_u7] epoch 2/10 loss=2.3975 acc=67.19 (54s)
+[unroll_u7] epoch 3/10 loss=2.1080 acc=72.66 (54s)
+[unroll_u7] epoch 4/10 loss=1.9808 acc=75.12 (54s)
+[unroll_u7] epoch 5/10 loss=1.8815 acc=76.41 (53s)
+[unroll_u7] epoch 6/10 loss=1.8027 acc=78.07 (55s)
+[unroll_u7] epoch 7/10 loss=1.7475 acc=78.61 (53s)
+[unroll_u7] epoch 8/10 loss=1.7035 acc=79.29 (53s)
+[unroll_u7] epoch 9/10 loss=1.6721 acc=79.93 (53s)
+[unroll_u7] epoch 10/10 loss=1.6476 acc=80.05 (53s)

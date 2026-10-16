@@ -1,0 +1,90 @@
+{
+  "args": {
+    "model": "unroll",
+    "block_idx": 0,
+    "init": null,
+    "rank": 2,
+    "lora_init": "svd",
+    "unique_blocks": 3,
+    "epochs": 10,
+    "batch_size": 128,
+    "lr": 1e-06,
+    "head_lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup_epochs": 1.0,
+    "seed": 0,
+    "num_workers": 4,
+    "subset": 0,
+    "data_root": "data",
+    "out_dir": "tasks/T3_progressive_unrolling/results/probe",
+    "tag": "_u3"
+  },
+  "device": "cuda",
+  "params": 1539940,
+  "gflops": 2.5070208,
+  "throughput_img_s": 5435.781125993331,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.5678161217616156,
+      "test_acc": 7.65,
+      "epoch_time_s": 55.93618440628052
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.104815678107433,
+      "test_acc": 15.06,
+      "epoch_time_s": 54.16588521003723
+    },
+    {
+      "epoch": 3,
+      "train_loss": 3.870094622709812,
+      "test_acc": 18.89,
+      "epoch_time_s": 53.88152551651001
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.733461728462806,
+      "test_acc": 21.96,
+      "epoch_time_s": 54.577510356903076
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.6455965286646133,
+      "test_acc": 24.49,
+      "epoch_time_s": 53.54741168022156
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.588688892584581,
+      "test_acc": 26.07,
+      "epoch_time_s": 54.087016344070435
+    },
+    {
+      "epoch": 7,
+      "train_loss": 3.5490146960967626,
+      "test_acc": 26.99,
+      "epoch_time_s": 54.85560750961304
+    },
+    {
+      "epoch": 8,
+      "train_loss": 3.5120246642675155,
+      "test_acc": 27.79,
+      "epoch_time_s": 53.153993368148804
+    },
+    {
+      "epoch": 9,
+      "train_loss": 3.497843904984303,
+      "test_acc": 28.6,
+      "epoch_time_s": 54.873356342315674
+    },
+    {
+      "epoch": 10,
+      "train_loss": 3.4863796124091517,
+      "test_acc": 28.54,
+      "epoch_time_s": 53.90284490585327
+    }
+  ],
+  "final_test_acc": 28.54,
+  "best_test_acc": 28.6
+}

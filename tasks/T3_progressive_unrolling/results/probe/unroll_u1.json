@@ -1,0 +1,90 @@
+{
+  "args": {
+    "model": "unroll",
+    "block_idx": 0,
+    "init": null,
+    "rank": 2,
+    "lora_init": "svd",
+    "unique_blocks": 1,
+    "epochs": 10,
+    "batch_size": 128,
+    "lr": 1e-06,
+    "head_lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup_epochs": 1.0,
+    "seed": 0,
+    "num_workers": 4,
+    "subset": 0,
+    "data_root": "data",
+    "out_dir": "tasks/T3_progressive_unrolling/results/probe",
+    "tag": "_u1"
+  },
+  "device": "cuda",
+  "params": 650212,
+  "gflops": 2.5070208,
+  "throughput_img_s": 5781.648438878112,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.475294629121438,
+      "test_acc": 8.21,
+      "epoch_time_s": 54.70919680595398
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.212940805386275,
+      "test_acc": 9.97,
+      "epoch_time_s": 52.55209827423096
+    },
+    {
+      "epoch": 3,
+      "train_loss": 4.1036063775038105,
+      "test_acc": 12.88,
+      "epoch_time_s": 52.578131914138794
+    },
+    {
+      "epoch": 4,
+      "train_loss": 4.032026188190167,
+      "test_acc": 13.36,
+      "epoch_time_s": 52.79609942436218
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.9753441877854176,
+      "test_acc": 14.85,
+      "epoch_time_s": 53.58977937698364
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.9338574764056085,
+      "test_acc": 16.41,
+      "epoch_time_s": 53.34307074546814
+    },
+    {
+      "epoch": 7,
+      "train_loss": 3.9002938417287973,
+      "test_acc": 16.65,
+      "epoch_time_s": 52.62851595878601
+    },
+    {
+      "epoch": 8,
+      "train_loss": 3.873302713418618,
+      "test_acc": 17.33,
+      "epoch_time_s": 53.3284866809845
+    },
+    {
+      "epoch": 9,
+      "train_loss": 3.8541637579600017,
+      "test_acc": 17.31,
+      "epoch_time_s": 52.82002878189087
+    },
+    {
+      "epoch": 10,
+      "train_loss": 3.844558675472553,
+      "test_acc": 17.49,
+      "epoch_time_s": 52.16848921775818
+    }
+  ],
+  "final_test_acc": 17.49,
+  "best_test_acc": 17.49
+}

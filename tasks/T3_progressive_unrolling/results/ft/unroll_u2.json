@@ -1,0 +1,90 @@
+{
+  "args": {
+    "model": "unroll",
+    "block_idx": 0,
+    "init": null,
+    "rank": 2,
+    "lora_init": "svd",
+    "unique_blocks": 2,
+    "epochs": 10,
+    "batch_size": 128,
+    "lr": 0.0001,
+    "head_lr": null,
+    "weight_decay": 0.05,
+    "warmup_epochs": 1.0,
+    "seed": 0,
+    "num_workers": 4,
+    "subset": 0,
+    "data_root": "data",
+    "out_dir": "tasks/T3_progressive_unrolling/results/ft",
+    "tag": "_u2"
+  },
+  "device": "cuda",
+  "params": 1095076,
+  "gflops": 2.5070208,
+  "throughput_img_s": 5610.616520334672,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.53937576122773,
+      "test_acc": 10.2,
+      "epoch_time_s": 53.111506938934326
+    },
+    {
+      "epoch": 2,
+      "train_loss": 3.8244444211324056,
+      "test_acc": 22.96,
+      "epoch_time_s": 52.17419385910034
+    },
+    {
+      "epoch": 3,
+      "train_loss": 3.464910029142331,
+      "test_acc": 31.35,
+      "epoch_time_s": 52.4202344417572
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.285557342798282,
+      "test_acc": 34.87,
+      "epoch_time_s": 52.26093125343323
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.152494288713504,
+      "test_acc": 37.99,
+      "epoch_time_s": 52.63434052467346
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.0581958941924268,
+      "test_acc": 40.82,
+      "epoch_time_s": 52.44700765609741
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.9904276432135166,
+      "test_acc": 42.81,
+      "epoch_time_s": 52.07300925254822
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.93585191262074,
+      "test_acc": 43.91,
+      "epoch_time_s": 52.415066957473755
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.9000294483624973,
+      "test_acc": 44.44,
+      "epoch_time_s": 52.823572397232056
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.8844207531366592,
+      "test_acc": 44.73,
+      "epoch_time_s": 52.432281494140625
+    }
+  ],
+  "final_test_acc": 44.73,
+  "best_test_acc": 44.73
+}

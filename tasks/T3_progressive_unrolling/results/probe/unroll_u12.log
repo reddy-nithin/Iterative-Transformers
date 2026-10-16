@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_u12] params=5,543,716 GFLOPs=2.51 throughput=5436 img/s
+[unroll_u12] epoch 1/10 loss=3.1657 acc=75.98 (57s)
+[unroll_u12] epoch 2/10 loss=2.0178 acc=79.96 (54s)
+[unroll_u12] epoch 3/10 loss=1.9252 acc=81.74 (54s)
+[unroll_u12] epoch 4/10 loss=1.8900 acc=82.24 (54s)
+[unroll_u12] epoch 5/10 loss=1.8578 acc=82.33 (54s)
+[unroll_u12] epoch 6/10 loss=1.8322 acc=82.78 (54s)
+[unroll_u12] epoch 7/10 loss=1.8102 acc=83.20 (54s)
+[unroll_u12] epoch 8/10 loss=1.7978 acc=83.22 (54s)
+[unroll_u12] epoch 9/10 loss=1.7890 acc=83.47 (53s)
+[unroll_u12] epoch 10/10 loss=1.7733 acc=83.67 (52s)

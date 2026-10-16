@@ -1,0 +1,90 @@
+{
+  "args": {
+    "model": "unroll",
+    "block_idx": 0,
+    "init": null,
+    "rank": 2,
+    "lora_init": "svd",
+    "unique_blocks": 2,
+    "epochs": 10,
+    "batch_size": 128,
+    "lr": 1e-06,
+    "head_lr": 0.001,
+    "weight_decay": 0.05,
+    "warmup_epochs": 1.0,
+    "seed": 0,
+    "num_workers": 4,
+    "subset": 0,
+    "data_root": "data",
+    "out_dir": "tasks/T3_progressive_unrolling/results/probe",
+    "tag": "_u2"
+  },
+  "device": "cuda",
+  "params": 1095076,
+  "gflops": 2.5070208,
+  "throughput_img_s": 5415.28584014853,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.666053070166172,
+      "test_acc": 3.36,
+      "epoch_time_s": 54.2980694770813
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.40388530706748,
+      "test_acc": 6.21,
+      "epoch_time_s": 53.95756554603577
+    },
+    {
+      "epoch": 3,
+      "train_loss": 4.2140122511448,
+      "test_acc": 9.25,
+      "epoch_time_s": 53.297542095184326
+    },
+    {
+      "epoch": 4,
+      "train_loss": 4.103488777234004,
+      "test_acc": 11.28,
+      "epoch_time_s": 53.404577016830444
+    },
+    {
+      "epoch": 5,
+      "train_loss": 4.019663862693004,
+      "test_acc": 14.07,
+      "epoch_time_s": 53.66974997520447
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.9555601896383825,
+      "test_acc": 16.4,
+      "epoch_time_s": 53.125852823257446
+    },
+    {
+      "epoch": 7,
+      "train_loss": 3.9092577530787542,
+      "test_acc": 16.93,
+      "epoch_time_s": 52.810797929763794
+    },
+    {
+      "epoch": 8,
+      "train_loss": 3.8750504200275127,
+      "test_acc": 17.83,
+      "epoch_time_s": 53.460707664489746
+    },
+    {
+      "epoch": 9,
+      "train_loss": 3.8574960861450585,
+      "test_acc": 18.08,
+      "epoch_time_s": 52.880598068237305
+    },
+    {
+      "epoch": 10,
+      "train_loss": 3.845949910237239,
+      "test_acc": 18.01,
+      "epoch_time_s": 52.21406817436218
+    }
+  ],
+  "final_test_acc": 18.01,
+  "best_test_acc": 18.08
+}
