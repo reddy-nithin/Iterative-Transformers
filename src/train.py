@@ -20,16 +20,19 @@ from src.models import build
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=["baseline", "scratch", "iterative", "lora"], required=True)
+    p.add_argument("--model", choices=["baseline", "scratch", "iterative", "lora", "unroll"], required=True)
     p.add_argument("--block-idx", type=int, default=0, help="which pretrained block to reuse (init=block)")
     p.add_argument("--init", choices=["block", "avg"], default=None,
                    help="shared block: one pretrained block or the mean of all 12 "
                         "(default: block for iterative, avg for lora)")
     p.add_argument("--rank", type=int, default=2, help="LoRA rank per iteration (lora)")
     p.add_argument("--lora-init", choices=["svd", "zero"], default="svd", help="LoRA start (lora)")
+    p.add_argument("--unique-blocks", type=int, default=1,
+                   help="unroll: number of distinct blocks n (blocks 0..n-2 kept, block n-1 repeated)")
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
+    p.add_argument("--head-lr", type=float, default=None, help="separate lr for the classifier head (default: --lr)")
     p.add_argument("--weight-decay", type=float, default=0.05)
     p.add_argument("--warmup-epochs", type=float, default=1.0)
     p.add_argument("--seed", type=int, default=0)
@@ -47,6 +50,8 @@ def model_kwargs(args) -> dict:
     if args.model == "lora":
         return {"block_idx": args.block_idx, "init": args.init or "avg",
                 "rank": args.rank, "lora_init": args.lora_init}
+    if args.model == "unroll":
+        return {"unique_blocks": args.unique_blocks}
     return {}
 
 
@@ -62,6 +67,19 @@ def cosine_lr(step, total, warmup, base_lr):
         return base_lr * (step + 1) / warmup
     progress = (step - warmup) / max(1, total - warmup)
     return base_lr * 0.5 * (1 + math.cos(math.pi * progress))
+
+
+def make_param_groups(model: nn.Module, lr: float, head_lr: float | None) -> list[dict]:
+    """Optimizer param groups. With `head_lr`, the classifier head gets its own lr; otherwise one group.
+
+    Each group stores `base_lr` so the cosine schedule scales every group from its own starting lr.
+    """
+    if head_lr is None:
+        return [{"params": list(model.parameters()), "lr": lr, "base_lr": lr}]
+    head_ids = {id(p) for p in model.get_classifier().parameters()}
+    body = [p for p in model.parameters() if id(p) not in head_ids]
+    head = [p for p in model.parameters() if id(p) in head_ids]
+    return [{"params": body, "lr": lr, "base_lr": lr}, {"params": head, "lr": head_lr, "base_lr": head_lr}]
 
 
 @torch.no_grad()
@@ -101,7 +119,7 @@ def main():
     print(f"[{name}] params={info['params']:,} GFLOPs={info['gflops']:.2f} "
           f"throughput={info['throughput_img_s']:.0f} img/s", flush=True)
 
-    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    opt = torch.optim.AdamW(make_param_groups(model, args.lr, args.head_lr), weight_decay=args.weight_decay)
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     scaler = torch.amp.GradScaler(enabled=use_amp)
     steps_per_epoch = len(train_loader)
@@ -114,7 +132,7 @@ def main():
         t0, loss_sum = time.time(), 0.0
         for x, y in train_loader:
             for g in opt.param_groups:
-                g["lr"] = cosine_lr(step, total_steps, warmup_steps, args.lr)
+                g["lr"] = cosine_lr(step, total_steps, warmup_steps, g["base_lr"])
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device.type, enabled=use_amp):
                 loss = criterion(model(x), y)

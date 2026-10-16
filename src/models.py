@@ -57,6 +57,27 @@ def build_iterative(
     return model
 
 
+def build_unrolled(
+    unique_blocks: int,
+    num_classes: int = NUM_CLASSES,
+    pretrained: bool = True,
+    source: nn.Module | None = None,
+) -> nn.Module:
+    """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
+    pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
+
+    unique_blocks=1 is block 0 x12 (same as `build_iterative`); unique_blocks=12 is the normal ViT-Tiny.
+    """
+    model = source if source is not None else build_baseline(num_classes, pretrained)
+    blocks = list(model.blocks)
+    depth = len(blocks)
+    if not 1 <= unique_blocks <= depth:
+        raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
+    distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
+    model.blocks = nn.Sequential(*distinct, *[repeated] * (depth - unique_blocks + 1))
+    return model
+
+
 def build_lora_loop(
     rank: int,
     num_classes: int = NUM_CLASSES,
@@ -84,6 +105,7 @@ def build(name: str, **kwargs) -> nn.Module:
         "scratch": build_scratch,
         "iterative": build_iterative,
         "lora": build_lora_loop,
+        "unroll": build_unrolled,
     }
     if name not in builders:
         raise ValueError(f"unknown model {name!r}; choose from {list(builders)}")
