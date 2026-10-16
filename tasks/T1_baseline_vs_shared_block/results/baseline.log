@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[baseline] params=5,543,716 GFLOPs=2.51 throughput=5653 img/s
+[baseline] epoch 1/10 loss=3.3090 acc=71.55 (50s)
+[baseline] epoch 2/10 loss=1.9925 acc=79.62 (48s)
+[baseline] epoch 3/10 loss=1.7959 acc=82.30 (48s)
+[baseline] epoch 4/10 loss=1.7005 acc=83.29 (49s)
+[baseline] epoch 5/10 loss=1.6218 acc=84.88 (49s)
+[baseline] epoch 6/10 loss=1.5505 acc=85.37 (48s)
+[baseline] epoch 7/10 loss=1.5012 acc=85.98 (48s)
+[baseline] epoch 8/10 loss=1.4582 acc=86.71 (49s)
+[baseline] epoch 9/10 loss=1.4363 acc=86.83 (54s)
+[baseline] epoch 10/10 loss=1.4149 acc=86.77 (55s)

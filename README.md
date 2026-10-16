@@ -8,7 +8,7 @@ First test of the "iterative transformer" idea, requested by my supervisor. Not 
 
 **Short answer.** Parameters drop by 88% (5.54 M to 0.65 M) but CIFAR-100 accuracy falls from 86.8% to 34.8% (block 0) or 30.7% (block 6). Compute and speed do not change. Round 2 found that the learning rate is the biggest lever: raising it from 1e-4 to 5e-4 lifts the shared model to 46.0%. Adding a small per-loop LoRA update did not help yet at the low learning rate. See [Round 2](#round-2-scratch-control-avg-init-lr-and-per-loop-lora).
 
-![Final accuracy per run](docs/results/final_acc_bars.png)
+![Final accuracy per run](tasks/T2_shared_block_with_lora/results/final_acc_bars.png)
 
 ## Round 1 results (CIFAR-100, 10 epochs, seed 0, RTX A4000)
 
@@ -26,7 +26,7 @@ Per-epoch test accuracy (%):
 | Block 0 x 12 | 10.0 | 17.5 | 23.5 | 26.6 | 28.7 | 31.5 | 33.7 | 34.1 | 34.5 | 34.8 |
 | Block 6 x 12 | 10.8 | 17.1 | 21.6 | 24.1 | 25.9 | 28.1 | 29.1 | 30.6 | 30.6 | 30.7 |
 
-Raw numbers: [docs/results/](docs/results/) (`baseline.json`, `iterative.json`, `iterative_b6.json`, `summary.md`).
+Raw numbers: [tasks/T1_baseline_vs_shared_block/results/](tasks/T1_baseline_vs_shared_block/results/) (`baseline.json`, `iterative.json`, `iterative_b6.json`). Every experiment has its own folder under [tasks/](tasks/) with its goal, commands, results and takeaways.
 
 ## What the results mean
 
@@ -66,9 +66,9 @@ Same recipe as round 1 unless noted (lr 1e-4, 10 epochs, seed 0).
 | LoRA r=8 (avg + SVD) | 0.945 M | 30.69% |
 | LoRA r=2 (avg + zero init) | 0.724 M | 28.74% |
 
-![Test accuracy per epoch, all runs](docs/results/accuracy.png)
+![Test accuracy per epoch, all runs](tasks/T2_shared_block_with_lora/results/accuracy.png)
 
-![Accuracy vs parameter count](docs/results/acc_vs_params.png)
+![Accuracy vs parameter count](tasks/T2_shared_block_with_lora/results/acc_vs_params.png)
 
 What it means (one seed, so gaps under about 2 points are ties):
 
@@ -97,7 +97,7 @@ scripts/inspect_model.py   print blocks and params per block
 scripts/compare.py         results table + 3 plots (per epoch, acc vs params, final-acc bars)
 tests/test_sharing.py      weight-sharing checks
 tests/test_lora_loop.py    LoRA param counts, gradients, init correctness
-docs/results/              saved results from the server runs
+tasks/T<n>_<name>/         one folder per experiment: README, scripts, saved results
 LEARNING_LOG.md            notes and gotchas
 ```
 
@@ -133,7 +133,7 @@ Each run takes about 8 minutes on one A4000. A 10-epoch run on an M2 Air CPU wou
 ## Gotchas learned
 
 - `[block] * 12` shares one object; `copy.deepcopy` would silently make 12 independent blocks. The test guards this.
-- Git does not store empty folders, so `results/` is kept with a `.gitkeep`. Result files are gitignored; the copies worth keeping live in `docs/results/`.
+- Git does not store empty folders, so `results/` is kept with a `.gitkeep`. Result files are gitignored; the copies worth keeping live in each task folder under `tasks/`.
 - FLOP counts differ between CPU (2.15 G) and GPU (2.51 G) because the attention op is counted differently. Compare models only on the same machine.
 - On a private GitHub repo, `git clone` on the server needs a token; passwords are rejected.
 - Run long jobs in `tmux`, one session per job, and name them distinctly (a duplicate name attaches to the old session instead of creating a new one).

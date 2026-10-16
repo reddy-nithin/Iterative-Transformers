@@ -395,7 +395,7 @@ del b, i_
 # %% [markdown]
 # **Experiment runner.** `run_experiment` builds a model, measures its metrics, trains it, evaluates after every epoch, and writes the
 # result JSON to Google Drive after each epoch. If a complete result file for `name` already exists, it is loaded instead of retraining
-# (an interrupted run restarts from epoch 1). The JSON fields match the server runs in `docs/results/`.
+# (an interrupted run restarts from epoch 1). The JSON fields match the server runs in `tasks/`.
 
 # %%
 import json
@@ -475,13 +475,13 @@ def summarize(res: dict) -> pd.DataFrame:
 print(summarize(results).to_string(index=False))
 
 # %% [markdown]
-# **Reference results from the lab server.** The repository is public, so the saved A4000 results (`docs/results/*.json`) are fetched
+# **Reference results from the lab server.** The repository is public, so the saved A4000 results (`tasks/T1_baseline_vs_shared_block/results/*.json`) are fetched
 # from GitHub for comparison. If the download fails, the cell continues without them.
 
 # %%
 import urllib.request
 
-RAW = "https://raw.githubusercontent.com/reddy-nithin/Iterative-Transformers/main/docs/results/"
+RAW = "https://raw.githubusercontent.com/reddy-nithin/Iterative-Transformers/main/tasks/T1_baseline_vs_shared_block/results/"
 server = {}
 for ours, theirs in {"baseline": "baseline", "iterative_b0": "iterative", "iterative_b6": "iterative_b6"}.items():
     try:
