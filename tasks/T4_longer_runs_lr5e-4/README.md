@@ -10,7 +10,7 @@ and T2 (fair from-scratch baseline at lr 5e-4), due Tue 2026-10-20.
 Notion tasks: https://app.notion.com/p/3fa38c734705817b81a5e06699516b4a (T1),
 https://app.notion.com/p/3fa38c73470581149354f81bbe36e9d7 (T2)
 
-**Started / finished:** 2026-10-19 / -
+**Started / finished:** 2026-10-19 / 2026-10-19
 
 ## Runs
 All at lr 5e-4, 30 epochs, seed 0, otherwise the T1 recipe (AdamW wd 0.05, 1 warmup epoch + cosine, label smoothing
@@ -47,9 +47,10 @@ longer, so the early epochs look different. Only the final numbers are comparabl
 - [x] Smoke test 2026-10-19, GPU 0: all 6 runs, 512 images, 1 epoch. Params 650,212 / 723,940 / 945,124 / 5,543,716
       as expected; LoRA runs show 2 lr groups (0.65M @ 5e-4, LoRA @ 5e-3). Rerun skips finished runs; a typo exits early.
       Plot check: iter_b0 + scratch, 2,048 images, 6 epochs.
-- [ ] Full runs (two queues, GPUs 0 and 2)
-- [ ] Plots + table (`plot.py`), verdict per run, takeaways below
-- [ ] Any run still climbing at 30 epochs: rerun at 50 epochs if time allows (`EPOCHS=50 OUT_ROOT=.../results/e50`)
+- [x] Full runs (two queues, GPUs 0 and 2), 2026-10-19 12:12 to ~15:00, all 30/30 epochs, no errors
+- [x] Plots + table (`plot.py`), verdict per run, takeaways below
+- [ ] Optional follow-up: 50-epoch reruns of iter_b0, lora_r8, scratch (the three the rule calls still climbing):
+      `EPOCHS=50 OUT_ROOT=tasks/T4_longer_runs_lr5e-4/results/e50 bash tasks/T4_longer_runs_lr5e-4/sweep.sh iter_b0 lora_r8 scratch`
 
 ## Commands
 Run from the repo root. Each 30-epoch run is ~27 min on one A4000; 3 runs per queue ≈ 1.4 h.
@@ -74,19 +75,43 @@ CUDA_VISIBLE_DEVICES=2 bash tasks/T4_longer_runs_lr5e-4/sweep.sh iter_b0 lora_r2
 Smoke test that was run: `CUDA_VISIBLE_DEVICES=0 OUT_ROOT=<scratch> EXTRA_ARGS="--subset 512 --epochs 1" bash tasks/T4_longer_runs_lr5e-4/sweep.sh`
 
 ## Results (`results/`, one seed: gaps under ~2 points are ties)
-_Pending the server runs._
+| Run | Params (M) | Old: 10 ep, lr 1e-4 (%) | Final acc, 30 ep, lr 5e-4 (%) | Gain ep 20→25 | Gain ep 25→30 | Train - test gap | Verdict (rule) |
+|---|---|---|---|---|---|---|---|
+| iter_b0 | 0.650 | 34.76 (46.02 at lr 5e-4) | 58.06 | 3.15 | 0.57 | -2.7 | still climbing |
+| iter_b6 | 0.650 | 30.70 | 54.51 | 2.53 | 0.46 | -3.1 | plateaued |
+| iter_avg | 0.650 | 28.54 | 52.96 | 2.92 | 0.30 | -2.7 | plateaued |
+| lora_r2 | 0.724 | 27.51 (avg base) | 59.52 | 4.06 | 0.48 | -2.2 | plateaued |
+| **lora_r8** | 0.945 | 30.69 (avg base) | **61.33** | 3.39 | 0.79 | -0.4 | still climbing |
+| scratch | 5.544 | 28.87 | 47.37 | 3.10 | 0.87 | -0.2 | still climbing |
+| baseline (T1, pretrained, reference) | 5.544 | 86.77 | - | - | - | - | - |
 
-| Run | Params (M) | Old: 10 ep, lr 1e-4 (%) | Final acc, 30 ep, lr 5e-4 (%) | Gain last 5 ep | Train - test gap | Verdict |
-|---|---|---|---|---|---|---|
-| iter_b0 | 0.650 | 34.76 (46.02 at lr 5e-4) | | | | |
-| iter_b6 | 0.650 | 30.70 | | | | |
-| iter_avg | 0.650 | 28.54 | | | | |
-| lora_r2 | 0.724 | 27.51 (avg base) | | | | |
-| lora_r8 | 0.945 | 30.69 (avg base) | | | | |
-| scratch | 5.544 | 28.87 | | | | |
+Plots: `results/test_acc_all.png` (quickest read), `results/curves_<run>.png` (loss + acc, train and test, one per
+run, old 10-epoch result marked), `results/b0_vs_scratch.png`. Table: `results/summary.md`.
+Train acc is the running value on augmented batches, so a negative gap means "no sign of overfitting", not that the
+model does better on unseen data.
 
 ## Takeaways
-_Pending._
+- **Yes, the shared-block models were under-trained (Dr. Uddin's concern confirmed).** Higher lr plus 3x the epochs
+  lifts every shared model by ~23-24 points over the old runs: iter b0 34.8 → 58.1 (46.0 of that came from the lr
+  alone at 10 epochs, the rest from the longer schedule), b6 30.7 → 54.5, avg 28.5 → 53.0.
+- **Plateaued or still climbing? None has clearly saturated.** By the 0.5-point rule, b6, avg and LoRA r2 plateaued
+  and b0, LoRA r8 and scratch are still climbing. But every run sits close to the threshold (0.3 to 0.9), and every
+  run gained 2.5 to 4 points in epochs 20→25. The final flattening is mostly the cosine lr reaching ~0. Test loss is
+  still at its lowest in the last 1-2 epochs and train acc is not above test acc, so there is no overfitting yet.
+  A 50-epoch run is the real test (follow-up command above).
+- **Fair scratch control (meeting T2): the 0.65M shared model beats the 5.5M scratch model by 10.7 points** (58.1 vs
+  47.4), same lr, epochs and recipe. So starting from one pretrained block is worth far more than 8.5x the parameters
+  trained from random. Caveat: 5e-4 may not be the best lr for scratch, and ViTs from scratch need heavy
+  augmentation on small datasets.
+- **Which block:** b0 > b6 by 3.6 points (more than the ~2-point noise level). b6 vs avg (1.5) is a tie. Avg init went
+  from the worst model to close to b6 once the lr was right.
+- **LoRA helps once the confounders are gone:** with the block-0 base and its own lr (5e-3), r2 is +1.5 over b0 (a
+  tie) and r8 is +3.3 (61.3%, the best shared model, +0.3M params = 17% of ViT-Tiny). T2's flat LoRA results were
+  the weak avg base + low lr, not LoRA itself.
+- **Still far from the pretrained model** (86.8%): the best shared model is ~25 points behind. For scale, T3's n=4
+  (four distinct blocks, 2.0M params) reached 74.0% in only 10 epochs at the same lr.
+- Not a bug: epoch 10 here (b0 45.7) is not equal to the old 10-epoch lr 5e-4 run (46.0), because the 30-epoch
+  cosine is still at a high lr at epoch 10.
 
 ## Changes outside this folder
 - `src/train.py`: `evaluate()` now returns `(test_acc, test_loss)`; the training loop records a running `train_acc`;
