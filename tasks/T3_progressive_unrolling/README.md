@@ -36,6 +36,9 @@ The gap between the two curves shows how much training makes up for the repetiti
 - [x] Full ft sweep (n = 1..12), GPU 2, 2026-10-16
 - [x] Plot + table (`plot.py`), takeaways below
 - [x] Sanity check: ft n=1 = 34.76 and ft n=12 = 86.77, identical to T1's block-0 and baseline runs
+- [x] Follow-up: ft n=1..4 rerun at lr 5e-4 (`results/lr5e-4/ft/`), 2026-10-16. Sanity check: n=1 = 46.02,
+      identical to T2's `iterative_lr5e-4` run
+- [x] Plots updated 2026-10-19: lr 5e-4 points added to `acc_vs_n.png`, new `lr_compare_curves.png`
 
 ## Commands
 Run from the repo root. Each run is ~9 min on one A4000; 12 runs per pass ≈ 1.8 h.
@@ -55,26 +58,30 @@ CUDA_VISIBLE_DEVICES=2 bash tasks/T3_progressive_unrolling/sweep.sh ft
 - When both finish: `.venv/bin/python tasks/T3_progressive_unrolling/plot.py` → `results/acc_vs_n.png`,
   `results/summary.md`. Then `tmux kill-session -t t3-probe` (and `t3-ft`).
 
+Follow-up lr check (n=1..4 at lr 5e-4) can be reproduced with (the later `--lr` overrides the pass default):
+`CUDA_VISIBLE_DEVICES=<idle> OUT_ROOT=tasks/T3_progressive_unrolling/results/lr5e-4 EXTRA_ARGS="--lr 5e-4" bash tasks/T3_progressive_unrolling/sweep.sh ft 1 2 3 4`
+
 Smoke test that was run: `CUDA_VISIBLE_DEVICES=0 OUT_ROOT=<scratch> EXTRA_ARGS="--subset 512 --epochs 1" bash tasks/T3_progressive_unrolling/sweep.sh probe 1 12`
 (and the same with `ft`).
 
-## Results (`results/probe/`, `results/ft/`, one seed: gaps under ~2 points are ties)
-| n | Params (M) | % of baseline params | Probe acc (%) | Fine-tune acc (%) |
-|---|---|---|---|---|
-| 1 | 0.650 | 12% | 17.49 | 34.76 |
-| 2 | 1.095 | 20% | 18.01 | 44.73 |
-| 3 | 1.540 | 28% | 28.54 | 56.26 |
-| 4 | 1.985 | 36% | 45.19 | 67.21 |
-| 5 | 2.430 | 44% | 53.53 | 72.45 |
-| 6 | 2.875 | 52% | 59.59 | 76.37 |
-| 7 | 3.319 | 60% | 65.91 | 80.05 |
-| 8 | 3.764 | 68% | 72.12 | 82.55 |
-| 9 | 4.209 | 76% | 76.70 | 84.43 |
-| 10 | 4.654 | 84% | 78.69 | 85.37 |
-| 11 | 5.099 | 92% | 82.03 | 85.95 |
-| 12 | 5.544 | 100% | 83.67 | **86.77** |
+## Results (`results/probe/`, `results/ft/`, `results/lr5e-4/ft/`, one seed: gaps under ~2 points are ties)
+| n | Params (M) | % of baseline params | Probe acc (%) | Fine-tune acc (%) | Fine-tune lr 5e-4 (%) |
+|---|---|---|---|---|---|
+| 1 | 0.650 | 12% | 17.49 | 34.76 | 46.02 |
+| 2 | 1.095 | 20% | 18.01 | 44.73 | 57.65 |
+| 3 | 1.540 | 28% | 28.54 | 56.26 | 67.12 |
+| 4 | 1.985 | 36% | 45.19 | 67.21 | 74.03 |
+| 5 | 2.430 | 44% | 53.53 | 72.45 | - |
+| 6 | 2.875 | 52% | 59.59 | 76.37 | - |
+| 7 | 3.319 | 60% | 65.91 | 80.05 | - |
+| 8 | 3.764 | 68% | 72.12 | 82.55 | - |
+| 9 | 4.209 | 76% | 76.70 | 84.43 | - |
+| 10 | 4.654 | 84% | 78.69 | 85.37 | - |
+| 11 | 5.099 | 92% | 82.03 | 85.95 | - |
+| 12 | 5.544 | 100% | 83.67 | **86.77** | - |
 
-Plot: `results/acc_vs_n.png`. Table: `results/summary.md`.
+Plots: `results/acc_vs_n.png` (final acc vs n, all three passes), `results/lr_compare_curves.png` (per-epoch
+test acc for n=1..4 at both fine-tune lrs). Table: `results/summary.md`.
 
 ## Takeaways
 - **No sharp jump; a steady climb with diminishing returns.** Fine-tune gains ~11 points per extra block for
@@ -86,8 +93,13 @@ Plot: `results/acc_vs_n.png`. Table: `results/summary.md`.
   (+16.7). Repeating an early block as is gives poor features; training has to fix them.
 - **Training makes up for repetition most when n is small:** the fine-tune minus probe gap is ~27 points at n=2-3
   and shrinks to 3 points at n=12.
-- **Caveat:** fine-tune used lr 1e-4. T2 showed the shared block gains +11 points at lr 5e-4, so the low-n
-  fine-tune numbers are probably underestimates. A rerun of n=1..4 at 5e-4 would tell.
+- **lr 1e-4 was too low for small n (confirmed).** At lr 5e-4, n=1..4 gain +11.3, +12.9, +10.9 and +6.8 points
+  (46.0 / 57.7 / 67.1 / 74.0). The gain shrinks as n grows, which fits: the more distinct pretrained blocks, the
+  less the repeated block has to be re-learned. n=4 at 5e-4 (74.0%, 36% of params) now beats n=5 at 1e-4 (72.5%).
+- **The shape of the curve holds:** still a steady climb with no sharp jump, just shifted up at the low end.
+  Per extra block at 5e-4: +11.6, +9.5, +6.9 (n=1→4), so diminishing returns start a little earlier than at 1e-4.
+- **Open question:** n >= 5 was not rerun at 5e-4. The best lr probably drops as n grows (n=12 is the pretrained
+  model, where 1e-4 is standard), so a fair "best lr per n" curve would need a small lr sweep per n.
 
 ## Changes outside this folder
 - `src/models.py`: new `build_unrolled(unique_blocks, ...)`, registered as `"unroll"` in `build()`.
