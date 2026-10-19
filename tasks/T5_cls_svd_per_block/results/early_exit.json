@@ -15,7 +15,65 @@
    56.97,
    58.06,
    58.06
-  ]
+  ],
+  "changed_from_previous": [
+   null,
+   0.71,
+   5.67,
+   26.66,
+   57.55,
+   41.66,
+   33.83,
+   24.44,
+   17.46,
+   11.74,
+   9.13,
+   7.48
+  ],
+  "agrees_with_last": [
+   1.0,
+   1.04,
+   1.57,
+   4.94,
+   15.15,
+   28.82,
+   46.16,
+   61.71,
+   74.43,
+   84.17,
+   92.52,
+   100.0
+  ],
+  "rules": {
+   "patience 2": {
+    "acc": 1.06,
+    "mean_loops": 2.01
+   },
+   "patience 3": {
+    "acc": 3.2,
+    "mean_loops": 3.21
+   },
+   "patience 4": {
+    "acc": 18.07,
+    "mean_loops": 5.59
+   },
+   "confidence 0.3": {
+    "acc": 45.29,
+    "mean_loops": 7.97
+   },
+   "confidence 0.5": {
+    "acc": 57.02,
+    "mean_loops": 10.27
+   },
+   "confidence 0.7": {
+    "acc": 57.91,
+    "mean_loops": 11.09
+   },
+   "confidence 0.9": {
+    "acc": 58.05,
+    "mean_loops": 11.73
+   }
+  }
  },
  "baseline_ft": {
   "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/baseline_ft.pt",
@@ -33,6 +91,64 @@
    55.55,
    77.98,
    86.77
-  ]
+  ],
+  "changed_from_previous": [
+   null,
+   70.32,
+   0.37,
+   44.33,
+   63.55,
+   60.81,
+   40.85,
+   91.02,
+   82.89,
+   70.68,
+   36.62,
+   17.0
+  ],
+  "agrees_with_last": [
+   0.71,
+   0.96,
+   0.96,
+   1.13,
+   1.25,
+   0.78,
+   1.53,
+   4.41,
+   17.88,
+   57.76,
+   83.0,
+   100.0
+  ],
+  "rules": {
+   "patience 2": {
+    "acc": 1.01,
+    "mean_loops": 2.71
+   },
+   "patience 3": {
+    "acc": 21.4,
+    "mean_loops": 5.82
+   },
+   "patience 4": {
+    "acc": 52.0,
+    "mean_loops": 9.0
+   },
+   "confidence 0.3": {
+    "acc": 86.17,
+    "mean_loops": 11.44
+   },
+   "confidence 0.5": {
+    "acc": 86.75,
+    "mean_loops": 11.73
+   },
+   "confidence 0.7": {
+    "acc": 86.77,
+    "mean_loops": 11.92
+   },
+   "confidence 0.9": {
+    "acc": 86.77,
+    "mean_loops": 12.0
+   }
+  }
  }
 }

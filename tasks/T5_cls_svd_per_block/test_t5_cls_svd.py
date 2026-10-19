@@ -12,7 +12,7 @@ from torchvision import transforms
 
 from cls_svd import (analyse, collect_cls_per_layer, effective_rank, energy_rank, load_model, separation_ratio,
                      singular_values)
-from early_exit import exit_accuracies
+from early_exit import confidence_exit, exit_accuracies, exit_logits, patience_exit, rule_result
 from data_sources import (CONTROL, imagenet_separation_sets, imagenet_subsets, resolve_class_indices,
                           resolve_imagenet_classes)
 from src.models import MODEL_NAME, build_iterative
@@ -153,10 +153,36 @@ def test_imagenet_class_resolution_and_sets() -> None:
 def test_early_exit_at_last_block_equals_normal_prediction() -> None:
     model = tiny_vit().eval()
     record = collect_cls_per_layer(model, fake_loader(), torch.device("cpu"), include_final_norm=False)
-    accuracies = exit_accuracies(model, record, torch.device("cpu"))
-    assert len(accuracies) == DEPTH
+    logits = exit_logits(model, record, torch.device("cpu"))
+    assert logits.shape == (DEPTH, N_IMAGES, 10)
+    torch.testing.assert_close(logits[-1], record.logits)
+    accuracies = exit_accuracies(logits, record.labels)
     expected = 100.0 * (record.logits.argmax(dim=1) == record.labels).float().mean().item()
     assert accuracies[-1] == pytest.approx(expected)
+
+
+def one_hot_logits(predictions: list[list[int]], confidence: list[list[float]] | None = None) -> torch.Tensor:
+    """(exits, images, 3) logits whose argmax is `predictions[k][i]`; optional softmax-ish peak sizes."""
+    logits = torch.zeros(len(predictions), len(predictions[0]), 3)
+    for k, row in enumerate(predictions):
+        for i, cls in enumerate(row):
+            logits[k, i, cls] = 10.0 if confidence is None else confidence[k][i]
+    return logits
+
+
+def test_patience_exit() -> None:
+    # image 0: 0,1,1,1 -> 2 agree at exit 2, 3 agree at exit 3; image 1: never 2 in a row -> last exit
+    logits = one_hot_logits([[0, 0], [1, 1], [1, 0], [1, 1]])
+    assert patience_exit(logits, 2).tolist() == [2, 3]
+    assert patience_exit(logits, 3).tolist() == [3, 3]
+    result = rule_result(logits, torch.tensor([1, 1]), patience_exit(logits, 2))
+    assert result == {"acc": 100.0, "mean_loops": 3.5}
+
+
+def test_confidence_exit() -> None:
+    # peak logit 0 -> uniform over 3 classes (p = 1/3); 10 -> p ~ 1
+    logits = one_hot_logits([[0, 0], [2, 0], [0, 0]], confidence=[[0.0, 0.0], [10.0, 0.0], [10.0, 0.0]])
+    assert confidence_exit(logits, 0.9).tolist() == [1, 2]  # image 1 is never confident -> last exit
 
 
 def test_checkpoint_round_trip(tmp_path, monkeypatch) -> None:

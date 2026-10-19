@@ -39,6 +39,7 @@ Where the CLS token lives in timm 1.0.30 (`timm/models/vision_transformer.py`): 
       original model on ImageNet, CLS after the final norm, class separation, top-1 check (see "Follow-up")
 - [x] Follow-up 2 (2026-10-19): iter b0 retrained with a checkpoint (58.06%), same analysis + early-exit accuracy
       (`early_exit.py`, test in `test_t5_cls_svd.py`; see "Follow-up 2")
+- [x] Follow-up 3 (2026-10-19): per-image stopping rules (patience, confidence) vs fixed depth, iter b0 and baseline
 
 ## Commands
 Run from the repo root. Inference only, about 15 s on one A4000 (a few minutes on CPU).
@@ -214,10 +215,47 @@ CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/early_exit.py $C/iter_b0
 .venv/bin/python $S/plot.py --compare pretrained ft_baseline_train ft_baseline_test iter_b0_train iter_b0_test
 ```
 
+## Follow-up 3: per-image stopping rules (2026-10-19)
+**Question.** Instead of one fixed depth for every image, can each image stop when *its* answer is ready, and does
+that beat a fixed depth for the same average number of loops?
+
+**Rules** (`early_exit.py`, all 10,000 CIFAR-100 test images, the model's own final norm + head after each loop;
+an image that never meets the rule runs all 12):
+- **patience m**: stop at the first loop where the predicted class has been the same for m loops in a row;
+- **confidence τ**: stop at the first loop where the top softmax probability is ≥ τ.
+
+**Results** (accuracy % at mean loops used; compare with the fixed-exit row above at the same depth):
+
+| rule | iter b0 | baseline |
+|---|---|---|
+| fixed 10 / 11 / 12 | 57.0 / 58.1 / 58.1 | 55.5 / 78.0 / 86.8 |
+| patience 2 / 3 / 4 | 1.1 @ 2.0 / 3.2 @ 3.2 / 18.1 @ 5.6 | 1.0 @ 2.7 / 21.4 @ 5.8 / 52.0 @ 9.0 |
+| confidence 0.3 | 45.3 @ 7.97 | **86.2 @ 11.44** |
+| confidence 0.5 | 57.0 @ 10.27 | 86.8 @ 11.73 |
+| confidence 0.7 | 57.9 @ 11.09 | 86.8 @ 11.92 |
+| confidence 0.9 | 58.1 @ 11.73 | 86.8 @ 12.0 |
+
+Share of images whose prediction changes from the previous loop, iter b0: loop 5 58%, 8 24%, 10 12%, 11 9%,
+**12 7.5%** (accuracy no longer moves, but answers still flip both ways). Plot: `results/early_exit_rules.png`.
+
+**Takeaways.**
+- **"The answer stopped changing" is a bad stopping signal here.** In loops 1-3 the predictions are at chance (~1%)
+  but barely change between loops (0.7% change at loop 2), so patience rules stop almost at once on wrong answers.
+  Stable is not the same as done. (Patience counted only from a later loop would work better, but that is a
+  hand-tuned minimum depth.)
+- **Confidence works but does not beat a fixed depth for iter b0.** Every confidence point lies on or just below the
+  fixed-depth curve (τ 0.5: 57.0 @ 10.27 loops vs fixed 10 loops: 57.0). Best simple choice for iter b0 remains
+  "run 11 loops" (58.1, -8% compute, no loss).
+- **For the 12-block baseline, confidence does beat fixed depth:** τ 0.3 keeps 86.2% (-0.6) with 11.44 blocks on
+  average (-4.7% compute), where a fixed depth of ~11.4 would give about 82%. Easy images finish at block 11; the
+  hard ones need block 12.
+- So with heads trained only at the last loop, adaptive per-image stopping gives little to the looped model. The
+  natural next experiment is training iter b0 with an exit loss at several loops, so early loops are asked to
+  produce usable answers (and then re-run these rules).
+
 ## Next
-- A per-image stopping signal on iter b0: how much the logits / CLS change between loops, and whether "stop when the
-  change is small" matches the accuracy plateau at loop 10-11.
-- Train iter b0 with exit losses at several loops (deep supervision) and see if the plateau moves earlier.
+- Train iter b0 with exit losses at several loops (deep supervision) and re-run `early_exit.py`: does the accuracy
+  plateau move earlier, and does the confidence rule start beating fixed depth?
 - Optional: t-SNE from the saved tensors.
 
 ## Changes outside this folder
