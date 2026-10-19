@@ -172,9 +172,9 @@ def summary_table(data: dict, variant: str) -> str:
     names = list(data["groups"])
     n_layers = len(data["groups"][names[0]]["layers"])
     lines = ["| layer | " + " | ".join(names) + " |", "|---" * (len(names) + 1) + "|"]
-    for layer in range(n_layers):
+    for layer, label in zip(range(n_layers), layer_labels(data, list(range(n_layers)))):
         cells = [data["groups"][name]["layers"][str(layer)][variant] for name in names]
-        lines.append(f"| {layer} | " + " | ".join(f"{c['effective_rank']:.1f} / {c['energy_rank_90']}" for c in cells)
+        lines.append(f"| {label} | " + " | ".join(f"{c['effective_rank']:.1f} / {c['energy_rank_90']}" for c in cells)
                      + " |")
     return "\n".join(lines)
 

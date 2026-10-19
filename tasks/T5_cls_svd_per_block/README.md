@@ -35,7 +35,9 @@ Where the CLS token lives in timm 1.0.30 (`timm/models/vision_transformer.py`): 
 - [x] Tests: `test_t5_cls_svd.py` (9 tests: shapes, hook output equals `forward_features` before the final norm,
       shared block, hooks removed, layer 0 centred rank 0, rank measures, unknown class name)
 - [x] Smoke test (32 images per group) and full run (500 per group, GPU 3, 15 s), 2026-10-19
-- [ ] Same analysis on the CIFAR fine-tuned baseline and on iter b0 (needs saved checkpoints; see "Next")
+- [x] Follow-up (2026-10-19): `--save-checkpoint` in `src/train.py`, CIFAR fine-tuned baseline (train + test),
+      original model on ImageNet, CLS after the final norm, class separation, top-1 check (see "Follow-up")
+- [ ] Same analysis on iter b0 (shared block; the hooks already handle it, needs a checkpointed run)
 
 ## Commands
 Run from the repo root. Inference only, about 15 s on one A4000 (a few minutes on CPU).
@@ -80,10 +82,85 @@ Plots: `results/effective_rank_vs_block.png` (main figure), `results/sv_decay_ce
   classification loss (neural collapse, mostly in the last layers). Measured on the residual stream before the
   final LayerNorm.
 
+## Follow-up: fine-tuned on CIFAR, and the original model on ImageNet (2026-10-19)
+**Question.** The run above used a model that never learned CIFAR classes. Does per-class CLS collapse show up
+(a) after fine-tuning on CIFAR-100, and (b) for the original model on its own training data, ImageNet?
+
+**Setup.**
+- Fine-tuned baseline: retrained with the T1 recipe (10 ep, lr 1e-4, seed 0) plus `--save-checkpoint`; final test
+  acc **86.77%** (identical to T1). SVD on CIFAR **train** (500/class) and **test** (100/class, control 100).
+- ImageNet: `vit_tiny_patch16_224` = `augreg_in21k_ft_in1k`, trained on these exact images. Read in place from the lab
+  copy `/storage/INSLAB/Data/ILSVRC2012_img_train` (a labmate's; train split only, no val on the server). 500 images
+  per class: 4 matched to the CIFAR set (Granny Smith, mountain bike, red fox, alp as a stand-in for "cloud") and two
+  look-alike pairs (malamute / Siberian husky, tabby / tiger cat), plus a 500-image control from 500 random classes.
+- New: layer **N** = CLS after the final LayerNorm (what the head reads). **Separation** = within-class spread /
+  between-class spread, `tr(Σ_within) / tr(Σ_between)`, classes weighted equally (NC1-style, Papyan et al. 2020).
+  Rank ignores scale; separation says whether classes get tight *relative to their distances*. **Top-1** of the
+  model's own head per group as a check that weights and labels are right.
+
+**Sanity checks.** The pretrained CIFAR rerun reproduces the table above exactly. Fine-tuned top-1: train 87-99%, test
+80-98% (control 89%, in line with 86.8%). ImageNet top-1: 41-91% (look-alikes lowest: tiger cat 41, husky 47).
+
+**Results.** Separation (lower = tighter classes), 4 classes per row:
+
+| layer | 1 | 4 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | N |
+|---|---|---|---|---|---|---|---|---|---|---|
+| pretrained, CIFAR train | 2.46 | 3.02 | 2.84 | 2.45 | 2.29 | 1.71 | 1.91 | 1.66 | 1.88 | 1.86 |
+| **fine-tuned, CIFAR train** | 2.57 | 2.55 | 1.95 | 1.72 | 1.34 | 0.93 | 0.77 | 0.54 | **0.49** | 0.54 |
+| **fine-tuned, CIFAR test** | 2.51 | 2.42 | 1.86 | 1.65 | 1.36 | 0.93 | 0.80 | 0.58 | **0.55** | 0.62 |
+| pretrained, ImageNet (matched 4) | 2.58 | 3.09 | 2.79 | 1.94 | 1.64 | 1.36 | 1.44 | 1.21 | 1.52 | 1.39 |
+| ImageNet malamute vs husky | 133 | 197 | 131 | 107 | 96 | 81 | 66 | 58 | 51 | 55 |
+| ImageNet tabby vs tiger cat | 50 | 109 | 84 | 72 | 39 | 38 | 36 | 22 | 29 | 29 |
+
+Centred effective rank (class mean, train, max 192), block 8 → 12: pretrained CIFAR 114 → 140, **fine-tuned CIFAR
+116 → 127** (flat from block 10: apple 123.4 / 122.1 / 123.2), ImageNet 118 → 148. Test rank is capped near 99
+(N = 100) and is not comparable with train. Full tables: `results/summary_<tag>.md`.
+
+Plots: **`results/compare.png`** (headline: rank and separation for all four runs), `separation_vs_block_<tag>.png`,
+`effective_rank_vs_block_<tag>.png`, `sv_decay_*_<tag>.png`. Tags: `pretrained`, `ft_baseline_train`,
+`ft_baseline_test`, `imagenet_pretrained`.
+
+**Takeaways.**
+- **Training on the classes is what makes them tighten.** After fine-tuning, separation falls from ~2.5 to 0.49 by
+  block 12, below 1 (class spread smaller than the gaps between classes) from **block 9**. The same model before
+  fine-tuning stays at ~1.9. The fall happens in blocks 6-11, the second half of the network.
+- **It holds on unseen images.** Test (0.55) is almost the same as train (0.49), so this is not memorisation: a
+  signal like this could be measured at inference time.
+- **Rank alone stays a weak signal.** Even fine-tuned, per-class rank never drops; it only stops growing after
+  block 10 (127 vs 146 for the control). Classes don't collapse to a few directions; they become small compared with
+  the distances between them. For a stopping rule, separation (or how much the CLS still moves) looks more useful
+  than rank.
+- **ImageNet, the model's own data:** in between. Separation falls from ~3 to 1.2 at block 11 (starting at block 7),
+  so the pretrained model does organise its own classes in the late blocks, but less tightly than CIFAR after
+  fine-tuning (ImageNet has 1000 classes and heavy-augmentation training). Look-alike pairs stay heavily overlapped
+  to the end (husky/malamute 55, tabby/tiger cat 29), matching their low top-1.
+- **Block 12 and the final norm slightly undo block 11** in the pretrained runs (1.21 → 1.52 on ImageNet).
+- Caveats: one seed, 4 classes per set, train-split ImageNet only; separation over 4 classes is not comparable with
+  other class counts.
+
+**Commands** (run from the repo root; the fine-tune runs in tmux, ~9 min; the rest is inference, seconds to 1 min):
+```
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python -m src.train --model baseline --epochs 10 --lr 1e-4 \
+  --out-dir tasks/T5_cls_svd_per_block/results/finetune --tag _t5 \
+  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/baseline_ft.pt
+C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/baseline_ft.pt; S=tasks/T5_cls_svd_per_block
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C --model-tag ft_baseline_train
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C --split test --per-class 100 \
+  --control-size 100 --model-tag ft_baseline_test
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --dataset imagenet --model-tag imagenet_pretrained
+for t in pretrained ft_baseline_train ft_baseline_test imagenet_pretrained; do .venv/bin/python $S/plot.py --model-tag $t; done
+.venv/bin/python $S/plot.py --compare pretrained ft_baseline_train ft_baseline_test imagenet_pretrained
+```
+Raw CLS tensors (for a later t-SNE): `/storage/INSLAB/Data/nrs3qy/itertf/t5_cls_{pretrained,ft_baseline_train,imagenet_pretrained}.pt`.
+
 ## Next
-- Run the same analysis on the CIFAR fine-tuned baseline (86.8%) and on iter b0 lr 5e-4: add a checkpoint-save
-  flag to `src/train.py`, then a `--checkpoint` option here. The hooks already handle the shared block.
-- Optional: repeat on the CLS after the final norm (what the head actually reads), and a t-SNE from the saved tensors.
+- iter b0 (lr 5e-4, 30 ep) with `--save-checkpoint`, then the same analysis: does the shared block tighten classes
+  the same way, and from which loop?
+- A stopping-rule proxy: per image, how much the CLS changes between blocks, and whether it settles where
+  separation drops.
+- Optional: t-SNE from the saved tensors.
 
 ## Changes outside this folder
-None (one row in `tasks/README.md`).
+- `src/train.py`: new `--save-checkpoint PATH` (after every epoch: model name, kwargs, state_dict, epoch, test acc).
+  Without the flag nothing changes.
+- One row in `tasks/README.md`.

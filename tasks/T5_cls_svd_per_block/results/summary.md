@@ -1,6 +1,6 @@
-# CLS SVD summary (pretrained vit_tiny_patch16_224)
+# CLS SVD summary (pretrained: vit_tiny_patch16_224, cifar100 train)
 
-Cell = effective rank (entropy-based) / number of singular values holding 90% of the energy. Layer 0 = CLS before block 1; layer k = after block k (before the final norm). Max rank 192.
+Cell = effective rank (entropy-based) / number of singular values holding 90% of the energy. Layer 0 = CLS before block 1; layer k = after block k (before the final norm); the last layer (N in the plots) = after the final norm, what the head reads. Max rank 192.
 
 ## raw
 
@@ -19,6 +19,7 @@ Cell = effective rank (entropy-based) / number of singular values holding 90% of
 | 10 | 68.0 / 2 | 73.4 / 1 | 75.7 / 2 | 58.9 / 1 | 96.0 / 9 |
 | 11 | 80.3 / 4 | 82.1 / 2 | 87.5 / 6 | 61.6 / 1 | 108.9 / 18 |
 | 12 | 110.4 / 29 | 123.8 / 44 | 126.8 / 50 | 99.2 / 16 | 148.7 / 85 |
+| N | 108.3 / 27 | 126.0 / 48 | 124.8 / 46 | 108.7 / 28 | 148.7 / 85 |
 
 ## centred
 
@@ -37,3 +38,23 @@ Cell = effective rank (entropy-based) / number of singular values holding 90% of
 | 10 | 126.1 / 54 | 135.9 / 66 | 134.9 / 65 | 124.4 / 52 | 147.6 / 82 |
 | 11 | 131.3 / 60 | 141.4 / 74 | 139.5 / 71 | 128.5 / 57 | 155.1 / 94 |
 | 12 | 134.2 / 64 | 146.5 / 81 | 145.2 / 79 | 133.6 / 64 | 160.2 / 102 |
+| N | 134.6 / 65 | 145.7 / 80 | 146.6 / 81 | 132.1 / 62 | 158.1 / 100 |
+
+## separation (within / between class spread; lower = tighter classes)
+
+| layer | all classes |
+|---|---|
+| 0 | - |
+| 1 | 2.46 |
+| 2 | 2.30 |
+| 3 | 2.45 |
+| 4 | 3.02 |
+| 5 | 3.08 |
+| 6 | 2.84 |
+| 7 | 2.45 |
+| 8 | 2.29 |
+| 9 | 1.71 |
+| 10 | 1.91 |
+| 11 | 1.66 |
+| 12 | 1.88 |
+| N | 1.86 |
