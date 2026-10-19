@@ -37,7 +37,8 @@ Where the CLS token lives in timm 1.0.30 (`timm/models/vision_transformer.py`): 
 - [x] Smoke test (32 images per group) and full run (500 per group, GPU 3, 15 s), 2026-10-19
 - [x] Follow-up (2026-10-19): `--save-checkpoint` in `src/train.py`, CIFAR fine-tuned baseline (train + test),
       original model on ImageNet, CLS after the final norm, class separation, top-1 check (see "Follow-up")
-- [ ] Same analysis on iter b0 (shared block; the hooks already handle it, needs a checkpointed run)
+- [x] Follow-up 2 (2026-10-19): iter b0 retrained with a checkpoint (58.06%), same analysis + early-exit accuracy
+      (`early_exit.py`, test in `test_t5_cls_svd.py`; see "Follow-up 2")
 
 ## Commands
 Run from the repo root. Inference only, about 15 s on one A4000 (a few minutes on CPU).
@@ -153,11 +154,70 @@ for t in pretrained ft_baseline_train ft_baseline_test imagenet_pretrained; do .
 ```
 Raw CLS tensors (for a later t-SNE): `/storage/INSLAB/Data/nrs3qy/itertf/t5_cls_{pretrained,ft_baseline_train,imagenet_pretrained}.pt`.
 
+## Follow-up 2: the shared-block model, iter b0 (2026-10-19)
+**Question.** The stopping rule is meant for the looped model. Does iter b0 (block 0 run 12 times) tighten its
+classes, and from which loop could it stop?
+
+**Setup.** iter b0 retrained with the T4 recipe (30 ep, lr 5e-4, seed 0) plus `--save-checkpoint`: **58.06%**,
+identical to T4. Same CLS analysis on CIFAR train (500/class) and test (100/class). New: **early-exit accuracy**
+(`early_exit.py`): apply the model's own final norm + head to the CLS after loop k, on all 10,000 test images. The
+head was only trained on loop 12's output, so this is a lower bound for "stop at loop k".
+
+**Sanity checks.** Loaded as `iterative {'block_idx': 0, 'init': 'block'}`; 14 layers per group. Top-1 on the
+groups: train 64-86% (control 66.6), test 56-80% (control 63), in line with 58%. Early exit at loop 12 = 58.1, the
+training log's number.
+
+**Separation** (lower = tighter; 4 classes):
+
+| loop / block | 1 | 4 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | N |
+|---|---|---|---|---|---|---|---|---|---|---|
+| iter b0, train | 2.48 | 1.89 | 1.57 | 1.49 | **1.45** | 1.45 | 1.46 | 1.49 | 1.53 | 1.78 |
+| iter b0, test | 2.71 | 1.74 | 1.50 | 1.46 | **1.45** | 1.47 | 1.50 | 1.54 | 1.60 | 1.89 |
+| baseline, test (for reference) | 2.51 | 2.42 | 1.86 | 1.65 | 1.36 | 0.93 | 0.80 | 0.58 | 0.55 | 0.62 |
+
+**Early-exit test accuracy (%)** (`results/early_exit.json`):
+
+| exit after | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|
+| iter b0 | 4.7 | 13.5 | 24.8 | 38.3 | 48.1 | 53.9 | 57.0 | **58.1** | 58.1 |
+| baseline (12 different blocks) | 1.1 | 1.4 | 0.8 | 1.7 | 4.3 | 17.6 | 55.5 | 78.0 | 86.8 |
+
+Centred effective rank (class mean, train): loop 8 → 12 goes 112 → 122 (baseline 116 → 127), still rising slowly.
+Plots: `results/compare.png` (now 5 runs), `separation_vs_block_iter_b0_{train,test}.png`, `summary_iter_b0_*.md`.
+
+**Takeaways.**
+- **iter b0 tightens classes early but only moderately.** Separation falls from ~2.5 to its minimum 1.45 at loop 8
+  and then *rises* slightly (1.53 at loop 12, 1.78 after the final norm). It never goes below 1; the baseline reaches
+  0.55. This fits the 58% vs 87% accuracy gap. Train ≈ test again.
+- **But loop 8 is not where the answer is ready.** Exiting at loop 8 gives 48.1% (-10 points). Accuracy keeps
+  rising to loop 11 (58.1) and loop 12 adds nothing. So the geometry minimum comes ~3 loops before the accuracy
+  plateau: **separation alone would stop too early.**
+- **iter b0 could skip its last loop for free** (11 loops = 58.1 = 12 loops, an 8% compute saving), and loop 10
+  costs 1.1 points. The 12-block baseline can't exit early at all (78.0 at block 11, 55.5 at block 10): its blocks
+  are specialised, so every one is needed.
+- **For a stopping rule:** the looped model's answer settles before the last loop, which supports the idea, but the
+  signal to stop on should track the prediction (e.g. the head's confidence or how much the CLS/logits change
+  between loops), not class tightness. Training with an exit loss at several loops would likely move the plateau
+  earlier.
+- Caveats: one seed, 4 classes for separation (early exit uses all 100 classes and all 10k test images).
+
+Commands:
+```
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python -m src.train --model iterative --block-idx 0 --lr 5e-4 --epochs 30 \
+  --out-dir tasks/T5_cls_svd_per_block/results/finetune --tag _t5_iter_b0 \
+  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/iter_b0.pt          # tmux, ~27 min
+C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf; S=tasks/T5_cls_svd_per_block
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/iter_b0.pt --model-tag iter_b0_train
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/iter_b0.pt --split test \
+  --per-class 100 --control-size 100 --model-tag iter_b0_test
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/early_exit.py $C/iter_b0.pt $C/baseline_ft.pt
+.venv/bin/python $S/plot.py --compare pretrained ft_baseline_train ft_baseline_test iter_b0_train iter_b0_test
+```
+
 ## Next
-- iter b0 (lr 5e-4, 30 ep) with `--save-checkpoint`, then the same analysis: does the shared block tighten classes
-  the same way, and from which loop?
-- A stopping-rule proxy: per image, how much the CLS changes between blocks, and whether it settles where
-  separation drops.
+- A per-image stopping signal on iter b0: how much the logits / CLS change between loops, and whether "stop when the
+  change is small" matches the accuracy plateau at loop 10-11.
+- Train iter b0 with exit losses at several loops (deep supervision) and see if the plateau moves earlier.
 - Optional: t-SNE from the saved tensors.
 
 ## Changes outside this folder

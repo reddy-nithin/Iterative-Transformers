@@ -12,6 +12,7 @@ from torchvision import transforms
 
 from cls_svd import (analyse, collect_cls_per_layer, effective_rank, energy_rank, load_model, separation_ratio,
                      singular_values)
+from early_exit import exit_accuracies
 from data_sources import (CONTROL, imagenet_separation_sets, imagenet_subsets, resolve_class_indices,
                           resolve_imagenet_classes)
 from src.models import MODEL_NAME, build_iterative
@@ -147,6 +148,15 @@ def test_imagenet_class_resolution_and_sets() -> None:
     sets = imagenet_separation_sets(["n02110063", "n02110185", "n02119022"])
     assert sets == {"all classes": ["malamute", "Siberian husky", "red fox"],
                     "malamute vs Siberian husky": ["malamute", "Siberian husky"]}
+
+
+def test_early_exit_at_last_block_equals_normal_prediction() -> None:
+    model = tiny_vit().eval()
+    record = collect_cls_per_layer(model, fake_loader(), torch.device("cpu"), include_final_norm=False)
+    accuracies = exit_accuracies(model, record, torch.device("cpu"))
+    assert len(accuracies) == DEPTH
+    expected = 100.0 * (record.logits.argmax(dim=1) == record.labels).float().mean().item()
+    assert accuracies[-1] == pytest.approx(expected)
 
 
 def test_checkpoint_round_trip(tmp_path, monkeypatch) -> None:
