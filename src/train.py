@@ -33,6 +33,8 @@ def parse_args():
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--head-lr", type=float, default=None, help="separate lr for the classifier head (default: --lr)")
+    p.add_argument("--lora-lr", type=float, default=None,
+                   help="lora: separate lr for the per-loop LoRA factors (default: --lr)")
     p.add_argument("--weight-decay", type=float, default=0.05)
     p.add_argument("--warmup-epochs", type=float, default=1.0)
     p.add_argument("--seed", type=int, default=0)
@@ -69,30 +71,50 @@ def cosine_lr(step, total, warmup, base_lr):
     return base_lr * 0.5 * (1 + math.cos(math.pi * progress))
 
 
-def make_param_groups(model: nn.Module, lr: float, head_lr: float | None) -> list[dict]:
-    """Optimizer param groups. With `head_lr`, the classifier head gets its own lr; otherwise one group.
+def is_lora_param(name: str) -> bool:
+    """True for the per-loop LoRA factors of `LoRALoopBlocks` (`blocks.lora_A.*`, `blocks.lora_B.*`)."""
+    return "lora_A" in name or "lora_B" in name
+
+
+def make_param_groups(
+    model: nn.Module, lr: float, head_lr: float | None = None, lora_lr: float | None = None
+) -> list[dict]:
+    """Optimizer param groups. With `head_lr` / `lora_lr`, the classifier head / LoRA factors get their own lr;
+    with neither, one group.
 
     Each group stores `base_lr` so the cosine schedule scales every group from its own starting lr.
     """
-    if head_lr is None:
+    if head_lr is None and lora_lr is None:
         return [{"params": list(model.parameters()), "lr": lr, "base_lr": lr}]
-    head_ids = {id(p) for p in model.get_classifier().parameters()}
-    body = [p for p in model.parameters() if id(p) not in head_ids]
-    head = [p for p in model.parameters() if id(p) in head_ids]
-    return [{"params": body, "lr": lr, "base_lr": lr}, {"params": head, "lr": head_lr, "base_lr": head_lr}]
+    head_ids = {id(p) for p in model.get_classifier().parameters()} if head_lr is not None else set()
+    body, head, lora = [], [], []
+    for name, p in model.named_parameters():
+        if id(p) in head_ids:
+            head.append(p)
+        elif lora_lr is not None and is_lora_param(name):
+            lora.append(p)
+        else:
+            body.append(p)
+    if lora_lr is not None and not lora:
+        raise ValueError("--lora-lr was given but the model has no LoRA parameters (use it with --model lora)")
+    groups = [(body, lr), (head, head_lr), (lora, lora_lr)]
+    return [{"params": ps, "lr": g_lr, "base_lr": g_lr} for ps, g_lr in groups if ps]
 
 
 @torch.no_grad()
-def evaluate(model, loader, device, use_amp):
+def evaluate(model, loader, device, use_amp, criterion):
+    """Test accuracy (%) and mean loss (same criterion as training, so the two losses are comparable)."""
     model.eval()
     correct = total = 0
+    loss_sum = 0.0
     for x, y in loader:
         x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
         with torch.autocast(device.type, enabled=use_amp):
-            pred = model(x).argmax(1)
-        correct += (pred == y).sum().item()
+            logits = model(x)
+            loss_sum += criterion(logits, y).item() * y.numel()
+        correct += (logits.argmax(1) == y).sum().item()
         total += y.numel()
-    return 100.0 * correct / total
+    return 100.0 * correct / total, loss_sum / total
 
 
 def main():
@@ -119,7 +141,10 @@ def main():
     print(f"[{name}] params={info['params']:,} GFLOPs={info['gflops']:.2f} "
           f"throughput={info['throughput_img_s']:.0f} img/s", flush=True)
 
-    opt = torch.optim.AdamW(make_param_groups(model, args.lr, args.head_lr), weight_decay=args.weight_decay)
+    groups = make_param_groups(model, args.lr, args.head_lr, args.lora_lr)
+    print(f"[{name}] param groups: " + ", ".join(
+        f"{sum(p.numel() for p in g['params']):,} @ lr {g['base_lr']:g}" for g in groups), flush=True)
+    opt = torch.optim.AdamW(groups, weight_decay=args.weight_decay)
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     scaler = torch.amp.GradScaler(enabled=use_amp)
     steps_per_epoch = len(train_loader)
@@ -130,23 +155,29 @@ def main():
     for epoch in range(args.epochs):
         model.train()
         t0, loss_sum = time.time(), 0.0
+        train_correct = train_seen = 0
         for x, y in train_loader:
             for g in opt.param_groups:
                 g["lr"] = cosine_lr(step, total_steps, warmup_steps, g["base_lr"])
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device.type, enabled=use_amp):
-                loss = criterion(model(x), y)
+                logits = model(x)
+                loss = criterion(logits, y)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.step(opt)
             scaler.update()
             loss_sum += loss.item()
+            # running train acc: augmented batches, train mode, weights changing within the epoch (no extra pass)
+            train_correct += (logits.argmax(1) == y).sum().item()
+            train_seen += y.numel()
             step += 1
-        acc = evaluate(model, val_loader, device, use_amp)
-        rec = {"epoch": epoch + 1, "train_loss": loss_sum / steps_per_epoch,
-               "test_acc": acc, "epoch_time_s": time.time() - t0}
+        acc, test_loss = evaluate(model, val_loader, device, use_amp, criterion)
+        rec = {"epoch": epoch + 1, "train_loss": loss_sum / steps_per_epoch, "test_loss": test_loss,
+               "train_acc": 100.0 * train_correct / train_seen, "test_acc": acc, "epoch_time_s": time.time() - t0}
         history.append(rec)
         print(f"[{name}] epoch {rec['epoch']}/{args.epochs} loss={rec['train_loss']:.4f} "
+              f"test_loss={test_loss:.4f} train_acc={rec['train_acc']:.2f} "
               f"acc={acc:.2f} ({rec['epoch_time_s']:.0f}s)", flush=True)
         # write every epoch so a crash / dropped session still leaves partial results
         info.update(history=history, final_test_acc=acc, best_test_acc=max(h["test_acc"] for h in history))
