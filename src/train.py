@@ -43,6 +43,8 @@ def parse_args():
     p.add_argument("--data-root", default="data")
     p.add_argument("--out-dir", default="results")
     p.add_argument("--tag", default="", help="suffix for output filenames")
+    p.add_argument("--save-checkpoint", default=None,
+                   help="write model weights here after every epoch (keep it out of the repo)")
     return p.parse_args()
 
 
@@ -55,6 +57,14 @@ def model_kwargs(args) -> dict:
     if args.model == "unroll":
         return {"unique_blocks": args.unique_blocks}
     return {}
+
+
+def save_checkpoint(path: str, model: nn.Module, model_name: str, kwargs: dict, epoch: int, test_acc: float) -> None:
+    """Weights plus what is needed to rebuild the model (`src.models.build(model_name, **kwargs)`)."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save({"model": model_name, "model_kwargs": kwargs, "state_dict": model.state_dict(),
+                "epoch": epoch, "test_acc": test_acc}, path)
 
 
 def set_seed(seed):
@@ -182,6 +192,8 @@ def main():
         # write every epoch so a crash / dropped session still leaves partial results
         info.update(history=history, final_test_acc=acc, best_test_acc=max(h["test_acc"] for h in history))
         (out_dir / f"{name}.json").write_text(json.dumps(info, indent=2))
+        if args.save_checkpoint:
+            save_checkpoint(args.save_checkpoint, model, args.model, model_kwargs(args), rec["epoch"], acc)
 
 
 if __name__ == "__main__":
