@@ -9,14 +9,14 @@
 **From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T4, due Tue 2026-10-27.
 Notion task: https://notion.so/40138c73470581ad8b1ecb99346e3a84
 
-**Started / finished:** 2026-10-22 / –
+**Started / finished:** 2026-10-22 / 2026-10-22 (T7 checkpoint follow-up still open)
 
 ## Checklist
-- [ ] Collapse check on 1,000 fixed test images: token spectra per loop (`results/token_spectra.png`), effective rank
+- [x] Collapse check on 1,000 fixed test images: token spectra per loop (`results/token_spectra.png`), effective rank
       and mean token cosine vs loop (`results/collapse_vs_loop.png`), iter b0 vs the fine-tuned 12-block baseline
-- [ ] Exit signals on all 10k test images: KL(p_l ‖ p_l-1) and ‖CLS_l − CLS_l-1‖, threshold sweep, accuracy vs mean
+- [x] Exit signals on all 10k test images: KL(p_l ‖ p_l-1) and ‖CLS_l − CLS_l-1‖, threshold sweep, accuracy vs mean
       loops next to fixed depth and confidence (`results/exit_curves.png`)
-- [ ] One line each: "does iter b0 collapse faster than the baseline?" and "does KL exit beat fixed 11 loops?"
+- [x] One line each: "does iter b0 collapse faster than the baseline?" and "does KL exit beat fixed 11 loops?"
 - [ ] If a T7 high-lr run stalls or diverges, rerun the collapse check on its checkpoint
 
 ## Models
@@ -63,11 +63,48 @@ PYTHONPATH=. .venv/bin/python -m pytest tests tasks -q   # tests: test_t8_diagno
 Smoke test that was run: `--limit 500 --collapse-images 200` (about 2 min). Top-1 on those 500 images was 58.8 / 86.6,
 against 58.06 / 86.77 logged on 10k.
 
-## Results
-_Pending._
+## Results (2026-10-22, `results/diagnostics.json`, log `results/diagnostics.log`)
+Own top-1 recomputed on the 10k test images: iter b0 58.06, baseline 86.77, both identical to the logged values.
+
+**Collapse** (1,000 test images, mean per image; loop 0 = input to the first block):
+
+| Loop | 0 | 1 | 2 | 4 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| iter b0 effective rank | 33.4 | 62.4 | 79.2 | 93.6 | 100.0 | 102.3 | 104.2 | 106.0 | 107.5 | 108.8 | 110.0 |
+| baseline effective rank | 31.6 | 66.9 | 85.2 | 103.3 | 102.3 | 99.8 | **20.6** | 25.7 | 30.2 | 33.4 | 34.8 |
+| iter b0 token cosine | 0.31 | 0.36 | 0.31 | 0.30 | 0.30 | 0.30 | 0.29 | 0.29 | 0.28 | 0.28 | 0.28 |
+| baseline token cosine | 0.29 | 0.60 | 0.46 | 0.28 | 0.26 | 0.25 | 0.30 | 0.36 | 0.38 | 0.40 | 0.43 |
+
+Plots: `results/collapse_vs_loop.png`, `results/token_spectra.png`.
+
+**Exit rules** (10k test images; fixed depth: iter b0 loop 10 57.0, 11 58.06, 12 58.06; baseline block 11 78.0,
+12 86.8):
+
+| Model | Rule | Best with ≤ 11 loops (acc @ mean loops) | Beats fixed 11? | Fewest loops within 1 pt of full depth |
+|---|---|---|---|---|
+| iter b0 | KL | 57.86 @ 10.57 | no (58.06) | 10.57 (fixed: 11) |
+| iter b0 | confidence | 57.74 @ 10.72 | no | 10.72 |
+| iter b0 | CLS change | 55.59 @ 10.64 | no | 11.65 |
+| baseline | KL | 69.84 @ 10.46 | no (77.98) | never |
+| baseline | confidence | 63.05 @ 9.20 | no | 11.44 (86.17) |
+| baseline | CLS change | 66.70 @ 10.14 | no | never |
+
+Plot: `results/exit_curves.png`.
 
 ## Takeaways
-_Pending._
+- **Does iter b0 collapse faster than the baseline? No, the opposite.** iter b0's tokens keep spreading out: effective
+  rank rises every loop (33 → 110 of 192) and token cosine drifts down (0.31 → 0.28). The 12-block baseline is the
+  one that concentrates: after block 8 its effective rank drops from ~100 to ~21 and cosine climbs to 0.43 by block 12.
+  The spectrum shows this is one direction suddenly dominating (s₂/s₁ ≈ 0.1), not full collapse (cosine stays far
+  from 1). The drop lines up with T5's finding that the baseline's classes separate from block 9. So token collapse
+  does not explain the 58% stall. If anything, iter b0 lacks the late "compress to a few directions" step that the
+  trained 12-block model performs.
+- **Does KL exit beat fixed 11 loops (58.06)? No, it ties at slightly lower cost.** KL gives 57.86% with 10.57 loops
+  on average: −0.2 points for ~4% fewer loops. That is the same trade as the confidence rule, and the L2 CLS change is
+  worse. On the baseline, only confidence stays within 1 point of full depth (86.17 @ 11.44); KL and CLS change never
+  do. Same conclusion as T5: with heads trained only at the last loop, no zero-shot exit signal beats simply running
+  11 loops on iter b0. Exit losses at several loops (deep supervision) remain the next step.
+- Caveat: one seed, and heads trained only at the last loop, so early exits are lower bounds.
 
 ## Changes outside this folder
 None. Imports `cls_svd.py` and `early_exit.py` from `tasks/T5_cls_svd_per_block/` read-only.
