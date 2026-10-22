@@ -20,7 +20,7 @@ from src.models import build
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", choices=["baseline", "scratch", "iterative", "lora", "unroll"], required=True)
+    p.add_argument("--model", choices=["baseline", "scratch", "iterative", "lora", "unroll", "hbt"], required=True)
     p.add_argument("--block-idx", type=int, default=0, help="which pretrained block to reuse (init=block)")
     p.add_argument("--init", choices=["block", "avg"], default=None,
                    help="shared block: one pretrained block or the mean of all 12 "
@@ -29,6 +29,9 @@ def parse_args():
     p.add_argument("--lora-init", choices=["svd", "zero"], default="svd", help="LoRA start (lora)")
     p.add_argument("--unique-blocks", type=int, default=1,
                    help="unroll: number of distinct blocks n (blocks 0..n-2 kept, block n-1 repeated)")
+    p.add_argument("--head-blocks", type=int, default=1, help="hbt: free blocks before the repeated body")
+    p.add_argument("--tail-blocks", type=int, default=1, help="hbt: free blocks after the repeated body")
+    p.add_argument("--inject", action="store_true", help="hbt: add the head output to the body input every loop")
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
@@ -56,6 +59,8 @@ def model_kwargs(args) -> dict:
                 "rank": args.rank, "lora_init": args.lora_init}
     if args.model == "unroll":
         return {"unique_blocks": args.unique_blocks}
+    if args.model == "hbt":
+        return {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
     return {}
 
 
