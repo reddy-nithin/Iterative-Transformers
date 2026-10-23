@@ -6,13 +6,13 @@
 **From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T2, due Tue 2026-10-27.
 Notion task: https://notion.so/3ff38c73470581f48d82c181ef38e399
 
-**Started / finished:** 2026-10-22 / –
+**Started / finished:** 2026-10-22 / 2026-10-22
 
 ## Checklist
-- [ ] lr 1e-3, 2e-3, 5e-3 at 30 epochs, seed 0, checkpoints saved (meeting T4 may reuse them)
-- [ ] Stop raising lr once accuracy drops or a loss goes NaN (built into `sweep.sh`)
-- [ ] Combined plot, test acc vs epoch, one line per lr (`results/acc_vs_epoch_by_lr.png`)
-- [ ] Results table below, plus one line stating the best lr and its accuracy
+- [x] lr 1e-3, 2e-3, 5e-3 at 30 epochs, seed 0, checkpoints saved (meeting T4 may reuse them)
+- [x] Stop raising lr once accuracy drops or a loss goes NaN (built into `sweep.sh`)
+- [x] Combined plot, test acc vs epoch, one line per lr (`results/acc_vs_epoch_by_lr.png`)
+- [x] Results table below, plus one line stating the best lr and its accuracy
 
 ## Setup
 `--model iterative --block-idx 0`, otherwise the T4 recipe (AdamW wd 0.05, 1 warm-up epoch + cosine, label smoothing
@@ -37,10 +37,31 @@ Smoke test that was run: `OUT_ROOT=<scratch> CKPT_DIR=<scratch> EPOCHS=1 EXTRA_A
 JSON with a NaN loss).
 
 ## Results (one seed)
-_Pending._
+iter b0 (block 0 ×12, 0.65M params), CIFAR-100 test. Table also in `results/summary.md`, plot in
+`results/acc_vs_epoch_by_lr.png`.
+
+| lr | Epochs | Final test acc (%) | Best test acc (%) | Final train acc (%) | NaN loss | Source |
+|---|---|---|---|---|---|---|
+| 1e-4 | 10 | 34.76 | 34.76 | – | no | T1 |
+| 5e-4 | 30 | 58.06 | 58.22 | 55.33 | no | T4 |
+| **1e-3** | 30 | **60.46** | 60.46 | 59.50 | no | this task |
+| 2e-3 | 30 | 60.04 | 60.11 | 59.02 | no | this task |
+| 5e-3 | – | skipped by the stop rule (2e-3 < 1e-3) | | | | |
+
+**Best lr: 1e-3, 60.46% test accuracy.**
 
 ## Takeaways
-_Pending._
+- lr alone tops out at about 60%: +2.4 points over lr 5e-4, and nowhere near 80, as Dr. Uddin expected. lr 1e-3 and
+  2e-3 are a tie at one seed. The accuracy is flat across lr, not still climbing.
+- No divergence or NaN up to 2e-3, so the ceiling is not a training-stability problem.
+- Train accuracy (59.5, a running average over augmented training batches) is no higher than test accuracy (60.5). The
+  model is not overfitting: it can't fit the training set any better. That points to **capacity** (one block's
+  0.65M parameters) as the limit, not optimisation. Next levers are more distinct parameters (T6/T9) or per-loop
+  adapters (T2 LoRA), not more lr.
+- The curves flatten near epoch 30 partly because the cosine schedule takes lr to zero. Training longer might add
+  a point or two, but train ≈ test says it won't close a 20-point gap.
+- Checkpoints for any follow-up (e.g. the T8 collapse check):
+  `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/iter_b0_lr1e-3.pt` and `iter_b0_lr2e-3.pt`.
 
 ## Changes outside this folder
 None.

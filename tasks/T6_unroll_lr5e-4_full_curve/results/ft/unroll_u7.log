@@ -1,0 +1,13 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_u7] params=3,319,396 GFLOPs=2.51 throughput=5429 img/s
+[unroll_u7] param groups: 3,319,396 @ lr 0.0005
+[unroll_u7] epoch 1/10 loss=3.2671 test_loss=2.1057 train_acc=28.91 acc=56.72 (62s)
+[unroll_u7] epoch 2/10 loss=2.4345 test_loss=1.8432 train_acc=48.69 acc=65.31 (57s)
+[unroll_u7] epoch 3/10 loss=2.2168 test_loss=1.7197 train_acc=55.33 acc=69.29 (55s)
+[unroll_u7] epoch 4/10 loss=2.0830 test_loss=1.6339 train_acc=59.39 acc=71.96 (55s)
+[unroll_u7] epoch 5/10 loss=1.9498 test_loss=1.5696 train_acc=63.49 acc=74.94 (55s)
+[unroll_u7] epoch 6/10 loss=1.8335 test_loss=1.4951 train_acc=67.22 acc=76.97 (56s)
+[unroll_u7] epoch 7/10 loss=1.7205 test_loss=1.4272 train_acc=70.91 acc=79.01 (55s)
+[unroll_u7] epoch 8/10 loss=1.6168 test_loss=1.3816 train_acc=74.36 acc=80.68 (55s)
+[unroll_u7] epoch 9/10 loss=1.5497 test_loss=1.3566 train_acc=76.41 acc=81.58 (56s)
+[unroll_u7] epoch 10/10 loss=1.5068 test_loss=1.3503 train_acc=77.92 acc=81.93 (55s)

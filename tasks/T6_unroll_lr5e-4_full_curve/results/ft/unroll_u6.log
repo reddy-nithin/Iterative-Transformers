@@ -1,0 +1,12 @@
+[unroll_u6] params=2,874,532 GFLOPs=2.51 throughput=5410 img/s
+[unroll_u6] param groups: 2,874,532 @ lr 0.0005
+[unroll_u6] epoch 1/10 loss=3.4047 test_loss=2.3044 train_acc=25.34 acc=51.23 (59s)
+[unroll_u6] epoch 2/10 loss=2.5539 test_loss=1.9450 train_acc=44.84 acc=61.37 (57s)
+[unroll_u6] epoch 3/10 loss=2.3115 test_loss=1.8160 train_acc=52.22 acc=65.92 (54s)
+[unroll_u6] epoch 4/10 loss=2.1749 test_loss=1.7056 train_acc=56.80 acc=70.04 (54s)
+[unroll_u6] epoch 5/10 loss=2.0406 test_loss=1.6178 train_acc=60.60 acc=72.85 (54s)
+[unroll_u6] epoch 6/10 loss=1.9213 test_loss=1.5839 train_acc=64.16 acc=73.66 (58s)
+[unroll_u6] epoch 7/10 loss=1.8086 test_loss=1.5038 train_acc=67.94 acc=76.76 (54s)
+[unroll_u6] epoch 8/10 loss=1.7040 test_loss=1.4480 train_acc=71.50 acc=78.36 (56s)
+[unroll_u6] epoch 9/10 loss=1.6347 test_loss=1.4223 train_acc=73.63 acc=79.22 (56s)
+[unroll_u6] epoch 10/10 loss=1.5906 test_loss=1.4175 train_acc=75.17 acc=79.34 (56s)
