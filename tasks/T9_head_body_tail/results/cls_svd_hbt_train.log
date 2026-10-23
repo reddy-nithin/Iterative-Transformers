@@ -1,0 +1,8 @@
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/t9_hbt.pt (epoch 30, test acc 44.87)
+[apple] N=500 top1=76.6 centred effective rank by layer: 0.0 35.0 53.0 60.8 69.2 77.1 83.5 88.7 92.9 96.5 99.5 102.0 106.6 109.6
+[bicycle] N=500 top1=56.4 centred effective rank by layer: 0.0 35.5 56.9 66.8 77.8 87.3 95.0 101.0 105.7 109.4 112.3 114.6 119.0 120.3
+[fox] N=500 top1=56.2 centred effective rank by layer: 0.0 36.1 57.6 68.3 79.1 88.3 95.5 101.0 105.3 108.5 110.9 112.8 118.8 119.7
+[cloud] N=500 top1=69.4 centred effective rank by layer: 0.0 39.2 57.5 69.0 79.4 87.2 92.8 96.7 99.4 101.3 102.6 103.4 105.7 110.6
+[control (all classes)] N=500 top1=51.0 centred effective rank by layer: 0.0 39.5 61.1 72.6 84.1 94.0 101.9 108.2 113.2 117.1 120.3 122.8 123.5 125.9
+[separation, all classes] - 3.76 2.74 2.75 2.87 3.02 3.12 3.13 3.10 3.07 3.05 3.06 2.02 2.43
+wrote tasks/T9_head_body_tail/results/cls_svd_hbt_train.json

@@ -1,0 +1,5 @@
+       run                                  layout  params (M)  epochs  final acc (%)  best acc (%) min separation train (loop) min separation test (loop)
+       hbt                  head + body x10 + tail       1.540      30          44.87         44.89                   2.02 (12)                  2.08 (12)
+hbt_inject head + body x10 + tail, input injection       1.540      30          44.53         44.53                   2.22 (12)                  2.40 (12)
+ head_only                         head + body x11       1.095      30          43.23         43.23                   2.16 (12)                  2.19 (12)
+ loop_only             body x12 (one random block)       0.650      30          41.94         42.05                   2.36 (12)                  2.38 (12)
