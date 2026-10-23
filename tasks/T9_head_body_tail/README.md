@@ -75,8 +75,8 @@ From scratch, lr 5e-4, 30 epochs, seed 0, CIFAR-100 test. No NaN losses. Table a
 | **hbt** | head + body ×10 + tail | 1.540 | **44.87** | 42.07 | 2.02 / 2.08 |
 | hbt_inject | same, body(x + head output) every loop | 1.540 | 44.53 | 41.10 | 2.22 / 2.40 |
 | _ref: scratch (T4)_ | 12 distinct blocks | 5.544 | 47.37 | – | – |
-| _ref: iter b0 (T4/T5)_ | pretrained block 0 ×12 | 0.650 | 58.06 | 55.33 | 1.54 / 1.60 (min 1.45, loop 8) |
-| _ref: fine-tuned ViT (T5)_ | pretrained, 12 distinct blocks | 5.544 | 86.77 | – | 0.50 / 0.55 |
+| _ref: iter b0 (T4/T5)_ | pretrained block 0 ×12 | 0.650 | 58.06 | 55.33 | 1.53 / 1.60 (min 1.45, loop 8) |
+| _ref: fine-tuned ViT (T5)_ | pretrained, 12 distinct blocks | 5.544 | 86.77 | – | 0.49 / 0.55 |
 
 Train accuracy is a running average over augmented training batches, so it sits below test accuracy here.
 
