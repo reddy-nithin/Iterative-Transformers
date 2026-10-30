@@ -55,7 +55,8 @@ def test_find_body_rejects_unlooped_models() -> None:
 def test_readout_kind() -> None:
     assert readout_kind("hbt", [nn.Identity()]) == "tail"
     assert readout_kind("iterative", []) == "norm"
-    assert readout_kind("unroll", []) is None
+    assert readout_kind("unroll", []) == "norm"
+    assert readout_kind("baseline", []) is None
 
 
 def test_relative_update_known_values() -> None:

@@ -82,11 +82,11 @@ def find_body(model: nn.Module) -> tuple[nn.Module, list[nn.Module]]:
 
 
 def readout_kind(model_name: str, tail: list[nn.Module]) -> str | None:
-    """How (d) reads out at loop t: "tail" (hbt: classifier(norm(tail(x_t)))), "norm" (iterative: no tail,
-    classifier(norm(x_t))), or None (unrolled models: no tail, and the spec defines no readout for them)."""
+    """How (d) reads out at loop t: "tail" (hbt: classifier(norm(tail(x_t)))), "norm" (iterative and unrolled models,
+    no tail: classifier(norm(x_t)); for unrolled models decided 2026-10-30), or None (no readout defined)."""
     if model_name == "hbt" and tail:
         return "tail"
-    if model_name == "iterative" and not tail:
+    if model_name in ("iterative", "unroll") and not tail:
         return "norm"
     return None
 

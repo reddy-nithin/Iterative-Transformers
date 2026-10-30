@@ -1,7 +1,7 @@
 {
  "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt",
  "model": "unroll",
- "readout": null,
+ "readout": "norm",
  "n_loop_images": 1000,
  "means": {
   "rel_cls": [
@@ -110,7 +110,22 @@
    1.2348
   ]
  },
- "exits": null,
+ "exits": {
+  "acc_per_loop": [
+   1.22,
+   3.79,
+   11.3,
+   29.61,
+   49.67,
+   62.56,
+   69.6,
+   73.12,
+   74.25,
+   74.12
+  ],
+  "full_depth_top1": 74.12,
+  "n_images": 10000
+ },
  "decision": {
   "late_loop_mean_attn_cos": 0.956,
   "late_loop_mean_attn_cos_headavg": 0.9705,
