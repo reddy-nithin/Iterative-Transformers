@@ -9,7 +9,7 @@ Notion task: https://notion.so/40938c734705816f8a6ae96c0319a71c
 **Started:** 2026-10-30
 
 ## Checklist
-- [ ] `diagnostics.py` + tests (`test_t12_diagnostics.py`): recomputed block output equals the real one (< 1e-4, fp32)
+- [x] `loop_diagnostics.py` + tests (`test_t12_diagnostics.py`): recomputed block output equals the real one (< 1e-4, fp32)
 - [ ] iter b0 (`T5-b_iter_b0.pt`, block 0 x12, loops 1..12, x_0 = patch embedding + pos + CLS)
 - [ ] The four T11 checkpoints (loops 1..10 of the body, x_0 = head output; T11-d: block 2's 10 repeats)
 - [ ] Results table, 4 plots, decision line
@@ -50,7 +50,7 @@ mean over t ≥ 4 of the per-loop values; "mean rel_cls / rel_patch" = mean over
 ```bash
 PYTHONPATH=. .venv/bin/python -m pytest tests tasks -q
 C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf
-CUDA_VISIBLE_DEVICES=N PYTHONPATH=. .venv/bin/python tasks/T12_per_loop_cls_diagnostics/diagnostics.py $C/T5-b_iter_b0.pt
+CUDA_VISIBLE_DEVICES=N PYTHONPATH=. .venv/bin/python tasks/T12_per_loop_cls_diagnostics/loop_diagnostics.py $C/T5-b_iter_b0.pt
 ```
 
 ## Results
