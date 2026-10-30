@@ -3,13 +3,13 @@
 **Goal.** How far can lr alone push iter b0 (pretrained block 0 reused 12 times, 0.65M params)? Raising lr from
 1e-4 to 5e-4 and training 30 epochs took it from 34.8 to 58.1 (T4), still rising. Dr. Uddin doubts it can reach 80.
 
-**From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T2, due Tue 2026-10-27.
+**From:** advisor meeting 2026-10-20 (Dr. Uddin), due Tue 2026-10-27.
 Notion task: https://notion.so/3ff38c73470581f48d82c181ef38e399
 
 **Started / finished:** 2026-10-22 / 2026-10-22
 
 ## Checklist
-- [x] lr 1e-3, 2e-3, 5e-3 at 30 epochs, seed 0, checkpoints saved (meeting T4 may reuse them)
+- [x] lr 1e-3, 2e-3, 5e-3 at 30 epochs, seed 0, checkpoints saved (T8 may reuse them)
 - [x] Stop raising lr once accuracy drops or a loss goes NaN (built into `sweep.sh`)
 - [x] Combined plot, test acc vs epoch, one line per lr (`results/acc_vs_epoch_by_lr.png`)
 - [x] Results table below, plus one line stating the best lr and its accuracy
@@ -61,7 +61,7 @@ iter b0 (block 0 ×12, 0.65M params), CIFAR-100 test. Table also in `results/sum
 - The curves flatten near epoch 30 partly because the cosine schedule takes lr to zero. Training longer might add
   a point or two, but train ≈ test says it won't close a 20-point gap.
 - Checkpoints for any follow-up (e.g. the T8 collapse check):
-  `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/iter_b0_lr1e-3.pt` and `iter_b0_lr2e-3.pt`.
+  `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T7-a_iter_b0_lr1e-3.pt` and `T7-b_iter_b0_lr2e-3.pt`.
 
 ## Changes outside this folder
 None.

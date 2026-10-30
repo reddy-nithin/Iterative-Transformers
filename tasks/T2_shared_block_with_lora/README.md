@@ -56,7 +56,7 @@ Plots: `results/final_acc_bars.png` (quickest read), `results/accuracy.png` (acc
 - LoRA r1/r2/r4 are flat (~27.5); only r8 moves (+3). SVD vs zero init is a tie. Confounded: all LoRA runs used
   lr 1e-4 and the weak avg base. Biases, LayerNorm and layer-scale stay averaged, so even full-rank SVD can't rebuild
   the original network.
-- Next (became the 10-15 meeting tasks): rerun at lr 5e-4 with longer schedules and loss curves; fair scratch
+- Next (became T3 and T4 at the 10-15 meeting): rerun at lr 5e-4 with longer schedules and loss curves; fair scratch
   baseline at lr 5e-4; progressive unrolling (T3).
 
 ## Changes outside this folder

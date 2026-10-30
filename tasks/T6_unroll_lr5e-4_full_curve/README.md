@@ -4,7 +4,7 @@
 7 to 13 points. Does lr 5e-4 stay above the lr 1e-4 curve all the way to n = 12, or does it flatten and merge with it?
 **Prediction (Dr. Uddin):** it flattens, meets the lr 1e-4 curve late, and does not cross the 86.77 baseline.
 
-**From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T1, due Tue 2026-10-27.
+**From:** advisor meeting 2026-10-20 (Dr. Uddin), due Tue 2026-10-27.
 Notion task: https://notion.so/3ff38c73470581f3bf00de4e639c2c2f
 
 **Started / finished:** 2026-10-22 / 2026-10-22

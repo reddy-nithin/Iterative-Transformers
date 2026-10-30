@@ -3,7 +3,7 @@
 **Goal.** Test the "stopping rule" hypothesis: as depth grows, do the CLS vectors of images from one class collapse
 toward a low-rank set? If they did, a looped model could stop iterating once per-class CLS rank stays low.
 
-**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), meeting task T4 (repo task T5), due Tue 2026-10-20.
+**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), due Tue 2026-10-20.
 Notion task: https://app.notion.com/p/3fa38c734705818ab4a0dff947c81913
 
 **Started / finished:** 2026-10-19 / 2026-10-19 (ImageNet-pretrained model; CIFAR fine-tuned model still to do)
@@ -144,8 +144,8 @@ Plots: **`results/compare.png`** (headline: rank and separation for all four run
 ```
 CUDA_VISIBLE_DEVICES=0 .venv/bin/python -m src.train --model baseline --epochs 10 --lr 1e-4 \
   --out-dir tasks/T5_cls_svd_per_block/results/finetune --tag _t5 \
-  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/baseline_ft.pt
-C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/baseline_ft.pt; S=tasks/T5_cls_svd_per_block
+  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-a_baseline_ft.pt
+C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-a_baseline_ft.pt; S=tasks/T5_cls_svd_per_block
 CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C --model-tag ft_baseline_train
 CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C --split test --per-class 100 \
   --control-size 100 --model-tag ft_baseline_test
@@ -206,12 +206,12 @@ Commands:
 ```
 CUDA_VISIBLE_DEVICES=0 .venv/bin/python -m src.train --model iterative --block-idx 0 --lr 5e-4 --epochs 30 \
   --out-dir tasks/T5_cls_svd_per_block/results/finetune --tag _t5_iter_b0 \
-  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/iter_b0.pt          # tmux, ~27 min
+  --save-checkpoint /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-b_iter_b0.pt          # tmux, ~27 min
 C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf; S=tasks/T5_cls_svd_per_block
-CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/iter_b0.pt --model-tag iter_b0_train
-CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/iter_b0.pt --split test \
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/T5-b_iter_b0.pt --model-tag iter_b0_train
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/cls_svd.py --checkpoint $C/T5-b_iter_b0.pt --split test \
   --per-class 100 --control-size 100 --model-tag iter_b0_test
-CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/early_exit.py $C/iter_b0.pt $C/baseline_ft.pt
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=. .venv/bin/python $S/early_exit.py $C/T5-b_iter_b0.pt $C/T5-a_baseline_ft.pt
 .venv/bin/python $S/plot.py --compare pretrained ft_baseline_train ft_baseline_test iter_b0_train iter_b0_test
 ```
 

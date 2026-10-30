@@ -3,7 +3,7 @@
 **Goal (Dr. Shua's idea).** Keep the first few pretrained blocks as they are, and fill the remaining slots by
 repeating the next block. Does accuracy jump sharply after the first few distinct blocks, or climb steadily?
 
-**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), meeting task T3, due Tue 2026-10-20.
+**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), due Tue 2026-10-20.
 Notion task: https://app.notion.com/p/3fa38c734705811b9164c14ad428037e
 
 **Started / finished:** 2026-10-16 / 2026-10-16

@@ -5,10 +5,9 @@ iter b0 from 34.8 to 46.0 in 10 epochs (T2). Here every shared-block variant, pl
 trained for 30 epochs at lr 5e-4, with train and test loss and accuracy logged every epoch, so we can see whether
 each run levels off or is still climbing.
 
-**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), meeting tasks T1 (rerun all variants longer at lr 5e-4)
-and T2 (fair from-scratch baseline at lr 5e-4), due Tue 2026-10-20.
-Notion tasks: https://app.notion.com/p/3fa38c734705817b81a5e06699516b4a (T1),
-https://app.notion.com/p/3fa38c73470581149354f81bbe36e9d7 (T2)
+**From:** advisor meeting 2026-10-15 (Dr. Uddin + Dr. Shua), due Tue 2026-10-20.
+Notion tasks: https://app.notion.com/p/3fa38c734705817b81a5e06699516b4a (rerun all variants longer at lr 5e-4),
+https://app.notion.com/p/3fa38c73470581149354f81bbe36e9d7 (fair from-scratch baseline at lr 5e-4)
 
 **Started / finished:** 2026-10-19 / 2026-10-19
 
@@ -23,7 +22,7 @@ All at lr 5e-4, 30 epochs, seed 0, otherwise the T1 recipe (AdamW wd 0.05, 1 war
 | iter_avg | mean of the 12 blocks, x12 | 0.650 | |
 | lora_r2 | block 0 x12 + rank-2 LoRA per loop | 0.724 | LoRA factors at lr 5e-3 (10x), SVD init. **Base is block 0** (T2's LoRA runs used the avg block) |
 | lora_r8 | same, rank 8 | 0.945 | same |
-| scratch | normal 12-block ViT-Tiny, random init | 5.544 | the fair control for iter b0 (meeting T2) |
+| scratch | normal 12-block ViT-Tiny, random init | 5.544 | the fair control for iter b0 (T4) |
 
 **What is logged per epoch** (`history` in each run's JSON): `train_loss`, `test_loss`, `train_acc`, `test_acc`.
 Test loss uses the same label-smoothed loss as training, so the two are comparable. Train acc is a *running*
@@ -99,7 +98,7 @@ model does better on unseen data.
   run gained 2.5 to 4 points in epochs 20→25. The final flattening is mostly the cosine lr reaching ~0. Test loss is
   still at its lowest in the last 1-2 epochs and train acc is not above test acc, so there is no overfitting yet.
   A 50-epoch run is the real test (follow-up command above).
-- **Fair scratch control (meeting T2): the 0.65M shared model beats the 5.5M scratch model by 10.7 points** (58.1 vs
+- **Fair scratch control (T4): the 0.65M shared model beats the 5.5M scratch model by 10.7 points** (58.1 vs
   47.4), same lr, epochs and recipe. So starting from one pretrained block is worth far more than 8.5x the parameters
   trained from random. Caveat: 5e-4 may not be the best lr for scratch, and ViTs from scratch need heavy
   augmentation on small datasets.

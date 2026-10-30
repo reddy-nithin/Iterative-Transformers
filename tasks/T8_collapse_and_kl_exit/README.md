@@ -6,7 +6,7 @@
 2. Can a KL-based stopping rule (the zero-shot exit of the Huginn / Recurrent Depth paper, arXiv 2502.05171) beat
    "always run 11 loops" (58.1)?
 
-**From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T4, due Tue 2026-10-27.
+**From:** advisor meeting 2026-10-20 (Dr. Uddin), due Tue 2026-10-27.
 Notion task: https://notion.so/40138c73470581ad8b1ecb99346e3a84
 
 **Started / finished:** 2026-10-22 / 2026-10-22 (T7 checkpoint follow-up still open)
@@ -20,8 +20,8 @@ Notion task: https://notion.so/40138c73470581ad8b1ecb99346e3a84
 - [ ] If a T7 high-lr run stalls or diverges, rerun the collapse check on its checkpoint
 
 ## Models
-- iter b0: block 0 ×12, 30 ep, lr 5e-4, 58.06% (`/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/iter_b0.pt`, from T5)
-- baseline: 12 distinct blocks, fine-tuned 10 ep, lr 1e-4, 86.77% (`.../itertf/baseline_ft.pt`, from T5)
+- iter b0: block 0 ×12, 30 ep, lr 5e-4, 58.06% (`/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-b_iter_b0.pt`, from T5)
+- baseline: 12 distinct blocks, fine-tuned 10 ep, lr 1e-4, 86.77% (`.../itertf/T5-a_baseline_ft.pt`, from T5)
 
 Before any geometry number is read, the script recomputes each model's own top-1 on the full test set and stops if it
 differs from the logged test acc by more than 0.5 points (wrong weights or label map would give plausible but
@@ -57,7 +57,7 @@ on what a model trained with exits at several loops could do.
 ```bash
 C=/storage/INSLAB/Data/nrs3qy/checkpoints/itertf
 CUDA_VISIBLE_DEVICES=0 PYTHONPATH=. .venv/bin/python tasks/T8_collapse_and_kl_exit/diagnostics.py \
-  $C/iter_b0.pt $C/baseline_ft.pt                        # ~10 min, fine next to the T6 run on GPU 0
+  $C/T5-b_iter_b0.pt $C/T5-a_baseline_ft.pt                        # ~10 min, fine next to the T6 run on GPU 0
 PYTHONPATH=. .venv/bin/python -m pytest tests tasks -q   # tests: test_t8_diagnostics.py
 ```
 Smoke test that was run: `--limit 500 --collapse-images 200` (about 2 min). Top-1 on those 500 images was 58.8 / 86.6,

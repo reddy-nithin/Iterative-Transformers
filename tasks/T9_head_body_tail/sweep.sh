@@ -27,6 +27,16 @@ run_args() {  # model flags for one run name
     esac
 }
 
+checkpoint_name() {  # run name -> permanent run ID checkpoint (T9-a..d)
+    case "$1" in
+        hbt)        echo "T9-a_hbt.pt" ;;
+        head_only)  echo "T9-b_head_only.pt" ;;
+        hbt_inject) echo "T9-c_hbt_inject.pt" ;;
+        loop_only)  echo "T9-d_loop_only.pt" ;;
+        *)          return 1 ;;
+    esac
+}
+
 if [[ -z "${CUDA_VISIBLE_DEVICES:-}" ]]; then
     echo "set CUDA_VISIBLE_DEVICES to one idle GPU first" >&2
     exit 2
@@ -54,7 +64,7 @@ for run in "${RUNS[@]}"; do
     read -r -a MODEL_ARGS <<< "$(run_args "$run")"
     tag="_${run}"
     json="$OUT_ROOT/hbt${tag}.json"
-    checkpoint="$CKPT_DIR/t9_${run}.pt"
+    checkpoint="$CKPT_DIR/$(checkpoint_name "$run")"
     if [[ -f "$json" ]] && is_complete "$json"; then
         echo "[sweep] $run already trained, skipping training"
     else

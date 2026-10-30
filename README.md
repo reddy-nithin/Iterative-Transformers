@@ -101,6 +101,10 @@ tasks/T<n>_<name>/         one folder per experiment: README, scripts, saved res
 LEARNING_LOG.md            notes and gotchas
 ```
 
+**Task IDs.** Each task has one permanent ID, `T<n>`, which is also its folder number (`tasks/T<n>_<name>/`). IDs are
+never reset or reused. Runs inside a task are `T<n>-a`, `T<n>-b`, ... (the task README says what each one is), and
+checkpoints are named `T<n>-<run>_<slug>.pt`, e.g. `T5-b_iter_b0.pt`.
+
 ## Reproduce
 
 Setup (Mac or Linux server):

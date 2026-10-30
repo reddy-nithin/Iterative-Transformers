@@ -5,7 +5,7 @@ steps, one free tail block before the classifier. 12 execution steps in total, s
 from scratch: this is not a transfer-learning test. Also measure how tight the classes are (CLS separation) after
 every loop.
 
-**From:** advisor meeting 2026-10-20 (Dr. Uddin), meeting task T3, due Tue 2026-10-27.
+**From:** advisor meeting 2026-10-20 (Dr. Uddin), due Tue 2026-10-27.
 Notion task: https://notion.so/3ff38c734705814098c8e0d4ecadeab0
 
 **Started / finished:** 2026-10-22 / 2026-10-23
@@ -58,7 +58,7 @@ tmux new -s itertf-t9-controls-1022
 CUDA_VISIBLE_DEVICES=1 bash tasks/T9_head_body_tail/sweep.sh head_only loop_only  # GPU 1 after T7, ~1 h
 .venv/bin/python tasks/T9_head_body_tail/plot.py                                  # table -> results/summary.md
 ```
-Checkpoints: `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/t9_<run>.pt`. Each run takes ~27 min of training and
+Checkpoints: `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T9-<a|b|c|d>_<run>.pt` (T9-a_hbt, T9-b_head_only, T9-c_hbt_inject, T9-d_loop_only). Each run takes ~27 min of training and
 ~2 min of CLS analysis.
 Smoke test that was run: `EPOCHS=1 EXTRA_ARGS="--subset 512" CLS_ARGS="--per-class 20 --control-size 0"` for all four
 runs (train, checkpoint save, strict reload, 12-loop separation, plot), 2026-10-22.
