@@ -1,0 +1,20 @@
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 0, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-a_hbt_body_b0.pt (epoch 30, test acc 62.05)
+[T11-a_hbt_body_b0] own top-1 62.06 (logged 62.05)
+[T11-a_hbt_body_b0] (d) acc per loop: 1:1.5 2:2.7 3:6.3 4:16.9 5:32.5 6:46.8 7:55.4 8:59.7 9:61.9 10:62.1
+recompute check: max |recomputed - real| block output = 8.58e-06 (< 0.0001)
+[T11-a_hbt_body_b0] decision: {'late_loop_mean_attn_cos': 0.9718, 'late_loop_mean_attn_cos_headavg': 0.9798, 'mean_ratio': 1.0083, 'pick': 'coverage mask'}
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 6, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-b_hbt_body_b6.pt (epoch 30, test acc 63.47)
+[T11-b_hbt_body_b6] own top-1 63.47 (logged 63.47)
+[T11-b_hbt_body_b6] (d) acc per loop: 1:3.1 2:6.5 3:13.9 4:27.9 5:41.7 6:51.9 7:58.4 8:61.8 9:63.4 10:63.5
+recompute check: max |recomputed - real| block output = 4.77e-06 (< 0.0001)
+[T11-b_hbt_body_b6] decision: {'late_loop_mean_attn_cos': 0.9849, 'late_loop_mean_attn_cos_headavg': 0.9914, 'mean_ratio': 0.8915, 'pick': 'coverage mask'}
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-c_hbt_body_b1.pt (epoch 30, test acc 68.59)
+[T11-c_hbt_body_b1] own top-1 68.60 (logged 68.59)
+[T11-c_hbt_body_b1] (d) acc per loop: 1:1.6 2:3.1 3:6.2 4:11.8 5:24.5 6:41.6 7:56.5 8:64.6 9:68.0 10:68.6
+recompute check: max |recomputed - real| block output = 5.42e-06 (< 0.0001)
+[T11-c_hbt_body_b1] decision: {'late_loop_mean_attn_cos': 0.9582, 'late_loop_mean_attn_cos_headavg': 0.9755, 'mean_ratio': 1.0199, 'pick': 'coverage mask'}
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt (epoch 30, test acc 74.11)
+[T11-d_unroll_n3_30ep] (d) skipped: no tail and no readout defined for model 'unroll'
+recompute check: max |recomputed - real| block output = 5.48e-06 (< 0.0001)
+[T11-d_unroll_n3_30ep] decision: {'late_loop_mean_attn_cos': 0.956, 'late_loop_mean_attn_cos_headavg': 0.9705, 'mean_ratio': 1.0797, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md and the 4 plots in /home/nrs3qy/itertf/tasks/T12_per_loop_cls_diagnostics/results
