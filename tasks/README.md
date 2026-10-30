@@ -14,3 +14,5 @@ results and the takeaways. Shared code lives in `src/`; each README lists what i
 | [T7 · Shared-block lr sweep](T7_shared_block_lr_sweep/) | iter b0 at lr 1e-3 / 2e-3 / 5e-3, 30 epochs: accuracy ceiling from lr alone | done (2026-10-22) |
 | [T8 · Collapse check and KL exit](T8_collapse_and_kl_exit/) | iter b0 vs baseline: do tokens collapse per loop? Do KL / CLS-change exits beat fixed 11 loops? | done (2026-10-22) |
 | [T9 · Head + body + tail](T9_head_body_tail/) | From scratch: head + body x10 + tail, input injection, head-only and loop-only controls; CLS separation per loop | done (2026-10-23) |
+| [T11 · Pretrained head + body x10 + tail](T11_pretrained_hbt_body_sweep/) | Pretrained H-B-T with body b0 / b6 / b1, vs unrolling n=3 at 30 epochs; loss curves, CLS separation per loop | done (2026-10-30) |
+| [T12 · Per-loop CLS diagnostics](T12_per_loop_cls_diagnostics/) | Does CLS move relative to patches, does it re-read the same patches, exit curve through the tail; picks the T14 add-on | done (2026-10-30) |
