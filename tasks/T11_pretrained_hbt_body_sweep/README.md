@@ -7,16 +7,16 @@ is worth its block compared with spending it on a bigger head (T11-d, progressiv
 **From:** advisor meeting 2026-10-27 (Dr. Uddin), due Tue 2026-11-03.
 Notion task: https://notion.so/40938c734705817e8a8adc7980fed0cd
 
-**Started:** 2026-10-30
+**Started / finished:** 2026-10-30 / 2026-10-30
 
 ## Checklist
 - [x] Pretrained-init option for `--model hbt` (`--hbt-pretrained --head-idx H --body-idx B --tail-idx T`, default off so
       T9 is unchanged) + tests (`test_t11_pretrained_hbt.py`)
 - [x] Smoke test of all four configs (300 images, 1 epoch): all four 1,539,940 params
-- [ ] T11-a to T11-d, 30 epochs each, one GPU each, in parallel
-- [ ] Class separation per loop (T5 `cls_svd.py`, 4 classes, train + test) for every run
-- [ ] Plots `results/loss_curves.png`, `results/acc_vs_epoch.png`, `results/separation_vs_loop.png`
-- [ ] Results table, winner line, H-B-T vs T11-d line
+- [x] T11-a to T11-d, 30 epochs each, one GPU each, in parallel
+- [x] Class separation per loop (T5 `cls_svd.py`, 4 classes, train + test) for every run
+- [x] Plots `results/loss_curves.png`, `results/acc_vs_epoch.png`, `results/separation_vs_loop.png`
+- [x] Results table, winner line, H-B-T vs T11-d line
 
 ## Runs
 Shared recipe: pretrained timm `vit_tiny_patch16_224`, CIFAR-100 at 224 px, AdamW lr 5e-4 for all parameters,
@@ -50,10 +50,54 @@ Checkpoints: `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-<run>_<slug>.pt
 Tests: `PYTHONPATH=. .venv/bin/python -m pytest tests tasks -q`.
 
 ## Results
-_(after the runs)_
+All four runs: 30 epochs, GPUs 0-3 in parallel (2026-10-30, ~38 min each, ~75 s/epoch while sharing the CPU), seed 0,
+no change to the shared recipe. "Train acc" is the running accuracy over the augmented batches of the last epoch.
+Separation = tr(within) / tr(between) of the CLS token, 4 classes (apple, bicycle, fox, cloud), 100 test images each,
+after each block call. "Last body loop" = call 11 for H-B-T (before the tail) and call 12 for T11-d (it has no tail).
+
+| Run | Layout | Params (M) | Final top-1 | Best top-1 | Train acc | Sep. last body loop (test) | Sep. last block (test) | Min sep. test (call) |
+|---|---|---|---|---|---|---|---|---|
+| T11-a | head b0, body b0 x10, tail b11 | 1.540 | 62.05 | 62.05 | 62.19 | 1.79 | 1.80 | 1.52 (6) |
+| T11-b | head b0, body b6 x10, tail b11 | 1.540 | 63.47 | 63.62 | 66.79 | 2.28 | 2.04 | 1.56 (2) |
+| **T11-c** | head b0, body b1 x10, tail b11 | 1.540 | **68.59** | 68.63 | 68.87 | 1.61 | 1.38 | 1.38 (12) |
+| T11-d | unrolling n=3: b0, b1, b2 x10, no tail | 1.540 | **74.11** | 74.13 | 73.02 | 1.15 | 1.15 | 1.06 (9) |
+| _ref_ | baseline, 12 distinct blocks, fine-tuned (T5-a) | 5.544 | 86.77 | | | | 0.55 | |
+| _ref_ | iter b0, block 0 x12, 30 ep (T4 / T5-b) | 0.650 | 58.06 | | | | 1.60 | 1.45 (8) |
+| _ref_ | per-loop LoRA r8 on b0 (T4) | 0.945 | 61.33 | | | | | |
+| _ref_ | head + body x10 + tail from scratch (T9-a) | 1.540 | 44.87 | | | | | |
+| _ref_ | unrolling n=3, lr 5e-4, 10 ep (T3) | 1.540 | 67.12 | | | | | |
+
+Train-set separation (same classes, 500 train images each) gives the same order: T11-d reaches 1.004 at call 10, the
+closest any looped model has come to 1, but none goes below it.
+
+Plots: `results/loss_curves.png`, `results/acc_vs_epoch.png`, `results/separation_vs_loop.png`. Raw: `results/*.json`,
+`results/*.log`, table in `results/summary.md`.
+Checkpoints: `/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-{a_hbt_body_b0, b_hbt_body_b6, c_hbt_body_b1, d_unroll_n3_30ep}.pt`.
 
 Winner rule: T11 winner = highest final test top-1 among T11-a, T11-b, T11-c; if the top two are within 2 pts (one
 seed = a tie), pick the one with lower final separation; if still tied, T11-a.
 
-- T11 winner: _(after the runs)_
-- Best H-B-T vs T11-d: _(beats by ≥2 / tie / loses by ≥2)_
+- **T11 winner: T11-c** (head b0, body b1 x10, tail b11), 68.59. The runner-up T11-b (63.47) is 5.1 pts behind, so the
+  separation tie-break is not needed.
+- **Best H-B-T vs T11-d: loses by ≥2** (68.59 vs 74.11, −5.5 pts).
+
+**Against the predictions:**
+- T11-d ~69 to 72: wrong, it went higher, 74.11 (+7.0 over its 10-epoch run).
+- T11-b lowest of T11-a to T11-c: wrong. T11-a (block 0 body) is lowest at 62.05, T11-b 63.47.
+- T11-a and T11-c within 2 pts: wrong, 6.5 pts apart.
+- Separation below 1 for any looped body: no. Best is T11-d, 1.06 test / 1.00 train.
+
+**Takeaways:**
+- Pretrained init is worth 17-24 pts for this layout (44.87 from scratch → 62-69). All three H-B-T runs beat iter b0
+  (58.06) and the per-loop LoRA model (61.33).
+- The block that loops best alone (b0, 58.06 as b0 x12) is the worst body here. Block 1, which normally follows block 0,
+  is best, which fits the "smallest head → body seam" reason. One seed, so the a-vs-b order (1.4 pts) is a tie.
+- Spending the third block on a second head block (T11-d) beats spending it on a tail by 5.5 pts at the same params and
+  FLOPs.
+- Separation tells the same story as T9 for the H-B-T runs: the body does not steadily tighten classes. T11-a is flat
+  around 1.5-1.8 and drifts up in the late loops, and T11-b gets worse every loop (1.56 → 2.28), with the tail pulling
+  it back to 2.04. T11-c is the exception: its body loops tighten from 2.29 (call 5) to 1.61, then the tail takes it to
+  1.38. In T11-d the repeated block 2 does most of the tightening itself (2.17 → 1.06 over calls 4-9).
+- Train and test accuracy are close for T11-a, T11-c and T11-d (no overfitting; capacity-limited, as with iter b0).
+  T11-b shows a small gap (66.8 train vs 63.5 test).
+- Loss curves are still falling slowly at epoch 30 for all four runs.

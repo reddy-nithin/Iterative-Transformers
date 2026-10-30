@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 6, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-b_hbt_body_b6.pt (epoch 30, test acc 63.47)
+[apple] N=500 top1=95.2 centred effective rank by layer: 0.0 22.2 58.4 72.0 85.7 96.2 104.1 110.0 114.4 117.7 120.1 122.0 129.9 134.7
+[bicycle] N=500 top1=91.0 centred effective rank by layer: 0.0 24.3 61.6 74.8 89.7 102.0 111.3 118.4 123.6 127.6 130.5 132.9 144.6 145.8
+[fox] N=500 top1=85.4 centred effective rank by layer: 0.0 24.5 63.2 77.5 91.7 102.6 110.7 117.2 122.4 126.5 129.6 132.0 146.2 146.9
+[cloud] N=500 top1=85.6 centred effective rank by layer: 0.0 21.6 60.3 76.2 89.1 98.7 106.1 112.1 116.8 120.4 123.2 125.3 132.0 137.9
+[control (all classes)] N=500 top1=80.0 centred effective rank by layer: 0.0 24.4 64.2 80.4 96.4 109.0 118.7 126.2 131.9 136.2 139.6 142.2 150.9 154.7
+[separation, all classes] - 3.56 1.67 1.77 1.88 1.92 1.95 2.01 2.08 2.16 2.25 2.34 1.91 2.62
+wrote tasks/T11_pretrained_hbt_body_sweep/results/cls_svd_T11-b_train.json
