@@ -16,6 +16,7 @@ from torch import nn
 from src.data import make_loaders
 from src.metrics import count_gflops, count_params, measure_throughput
 from src.models import build
+from src.per_loop_readout import READOUT_LOSSES, per_loop_logits, readout_loss
 
 
 def parse_args():
@@ -37,6 +38,9 @@ def parse_args():
     p.add_argument("--head-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the head")
     p.add_argument("--body-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the body")
     p.add_argument("--tail-idx", type=int, default=11, help="hbt --hbt-pretrained: pretrained block for the tail")
+    p.add_argument("--readout-loss", choices=READOUT_LOSSES, default="none",
+                   help="looped models: train on a readout after every body loop (T13; src.per_loop_readout); "
+                        "none = only the final output, as before")
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
@@ -141,6 +145,33 @@ def evaluate(model, loader, device, use_amp, criterion):
     return 100.0 * correct / total, loss_sum / total
 
 
+@torch.no_grad()
+def evaluate_per_loop(model, loader, device, use_amp) -> list[float]:
+    """Test accuracy (%) of the readout after every body loop (T13; the last entry is the normal test accuracy)."""
+    model.eval()
+    correct, total = None, 0
+    for x, y in loader:
+        x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
+        with torch.autocast(device.type, enabled=use_amp):
+            logits = per_loop_logits(model, x)
+        hits = torch.stack([(step.argmax(1) == y).sum() for step in logits]).cpu()
+        correct = hits if correct is None else correct + hits
+        total += y.numel()
+    return [round(100.0 * c / total, 2) for c in correct.tolist()]
+
+
+def forward_and_loss(model, x, y, criterion, readout: str) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """(final logits, training loss, CE of the final logits). With `readout` != "none" the loss covers the readout
+    after every body loop (src.per_loop_readout); the final logits are still the normal model output."""
+    if readout == "none":
+        logits = model(x)
+        loss = criterion(logits, y)
+        return logits, loss, loss
+    logits_per_loop = per_loop_logits(model, x)
+    logits = logits_per_loop[-1]
+    return logits, readout_loss(logits_per_loop, y, readout), criterion(logits, y)
+
+
 def main():
     args = parse_args()
     set_seed(args.seed)
@@ -178,20 +209,20 @@ def main():
     history, step = [], 0
     for epoch in range(args.epochs):
         model.train()
-        t0, loss_sum = time.time(), 0.0
+        t0, loss_sum, ce_final_sum = time.time(), 0.0, 0.0
         train_correct = train_seen = 0
         for x, y in train_loader:
             for g in opt.param_groups:
                 g["lr"] = cosine_lr(step, total_steps, warmup_steps, g["base_lr"])
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device.type, enabled=use_amp):
-                logits = model(x)
-                loss = criterion(logits, y)
+                logits, loss, ce_final = forward_and_loss(model, x, y, criterion, args.readout_loss)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.step(opt)
             scaler.update()
             loss_sum += loss.item()
+            ce_final_sum += ce_final.item()
             # running train acc: augmented batches, train mode, weights changing within the epoch (no extra pass)
             train_correct += (logits.argmax(1) == y).sum().item()
             train_seen += y.numel()
@@ -199,6 +230,10 @@ def main():
         acc, test_loss = evaluate(model, val_loader, device, use_amp, criterion)
         rec = {"epoch": epoch + 1, "train_loss": loss_sum / steps_per_epoch, "test_loss": test_loss,
                "train_acc": 100.0 * train_correct / train_seen, "test_acc": acc, "epoch_time_s": time.time() - t0}
+        if args.readout_loss != "none":  # train_loss is then the per-loop loss; keep the final-output CE comparable
+            rec["train_ce_final"] = ce_final_sum / steps_per_epoch
+            if device.type == "cuda":
+                rec["peak_mem_gb"] = round(torch.cuda.max_memory_allocated(device) / 2**30, 2)
         history.append(rec)
         print(f"[{name}] epoch {rec['epoch']}/{args.epochs} loss={rec['train_loss']:.4f} "
               f"test_loss={test_loss:.4f} train_acc={rec['train_acc']:.2f} "
@@ -208,6 +243,11 @@ def main():
         (out_dir / f"{name}.json").write_text(json.dumps(info, indent=2))
         if args.save_checkpoint:
             save_checkpoint(args.save_checkpoint, model, args.model, model_kwargs(args), rec["epoch"], acc)
+    if args.readout_loss != "none":
+        info["per_loop_test_acc"] = evaluate_per_loop(model, val_loader, device, use_amp)
+        print(f"[{name}] per-loop test acc: " + " ".join(
+            f"{t}:{a:.2f}" for t, a in enumerate(info["per_loop_test_acc"], 1)), flush=True)
+        (out_dir / f"{name}.json").write_text(json.dumps(info, indent=2))
 
 
 if __name__ == "__main__":
