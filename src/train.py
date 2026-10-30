@@ -32,6 +32,11 @@ def parse_args():
     p.add_argument("--head-blocks", type=int, default=1, help="hbt: free blocks before the repeated body")
     p.add_argument("--tail-blocks", type=int, default=1, help="hbt: free blocks after the repeated body")
     p.add_argument("--inject", action="store_true", help="hbt: add the head output to the body input every loop")
+    p.add_argument("--hbt-pretrained", action="store_true",
+                   help="hbt: head/body/tail are copies of pretrained blocks --head-idx/--body-idx/--tail-idx (T11)")
+    p.add_argument("--head-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the head")
+    p.add_argument("--body-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the body")
+    p.add_argument("--tail-idx", type=int, default=11, help="hbt --hbt-pretrained: pretrained block for the tail")
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4)
@@ -60,7 +65,11 @@ def model_kwargs(args) -> dict:
     if args.model == "unroll":
         return {"unique_blocks": args.unique_blocks}
     if args.model == "hbt":
-        return {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
+        kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
+        # added only when on, so T9 checkpoints (saved without these keys) and older callers stay as they were
+        if getattr(args, "hbt_pretrained", False):
+            kwargs.update(pretrained_init=True, head_idx=args.head_idx, body_idx=args.body_idx, tail_idx=args.tail_idx)
+        return kwargs
     return {}
 
 

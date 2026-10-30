@@ -108,16 +108,26 @@ def build_head_body_tail(
     tail_blocks: int = 1,
     inject: bool = False,
     source: nn.Module | None = None,
+    pretrained_init: bool = False,
+    head_idx: int = 0,
+    body_idx: int = 0,
+    tail_idx: int = 11,
 ) -> nn.Module:
     """Head + body + tail (T9): `head_blocks` free blocks, ONE body block repeated to fill the remaining steps, then
     `tail_blocks` free blocks before the final norm and classifier. Depth (execution steps) stays 12.
 
     Random init by default (trained from scratch). The model's first blocks supply distinct weights: head =
-    blocks[0 : head_blocks], body = blocks[head_blocks], tail = the next `tail_blocks`. head 1 / tail 1 is the T3 meeting
+    blocks[0 : head_blocks], body = blocks[head_blocks], tail = the next `tail_blocks`. head 1 / tail 1 is the T9
     design (body x10); head 1 / tail 0 is the head-only control (body x11); head 0 / tail 0 is one random block x12.
     `inject=True` feeds the head output into every body step (`src.head_body_tail.InjectedLoop`); off, the blocks are a
     plain `nn.Sequential` with the body object repeated, as in `build_iterative`.
+
+    `pretrained_init=True` (T11) is the pretrained version of head 1 / body x10 / tail 1: see
+    `_pretrained_head_body_tail`.
     """
+    if pretrained_init:
+        return _pretrained_head_body_tail(num_classes, head_blocks, tail_blocks, inject, source,
+                                          head_idx, body_idx, tail_idx)
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
     depth = len(blocks)
@@ -132,6 +142,37 @@ def build_head_body_tail(
         model.blocks = InjectedLoop(head, body, tail, repeats)
     else:
         model.blocks = nn.Sequential(*head, *[body] * repeats, *tail)
+    return model
+
+
+def _pretrained_head_body_tail(
+    num_classes: int,
+    head_blocks: int,
+    tail_blocks: int,
+    inject: bool,
+    source: nn.Module | None,
+    head_idx: int,
+    body_idx: int,
+    tail_idx: int,
+) -> nn.Module:
+    """Pretrained head + body x10 + tail (T11): head = copy of pretrained `blocks[head_idx]`, body = copy of
+    `blocks[body_idx]` (one module applied 10 times), tail = copy of `blocks[tail_idx]`.
+
+    Each part is a `copy.deepcopy`, so head, body and tail are three distinct modules even when indices repeat (head 0 /
+    body 0 gives two separate copies of block 0 that train independently). Patch embedding, CLS token, position
+    embedding and final norm stay the pretrained ones; the classifier is the baseline's re-initialised 100-class head.
+    """
+    if head_blocks != 1 or tail_blocks != 1 or inject:
+        raise ValueError(f"pretrained_init supports head 1 / tail 1 without injection only; got head {head_blocks}, "
+                         f"tail {tail_blocks}, inject {inject}")
+    model = source if source is not None else build_baseline(num_classes, pretrained=True)
+    blocks = list(model.blocks)
+    depth = len(blocks)
+    for name, idx in (("head_idx", head_idx), ("body_idx", body_idx), ("tail_idx", tail_idx)):
+        if not 0 <= idx < depth:
+            raise ValueError(f"{name} must be in 0..{depth - 1}, got {idx}")
+    head, body, tail = (copy.deepcopy(blocks[idx]) for idx in (head_idx, body_idx, tail_idx))
+    model.blocks = nn.Sequential(head, *[body] * (depth - 2), tail)
     return model
 
 

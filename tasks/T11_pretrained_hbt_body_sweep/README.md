@@ -10,9 +10,9 @@ Notion task: https://notion.so/40938c734705817e8a8adc7980fed0cd
 **Started:** 2026-10-30
 
 ## Checklist
-- [ ] Pretrained-init option for `--model hbt` (`--hbt-pretrained --head-idx H --body-idx B --tail-idx T`, default off so
+- [x] Pretrained-init option for `--model hbt` (`--hbt-pretrained --head-idx H --body-idx B --tail-idx T`, default off so
       T9 is unchanged) + tests (`test_t11_pretrained_hbt.py`)
-- [ ] Smoke test of all four configs (300 images, 1 epoch), params about 1.54M each
+- [x] Smoke test of all four configs (300 images, 1 epoch): all four 1,539,940 params
 - [ ] T11-a to T11-d, 30 epochs each, one GPU each, in parallel
 - [ ] Class separation per loop (T5 `cls_svd.py`, 4 classes, train + test) for every run
 - [ ] Plots `results/loss_curves.png`, `results/acc_vs_epoch.png`, `results/separation_vs_loop.png`
