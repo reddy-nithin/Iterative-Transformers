@@ -101,3 +101,14 @@ seed = a tie), pick the one with lower final separation; if still tied, T11-a.
 - Train and test accuracy are close for T11-a, T11-c and T11-d (no overfitting; capacity-limited, as with iter b0).
   T11-b shows a small gap (66.8 train vs 63.5 test).
 - Loss curves are still falling slowly at epoch 30 for all four runs.
+
+## Why T13 now uses both layouts
+These results changed the T13 plan (spec box "Changed after the T11 results (2026-10-30 evening): what and why" in the
+next-meeting tasks). The loop is not always lazy. With a tail after it (T11-a/b/c) the tail does most of the class
+tightening, but with nothing after it (T11-d) the repeated block 2 tightens classes itself (2.3 → 1.06). Working guess:
+**the tail lets the body slack off.** This isn't proven, because T11-c and T11-d also differ in which block loops (b1 vs b2).
+So T13's question "if every loop must give an answer, does the loop start working?" means different things per layout,
+and T13 runs on both. On the T11-c layout (has a tail): does a per-loop readout make the body tighten classes and
+close part of the 5.5-pt gap to T11-d? On the T11-d layout (no tail, loop already works): does early exit finally beat
+fixed depth? T11-d's per-loop readout is final norm + classifier on x_t, since it has no tail. Caveat for every
+write-up: unrolling n = 3 went 67.12 → 74.11 from 10 → 30 epochs, so the 10-epoch T6 size curve understates each size.
