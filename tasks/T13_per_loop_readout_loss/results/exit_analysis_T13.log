@@ -1,0 +1,30 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-a_readout_every_loop.pt (epoch 30, test acc 68.85)
+[T13-a_readout_every_loop] loop-10 top-1 68.82 (logged 68.85)
+[T13-a_readout_every_loop] fixed: 1:56.9 2:64.5 3:67.7 4:68.8 5:69.3 6:69.8 7:69.6 8:69.4 9:69.2 10:68.8
+[T13-a_readout_every_loop] flip rate 9->10: 2.54%
+[T13-a_readout_every_loop] confidence: best gain -0.60 at 7.99 loops; within 1.0 pt of loop 10 with 4.89 loops (68.32%) vs fixed 4
+[T13-a_readout_every_loop] kl: best gain +0.51 at 3.72 loops; within 1.0 pt of loop 10 with 3.72 loops (68.97%) vs fixed 4
+[T13-a_readout_every_loop] patience: best gain +0.48 at 2.31 loops; within 1.0 pt of loop 10 with 3.54 loops (68.64%) vs fixed 4
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-b_loss_margin.pt (epoch 30, test acc 68.85)
+[T13-b_loss_margin] loop-10 top-1 68.87 (logged 68.85)
+[T13-b_loss_margin] fixed: 1:53.5 2:61.5 3:64.8 4:66.6 5:67.6 6:68.2 7:68.4 8:68.6 9:68.8 10:68.9
+[T13-b_loss_margin] flip rate 9->10: 2.71%
+[T13-b_loss_margin] confidence: best gain +0.44 at 5.28 loops; within 1.0 pt of loop 10 with 5.28 loops (68.19%) vs fixed 6
+[T13-b_loss_margin] kl: best gain +1.05 at 3.59 loops; within 1.0 pt of loop 10 with 4.99 loops (68.15%) vs fixed 6
+[T13-b_loss_margin] patience: best gain +0.33 at 3.5 loops; within 1.0 pt of loop 10 with none vs fixed 6
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-c_unroll_readout_every_loop.pt (epoch 30, test acc 72.82)
+[T13-c_unroll_readout_every_loop] loop-10 top-1 72.82 (logged 72.82)
+[T13-c_unroll_readout_every_loop] fixed: 1:49.0 2:66.0 3:71.4 4:72.9 5:73.3 6:73.5 7:73.4 8:73.1 9:73.0 10:72.8
+[T13-c_unroll_readout_every_loop] flip rate 9->10: 1.49%
+[T13-c_unroll_readout_every_loop] confidence: best gain -0.37 at 7.69 loops; within 1.0 pt of loop 10 with 4.81 loops (72.72%) vs fixed 4
+[T13-c_unroll_readout_every_loop] kl: best gain +0.57 at 3.44 loops; within 1.0 pt of loop 10 with 3.44 loops (72.63%) vs fixed 4
+[T13-c_unroll_readout_every_loop] patience: best gain +0.79 at 2.52 loops; within 1.0 pt of loop 10 with 3.74 loops (72.71%) vs fixed 4
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-d_unroll_loss_margin.pt (epoch 30, test acc 73.17)
+[T13-d_unroll_loss_margin] loop-10 top-1 73.19 (logged 73.17)
+[T13-d_unroll_loss_margin] fixed: 1:45.1 2:63.9 3:70.2 4:72.5 5:73.3 6:73.6 7:73.5 8:73.4 9:73.3 10:73.2
+[T13-d_unroll_loss_margin] flip rate 9->10: 1.58%
+[T13-d_unroll_loss_margin] confidence: best gain -0.23 at 7.95 loops; within 1.0 pt of loop 10 with 5.22 loops (72.91%) vs fixed 4
+[T13-d_unroll_loss_margin] kl: best gain +0.67 at 3.34 loops; within 1.0 pt of loop 10 with 4.07 loops (73.13%) vs fixed 4
+[T13-d_unroll_loss_margin] patience: best gain +0.44 at 2.49 loops; within 1.0 pt of loop 10 with 4.88 loops (73.06%) vs fixed 4
+wrote /home/nrs3qy/itertf/tasks/T13_per_loop_readout_loss/results/exit_analysis.json

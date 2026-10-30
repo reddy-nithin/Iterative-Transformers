@@ -185,7 +185,7 @@ def plot_separation(out_path: Path) -> None:
                 curve = separation_curve(cls_svd)
                 ax.plot(range(1, len(curve) + 1), curve, marker="o", ms=3, **line_style(run))
         ax.axhline(1.0, color="0.5", ls=":", lw=1)
-        finish(ax, "block call (T11-c layout: 1 head, 2-11 body, 12 tail; T11-d layout: 1-2 head, 3-12 body)",
+        finish(ax, "block call (body: 2-11 for T11-c layout, 3-12 for T11-d layout)",
                "tr(within) / tr(between)", f"Class separation of CLS, 4 classes, {split}")
     fig.savefig(out_path, dpi=150)
     plt.close(fig)

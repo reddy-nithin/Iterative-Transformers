@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-c_unroll_readout_every_loop.pt (epoch 30, test acc 72.82)
+[apple] N=100 top1=91.0 centred effective rank by layer: 0.0 15.5 47.5 63.6 69.6 68.4 67.9 67.5 67.2 67.0 66.8 66.7 66.6 67.2
+[bicycle] N=100 top1=86.0 centred effective rank by layer: 0.0 16.7 50.7 69.5 74.9 73.7 73.1 72.8 72.6 72.5 72.4 72.4 72.3 72.7
+[fox] N=100 top1=75.0 centred effective rank by layer: 0.0 15.1 50.5 68.7 74.3 73.5 73.1 73.2 73.5 73.7 73.9 74.1 74.3 74.4
+[cloud] N=100 top1=76.0 centred effective rank by layer: 0.0 14.9 48.5 64.9 70.8 71.3 71.5 71.5 71.5 71.5 71.4 71.4 71.4 72.0
+[control (all classes)] N=100 top1=80.0 centred effective rank by layer: 0.0 15.7 51.9 71.3 79.7 79.5 79.6 79.8 80.0 80.1 80.3 80.4 80.5 81.7
+[separation, all classes] - 3.65 2.28 1.62 1.68 1.37 1.27 1.24 1.23 1.24 1.24 1.25 1.27 1.50
+wrote tasks/T13_per_loop_readout_loss/results/cls_svd_T13-c_test.json

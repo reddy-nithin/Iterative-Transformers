@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-a_readout_every_loop.pt (epoch 30, test acc 68.85)
+[apple] N=500 top1=93.4 centred effective rank by layer: 0.0 21.9 75.1 93.3 101.4 106.0 109.1 111.3 112.9 114.2 115.3 116.1 121.4 126.6
+[bicycle] N=500 top1=94.8 centred effective rank by layer: 0.0 23.8 76.0 99.7 109.4 115.1 118.9 121.6 123.6 125.1 126.2 127.1 137.7 141.1
+[fox] N=500 top1=85.2 centred effective rank by layer: 0.0 23.6 78.4 101.0 110.1 115.5 119.3 122.1 124.3 126.0 127.4 128.5 140.9 141.9
+[cloud] N=500 top1=85.2 centred effective rank by layer: 0.0 20.1 77.3 98.6 106.5 111.6 115.1 117.7 119.6 121.0 122.2 123.1 128.2 134.4
+[control (all classes)] N=500 top1=84.6 centred effective rank by layer: 0.0 23.5 81.4 106.2 116.5 122.8 127.3 130.5 133.0 135.0 136.5 137.8 145.4 150.8
+[separation, all classes] - 2.57 2.55 2.36 2.05 1.94 1.90 1.88 1.88 1.89 1.90 1.92 1.21 1.84
+wrote tasks/T13_per_loop_readout_loss/results/cls_svd_T13-a_train.json

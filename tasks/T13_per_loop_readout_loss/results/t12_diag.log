@@ -1,0 +1,22 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-a_readout_every_loop.pt (epoch 30, test acc 68.85)
+[T13-a_readout_every_loop] own top-1 68.82 (logged 68.85)
+[T13-a_readout_every_loop] (d) acc per loop: 1:56.9 2:64.5 3:67.7 4:68.8 5:69.3 6:69.8 7:69.6 8:69.4 9:69.2 10:68.8
+recompute check: max |recomputed - real| block output = 6.79e-06 (< 0.0001)
+[T13-a_readout_every_loop] decision: {'late_loop_mean_attn_cos': 0.9948, 'late_loop_mean_attn_cos_headavg': 0.997, 'mean_ratio': 0.9131, 'pick': 'coverage mask'}
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-b_loss_margin.pt (epoch 30, test acc 68.85)
+[T13-b_loss_margin] own top-1 68.87 (logged 68.85)
+[T13-b_loss_margin] (d) acc per loop: 1:53.5 2:61.5 3:64.8 4:66.6 5:67.6 6:68.2 7:68.4 8:68.6 9:68.8 10:68.9
+recompute check: max |recomputed - real| block output = 5.78e-06 (< 0.0001)
+[T13-b_loss_margin] decision: {'late_loop_mean_attn_cos': 0.9968, 'late_loop_mean_attn_cos_headavg': 0.9982, 'mean_ratio': 0.7811, 'pick': 'coverage mask'}
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-c_unroll_readout_every_loop.pt (epoch 30, test acc 72.82)
+[T13-c_unroll_readout_every_loop] own top-1 72.82 (logged 72.82)
+[T13-c_unroll_readout_every_loop] (d) acc per loop: 1:49.0 2:66.0 3:71.4 4:72.9 5:73.3 6:73.5 7:73.4 8:73.1 9:73.0 10:72.8
+recompute check: max |recomputed - real| block output = 6.44e-06 (< 0.0001)
+[T13-c_unroll_readout_every_loop] decision: {'late_loop_mean_attn_cos': 0.994, 'late_loop_mean_attn_cos_headavg': 0.9959, 'mean_ratio': 1.1688, 'pick': 'coverage mask'}
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-d_unroll_loss_margin.pt (epoch 30, test acc 73.17)
+[T13-d_unroll_loss_margin] own top-1 73.19 (logged 73.17)
+[T13-d_unroll_loss_margin] (d) acc per loop: 1:45.1 2:63.9 3:70.2 4:72.5 5:73.3 6:73.6 7:73.5 8:73.4 9:73.3 10:73.2
+recompute check: max |recomputed - real| block output = 6.20e-06 (< 0.0001)
+[T13-d_unroll_loss_margin] decision: {'late_loop_mean_attn_cos': 0.9949, 'late_loop_mean_attn_cos_headavg': 0.9967, 'mean_ratio': 1.1636, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md and the 4 plots in tasks/T13_per_loop_readout_loss/results/t12_diag

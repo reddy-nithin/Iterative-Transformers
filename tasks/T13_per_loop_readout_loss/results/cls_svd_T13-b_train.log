@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 11} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-b_loss_margin.pt (epoch 30, test acc 68.85)
+[apple] N=500 top1=95.4 centred effective rank by layer: 0.0 23.5 73.0 85.8 92.4 97.2 100.9 103.8 106.2 108.3 110.0 111.6 122.8 128.2
+[bicycle] N=500 top1=93.6 centred effective rank by layer: 0.0 25.4 75.1 90.5 98.4 103.4 107.1 109.9 112.2 114.1 115.7 117.1 139.8 141.2
+[fox] N=500 top1=85.2 centred effective rank by layer: 0.0 25.3 78.7 92.9 100.2 105.2 108.9 112.0 114.6 116.7 118.6 120.2 140.5 141.8
+[cloud] N=500 top1=84.2 centred effective rank by layer: 0.0 22.5 76.0 89.7 97.0 102.1 106.1 109.2 111.8 113.9 115.7 117.3 127.1 133.8
+[control (all classes)] N=500 top1=81.6 centred effective rank by layer: 0.0 25.5 80.0 95.8 104.2 110.0 114.3 117.8 120.7 123.2 125.4 127.2 146.1 150.5
+[separation, all classes] - 3.42 2.42 2.24 2.13 2.08 2.07 2.07 2.09 2.11 2.14 2.17 1.47 2.04
+wrote tasks/T13_per_loop_readout_loss/results/cls_svd_T13-b_train.json
