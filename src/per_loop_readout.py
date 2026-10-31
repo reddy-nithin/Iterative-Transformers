@@ -57,6 +57,8 @@ def readout(model: nn.Module, state: torch.Tensor, tail: list[nn.Module]) -> tor
 def per_loop_logits(model: nn.Module, images: torch.Tensor) -> list[torch.Tensor]:
     """Logits (B, classes) after every body loop t = 1..L; the last entry equals `model(images)`."""
     head, body, tail, n_loops = split_loop(model)
+    if hasattr(body, "reset"):  # stateful body (T14 coverage mask): start every pass with full supply
+        body.reset()
     x = embed(model, images)
     for block in head:
         x = block(x)

@@ -6,6 +6,7 @@ import timm
 import torch
 from torch import nn
 
+from src.coverage_mask import CoverageMaskLoop
 from src.head_body_tail import InjectedLoop
 from src.lora_loop import LoRALoopBlocks
 
@@ -64,11 +65,14 @@ def build_unrolled(
     num_classes: int = NUM_CLASSES,
     pretrained: bool = True,
     source: nn.Module | None = None,
+    coverage_mask: bool = False,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
 
     unique_blocks=1 is block 0 x12 (same as `build_iterative`); unique_blocks=12 is the normal ViT-Tiny.
+    `coverage_mask=True` (T14) puts a coverage mask on the repeated block's CLS attention
+    (`src.coverage_mask.CoverageMaskLoop`, +1 parameter); off, the blocks are a plain `nn.Sequential` as before.
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -76,7 +80,11 @@ def build_unrolled(
     if not 1 <= unique_blocks <= depth:
         raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
     distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
-    model.blocks = nn.Sequential(*distinct, *[repeated] * (depth - unique_blocks + 1))
+    n_loops = depth - unique_blocks + 1
+    if coverage_mask:
+        model.blocks = CoverageMaskLoop(distinct, repeated, n_loops)
+    else:
+        model.blocks = nn.Sequential(*distinct, *[repeated] * n_loops)
     return model
 
 

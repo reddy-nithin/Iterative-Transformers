@@ -38,6 +38,8 @@ def parse_args():
     p.add_argument("--head-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the head")
     p.add_argument("--body-idx", type=int, default=0, help="hbt --hbt-pretrained: pretrained block for the body")
     p.add_argument("--tail-idx", type=int, default=11, help="hbt --hbt-pretrained: pretrained block for the tail")
+    p.add_argument("--coverage-mask", action="store_true",
+                   help="unroll: coverage mask on the repeated block's CLS attention (T14; src.coverage_mask)")
     p.add_argument("--readout-loss", choices=READOUT_LOSSES, default="none",
                    help="looped models: train on a readout after every body loop (T13; src.per_loop_readout); "
                         "none = only the final output, as before")
@@ -67,7 +69,10 @@ def model_kwargs(args) -> dict:
         return {"block_idx": args.block_idx, "init": args.init or "avg",
                 "rank": args.rank, "lora_init": args.lora_init}
     if args.model == "unroll":
-        return {"unique_blocks": args.unique_blocks}
+        kwargs = {"unique_blocks": args.unique_blocks}
+        if getattr(args, "coverage_mask", False):  # added only when on, so older unroll checkpoints rebuild unchanged
+            kwargs["coverage_mask"] = True
+        return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
         # added only when on, so T9 checkpoints (saved without these keys) and older callers stay as they were
@@ -83,6 +88,13 @@ def save_checkpoint(path: str, model: nn.Module, model_name: str, kwargs: dict, 
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"model": model_name, "model_kwargs": kwargs, "state_dict": model.state_dict(),
                 "epoch": epoch, "test_acc": test_acc}, path)
+
+
+def coverage_eta(model: nn.Module) -> float | None:
+    """Current eta of a coverage-mask model (T14), None for every other model."""
+    body = getattr(model.blocks, "body", None)
+    eta = getattr(body, "eta", None)
+    return None if eta is None else eta.item()
 
 
 def set_seed(seed):
@@ -230,6 +242,9 @@ def main():
         acc, test_loss = evaluate(model, val_loader, device, use_amp, criterion)
         rec = {"epoch": epoch + 1, "train_loss": loss_sum / steps_per_epoch, "test_loss": test_loss,
                "train_acc": 100.0 * train_correct / train_seen, "test_acc": acc, "epoch_time_s": time.time() - t0}
+        eta = coverage_eta(model)
+        if eta is not None:
+            rec["eta"] = round(eta, 5)
         if args.readout_loss != "none":  # train_loss is then the per-loop loss; keep the final-output CE comparable
             rec["train_ce_final"] = ce_final_sum / steps_per_epoch
             if device.type == "cuda":
@@ -237,7 +252,8 @@ def main():
         history.append(rec)
         print(f"[{name}] epoch {rec['epoch']}/{args.epochs} loss={rec['train_loss']:.4f} "
               f"test_loss={test_loss:.4f} train_acc={rec['train_acc']:.2f} "
-              f"acc={acc:.2f} ({rec['epoch_time_s']:.0f}s)", flush=True)
+              f"acc={acc:.2f} ({rec['epoch_time_s']:.0f}s)" + (f" eta={eta:.4f}" if eta is not None else ""),
+              flush=True)
         # write every epoch so a crash / dropped session still leaves partial results
         info.update(history=history, final_test_acc=acc, best_test_acc=max(h["test_acc"] for h in history))
         (out_dir / f"{name}.json").write_text(json.dumps(info, indent=2))
