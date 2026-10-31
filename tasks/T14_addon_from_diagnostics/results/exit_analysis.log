@@ -1,0 +1,8 @@
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[T14-a_coverage_mask] loop-10 top-1 72.88 (logged 72.89)
+[T14-a_coverage_mask] fixed: 1:44.7 2:64.2 3:70.2 4:72.5 5:73.2 6:73.4 7:73.4 8:73.3 9:73.1 10:72.9
+[T14-a_coverage_mask] flip rate 9->10: 1.66%
+[T14-a_coverage_mask] confidence: best gain -0.44 at 7.91 loops; within 1.0 pt of loop 10 with 5.22 loops (72.64%) vs fixed 4
+[T14-a_coverage_mask] kl: best gain +0.52 at 3.36 loops; within 1.0 pt of loop 10 with 4.08 loops (72.83%) vs fixed 4
+[T14-a_coverage_mask] patience: best gain +0.32 at 2.49 loops; within 1.0 pt of loop 10 with 4.87 loops (73.08%) vs fixed 4
+wrote tasks/T14_addon_from_diagnostics/results/exit_analysis.json

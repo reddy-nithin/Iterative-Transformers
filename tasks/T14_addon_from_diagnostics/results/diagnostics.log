@@ -1,0 +1,8 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[T14-a_coverage_mask] own top-1 72.88 (logged 72.89)
+recompute check (with mask): max |recomputed - real| block output = 0.00e+00 (< 0.0001)
+[T14-a_coverage_mask] eta 0.6375; (d) acc per loop: 1:44.7 2:64.2 3:70.2 4:72.5 5:73.2 6:73.4 7:73.4 8:73.3 9:73.1 10:72.9
+[T14-a_coverage_mask] supply left per loop: [0.9967, 0.9935, 0.9902, 0.987, 0.9837, 0.9805, 0.9772, 0.974, 0.9707, 0.9675]
+[T14-a_coverage_mask] decision-rule values: {'late_loop_mean_attn_cos': 0.9946, 'late_loop_mean_attn_cos_headavg': 0.9965, 'mean_ratio': 1.1672, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md in /home/nrs3qy/itertf/tasks/T14_addon_from_diagnostics/results/t12_diag

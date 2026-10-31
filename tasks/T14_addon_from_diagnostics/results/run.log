@@ -1,0 +1,73 @@
+[run] T14-a on GPU 0 (2026-10-30 19:41:36)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_T14-a] params=1,539,941 GFLOPs=2.51 throughput=3676 img/s
+[unroll_T14-a] param groups: 1,539,941 @ lr 0.0005
+[unroll_T14-a] epoch 1/30 loss=4.2007 test_loss=3.2098 train_acc=9.45 acc=26.38 (64s) eta=0.5053
+[unroll_T14-a] epoch 2/30 loss=3.3842 test_loss=2.6620 train_acc=25.94 acc=41.73 (63s) eta=0.5389
+[unroll_T14-a] epoch 3/30 loss=3.0500 test_loss=2.4350 train_acc=35.03 acc=48.77 (63s) eta=0.5725
+[unroll_T14-a] epoch 4/30 loss=2.8699 test_loss=2.2755 train_acc=40.34 acc=53.01 (63s) eta=0.6037
+[unroll_T14-a] epoch 5/30 loss=2.7492 test_loss=2.1939 train_acc=43.28 acc=55.05 (63s) eta=0.6247
+[unroll_T14-a] epoch 6/30 loss=2.6577 test_loss=2.1009 train_acc=46.24 acc=58.51 (63s) eta=0.6406
+[unroll_T14-a] epoch 7/30 loss=2.5909 test_loss=2.0393 train_acc=48.23 acc=59.94 (63s) eta=0.6529
+[unroll_T14-a] epoch 8/30 loss=2.5217 test_loss=2.0153 train_acc=50.43 acc=61.09 (64s) eta=0.6591
+[unroll_T14-a] epoch 9/30 loss=2.4678 test_loss=2.0101 train_acc=51.79 acc=60.80 (63s) eta=0.6604
+[unroll_T14-a] epoch 10/30 loss=2.4112 test_loss=1.9417 train_acc=53.81 acc=63.39 (63s) eta=0.6585
+[unroll_T14-a] epoch 11/30 loss=2.3623 test_loss=1.8879 train_acc=55.05 acc=65.33 (64s) eta=0.6617
+[unroll_T14-a] epoch 12/30 loss=2.3234 test_loss=1.8722 train_acc=56.17 acc=65.95 (64s) eta=0.6627
+[unroll_T14-a] epoch 13/30 loss=2.2803 test_loss=1.8467 train_acc=57.68 acc=66.53 (63s) eta=0.6628
+[unroll_T14-a] epoch 14/30 loss=2.2440 test_loss=1.8235 train_acc=58.91 acc=66.94 (64s) eta=0.6684
+[unroll_T14-a] epoch 15/30 loss=2.1887 test_loss=1.7943 train_acc=60.10 acc=68.22 (64s) eta=0.6632
+[unroll_T14-a] epoch 16/30 loss=2.1585 test_loss=1.7651 train_acc=61.54 acc=69.52 (63s) eta=0.6621
+[unroll_T14-a] epoch 17/30 loss=2.1212 test_loss=1.7551 train_acc=62.65 acc=69.62 (63s) eta=0.6557
+[unroll_T14-a] epoch 18/30 loss=2.0708 test_loss=1.7372 train_acc=64.35 acc=70.27 (63s) eta=0.6545
+[unroll_T14-a] epoch 19/30 loss=2.0411 test_loss=1.7357 train_acc=65.03 acc=70.48 (63s) eta=0.6518
+[unroll_T14-a] epoch 20/30 loss=2.0173 test_loss=1.7065 train_acc=65.69 acc=71.08 (63s) eta=0.6509
+[unroll_T14-a] epoch 21/30 loss=1.9792 test_loss=1.7025 train_acc=67.14 acc=71.91 (63s) eta=0.6463
+[unroll_T14-a] epoch 22/30 loss=1.9514 test_loss=1.6949 train_acc=68.32 acc=71.68 (63s) eta=0.6441
+[unroll_T14-a] epoch 23/30 loss=1.9288 test_loss=1.6878 train_acc=69.13 acc=71.95 (64s) eta=0.6421
+[unroll_T14-a] epoch 24/30 loss=1.9013 test_loss=1.6862 train_acc=69.86 acc=72.43 (64s) eta=0.6399
+[unroll_T14-a] epoch 25/30 loss=1.8806 test_loss=1.6730 train_acc=70.42 acc=72.76 (64s) eta=0.6388
+[unroll_T14-a] epoch 26/30 loss=1.8696 test_loss=1.6711 train_acc=70.94 acc=72.54 (64s) eta=0.6383
+[unroll_T14-a] epoch 27/30 loss=1.8530 test_loss=1.6717 train_acc=71.43 acc=72.70 (63s) eta=0.6378
+[unroll_T14-a] epoch 28/30 loss=1.8438 test_loss=1.6683 train_acc=72.04 acc=72.80 (63s) eta=0.6374
+[unroll_T14-a] epoch 29/30 loss=1.8313 test_loss=1.6673 train_acc=72.08 acc=72.82 (63s) eta=0.6375
+[unroll_T14-a] epoch 30/30 loss=1.8389 test_loss=1.6672 train_acc=72.10 acc=72.89 (63s) eta=0.6375
+[unroll_T14-a] per-loop test acc: 1:44.67 2:64.17 3:70.20 4:72.46 5:73.18 6:73.39 7:73.44 8:73.27 9:73.07 10:72.89
+[run] T14-a class separation, train + test (2026-10-30 20:13:36)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[apple] N=500 top1=97.6 centred effective rank by layer: 0.0 18.6 74.9 110.5 120.1 119.7 119.2 119.0 118.9 118.8 118.8 118.8 118.8 121.1
+[bicycle] N=500 top1=96.2 centred effective rank by layer: 0.0 21.0 78.6 122.0 135.1 135.6 135.6 135.4 135.3 135.2 135.2 135.2 135.3 136.1
+[fox] N=500 top1=89.8 centred effective rank by layer: 0.0 20.1 78.4 121.5 133.5 132.8 132.4 132.4 132.6 132.9 133.2 133.5 133.8 134.6
+[cloud] N=500 top1=87.2 centred effective rank by layer: 0.0 19.2 75.4 112.6 124.8 127.5 128.7 129.4 129.8 130.2 130.4 130.6 130.8 133.0
+[control (all classes)] N=500 top1=87.6 centred effective rank by layer: 0.0 20.7 82.6 126.6 141.5 143.3 144.2 144.9 145.6 146.3 146.9 147.5 148.0 149.6
+[separation, all classes] - 3.40 2.45 1.80 1.64 1.44 1.33 1.28 1.25 1.24 1.24 1.25 1.26 1.38
+wrote tasks/T14_addon_from_diagnostics/results/cls_svd_T14-a_train.json
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[apple] N=100 top1=89.0 centred effective rank by layer: 0.0 16.2 48.2 64.1 68.5 67.9 67.5 67.2 67.0 66.8 66.8 66.7 66.7 66.9
+[bicycle] N=100 top1=87.0 centred effective rank by layer: 0.0 18.3 50.3 70.1 74.8 74.8 74.5 74.3 74.1 74.0 74.0 74.0 74.0 74.0
+[fox] N=100 top1=80.0 centred effective rank by layer: 0.0 16.1 50.9 69.7 74.0 73.9 74.0 74.1 74.3 74.4 74.5 74.7 74.8 74.8
+[cloud] N=100 top1=77.0 centred effective rank by layer: 0.0 16.6 48.0 63.5 69.0 70.4 71.2 71.6 71.8 71.9 72.0 72.1 72.1 72.8
+[control (all classes)] N=100 top1=79.0 centred effective rank by layer: 0.0 17.2 52.0 71.2 77.8 78.7 79.0 79.2 79.4 79.6 79.8 80.0 80.2 81.4
+[separation, all classes] - 3.76 2.30 1.73 1.64 1.48 1.39 1.35 1.34 1.34 1.35 1.36 1.38 1.56
+wrote tasks/T14_addon_from_diagnostics/results/cls_svd_T14-a_test.json
+[run] T14-a exit analysis (2026-10-30 20:14:01)
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[T14-a_coverage_mask] loop-10 top-1 72.88 (logged 72.89)
+[T14-a_coverage_mask] fixed: 1:44.7 2:64.2 3:70.2 4:72.5 5:73.2 6:73.4 7:73.4 8:73.3 9:73.1 10:72.9
+[T14-a_coverage_mask] flip rate 9->10: 1.66%
+[T14-a_coverage_mask] confidence: best gain -0.44 at 7.91 loops; within 1.0 pt of loop 10 with 5.22 loops (72.64%) vs fixed 4
+[T14-a_coverage_mask] kl: best gain +0.52 at 3.36 loops; within 1.0 pt of loop 10 with 4.08 loops (72.83%) vs fixed 4
+[T14-a_coverage_mask] patience: best gain +0.32 at 2.49 loops; within 1.0 pt of loop 10 with 4.87 loops (73.08%) vs fixed 4
+wrote tasks/T14_addon_from_diagnostics/results/exit_analysis.json
+[run] T14-a T12 metrics (2026-10-30 20:14:17)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T14-a_coverage_mask.pt (epoch 30, test acc 72.89)
+[T14-a_coverage_mask] own top-1 72.88 (logged 72.89)
+recompute check (with mask): max |recomputed - real| block output = 0.00e+00 (< 0.0001)
+[T14-a_coverage_mask] eta 0.6375; (d) acc per loop: 1:44.7 2:64.2 3:70.2 4:72.5 5:73.2 6:73.4 7:73.4 8:73.3 9:73.1 10:72.9
+[T14-a_coverage_mask] supply left per loop: [0.9967, 0.9935, 0.9902, 0.987, 0.9837, 0.9805, 0.9772, 0.974, 0.9707, 0.9675]
+[T14-a_coverage_mask] decision-rule values: {'late_loop_mean_attn_cos': 0.9946, 'late_loop_mean_attn_cos_headavg': 0.9965, 'mean_ratio': 1.1672, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md in /home/nrs3qy/itertf/tasks/T14_addon_from_diagnostics/results/t12_diag
+[run] done (2026-10-30 20:14:35)

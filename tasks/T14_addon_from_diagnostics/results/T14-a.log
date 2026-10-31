@@ -1,0 +1,34 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_T14-a] params=1,539,941 GFLOPs=2.51 throughput=3676 img/s
+[unroll_T14-a] param groups: 1,539,941 @ lr 0.0005
+[unroll_T14-a] epoch 1/30 loss=4.2007 test_loss=3.2098 train_acc=9.45 acc=26.38 (64s) eta=0.5053
+[unroll_T14-a] epoch 2/30 loss=3.3842 test_loss=2.6620 train_acc=25.94 acc=41.73 (63s) eta=0.5389
+[unroll_T14-a] epoch 3/30 loss=3.0500 test_loss=2.4350 train_acc=35.03 acc=48.77 (63s) eta=0.5725
+[unroll_T14-a] epoch 4/30 loss=2.8699 test_loss=2.2755 train_acc=40.34 acc=53.01 (63s) eta=0.6037
+[unroll_T14-a] epoch 5/30 loss=2.7492 test_loss=2.1939 train_acc=43.28 acc=55.05 (63s) eta=0.6247
+[unroll_T14-a] epoch 6/30 loss=2.6577 test_loss=2.1009 train_acc=46.24 acc=58.51 (63s) eta=0.6406
+[unroll_T14-a] epoch 7/30 loss=2.5909 test_loss=2.0393 train_acc=48.23 acc=59.94 (63s) eta=0.6529
+[unroll_T14-a] epoch 8/30 loss=2.5217 test_loss=2.0153 train_acc=50.43 acc=61.09 (64s) eta=0.6591
+[unroll_T14-a] epoch 9/30 loss=2.4678 test_loss=2.0101 train_acc=51.79 acc=60.80 (63s) eta=0.6604
+[unroll_T14-a] epoch 10/30 loss=2.4112 test_loss=1.9417 train_acc=53.81 acc=63.39 (63s) eta=0.6585
+[unroll_T14-a] epoch 11/30 loss=2.3623 test_loss=1.8879 train_acc=55.05 acc=65.33 (64s) eta=0.6617
+[unroll_T14-a] epoch 12/30 loss=2.3234 test_loss=1.8722 train_acc=56.17 acc=65.95 (64s) eta=0.6627
+[unroll_T14-a] epoch 13/30 loss=2.2803 test_loss=1.8467 train_acc=57.68 acc=66.53 (63s) eta=0.6628
+[unroll_T14-a] epoch 14/30 loss=2.2440 test_loss=1.8235 train_acc=58.91 acc=66.94 (64s) eta=0.6684
+[unroll_T14-a] epoch 15/30 loss=2.1887 test_loss=1.7943 train_acc=60.10 acc=68.22 (64s) eta=0.6632
+[unroll_T14-a] epoch 16/30 loss=2.1585 test_loss=1.7651 train_acc=61.54 acc=69.52 (63s) eta=0.6621
+[unroll_T14-a] epoch 17/30 loss=2.1212 test_loss=1.7551 train_acc=62.65 acc=69.62 (63s) eta=0.6557
+[unroll_T14-a] epoch 18/30 loss=2.0708 test_loss=1.7372 train_acc=64.35 acc=70.27 (63s) eta=0.6545
+[unroll_T14-a] epoch 19/30 loss=2.0411 test_loss=1.7357 train_acc=65.03 acc=70.48 (63s) eta=0.6518
+[unroll_T14-a] epoch 20/30 loss=2.0173 test_loss=1.7065 train_acc=65.69 acc=71.08 (63s) eta=0.6509
+[unroll_T14-a] epoch 21/30 loss=1.9792 test_loss=1.7025 train_acc=67.14 acc=71.91 (63s) eta=0.6463
+[unroll_T14-a] epoch 22/30 loss=1.9514 test_loss=1.6949 train_acc=68.32 acc=71.68 (63s) eta=0.6441
+[unroll_T14-a] epoch 23/30 loss=1.9288 test_loss=1.6878 train_acc=69.13 acc=71.95 (64s) eta=0.6421
+[unroll_T14-a] epoch 24/30 loss=1.9013 test_loss=1.6862 train_acc=69.86 acc=72.43 (64s) eta=0.6399
+[unroll_T14-a] epoch 25/30 loss=1.8806 test_loss=1.6730 train_acc=70.42 acc=72.76 (64s) eta=0.6388
+[unroll_T14-a] epoch 26/30 loss=1.8696 test_loss=1.6711 train_acc=70.94 acc=72.54 (64s) eta=0.6383
+[unroll_T14-a] epoch 27/30 loss=1.8530 test_loss=1.6717 train_acc=71.43 acc=72.70 (63s) eta=0.6378
+[unroll_T14-a] epoch 28/30 loss=1.8438 test_loss=1.6683 train_acc=72.04 acc=72.80 (63s) eta=0.6374
+[unroll_T14-a] epoch 29/30 loss=1.8313 test_loss=1.6673 train_acc=72.08 acc=72.82 (63s) eta=0.6375
+[unroll_T14-a] epoch 30/30 loss=1.8389 test_loss=1.6672 train_acc=72.10 acc=72.89 (63s) eta=0.6375
+[unroll_T14-a] per-loop test acc: 1:44.67 2:64.17 3:70.20 4:72.46 5:73.18 6:73.39 7:73.44 8:73.27 9:73.07 10:72.89
