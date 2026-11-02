@@ -1,0 +1,7 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': False, 'pretrained_init': True, 'head_idx': 0, 'body_idx': 1, 'tail_idx': 2} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T21-a_hbt_tail_b2.pt (epoch 30, test acc 69.04)
+[T21-a_hbt_tail_b2] own top-1 69.04 (logged 69.04)
+[T21-a_hbt_tail_b2] (d) acc per loop: 1:1.8 2:3.0 3:6.0 4:14.3 5:28.9 6:46.3 7:58.6 8:65.5 9:68.4 10:69.0
+recompute check: max |recomputed - real| block output = 4.77e-06 (< 0.0001)
+[T21-a_hbt_tail_b2] decision: {'late_loop_mean_attn_cos': 0.9607, 'late_loop_mean_attn_cos_headavg': 0.9764, 'mean_ratio': 1.0705, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md and the 4 plots in tasks/T21_contiguous_tail_b2/results/t12_diag
