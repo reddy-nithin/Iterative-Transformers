@@ -1,0 +1,8 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask_v2_eta': 0.5} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T16-a_covmask_v2_eta05.pt (epoch 30, test acc 9.98)
+[T16-a_covmask_v2_eta05] own top-1 9.95 (logged 9.98)
+recompute check (with mask): max |recomputed - real| block output = 0.00e+00 (< 0.0001)
+[T16-a_covmask_v2_eta05] eta 0.5; (d) acc per loop: 1:5.4 2:6.7 3:7.7 4:8.7 5:9.2 6:9.5 7:9.7 8:9.7 9:9.8 10:9.9
+[T16-a_covmask_v2_eta05] supply left per loop: [0.9061, 0.8093, 0.7011, 0.5709, 0.4342, 0.2827, 0.1411, 0.0574, 0.0267, 0.0175]
+[T16-a_covmask_v2_eta05] decision-rule values: {'late_loop_mean_attn_cos': 0.4592, 'late_loop_mean_attn_cos_headavg': 0.4189, 'mean_ratio': 1.0398, 'pick': 'per-loop LayerNorm'}
+wrote diag_*.json, per_image_*.pt, table_*.md in tasks/T16_coverage_mask_v2/results/t12_diag

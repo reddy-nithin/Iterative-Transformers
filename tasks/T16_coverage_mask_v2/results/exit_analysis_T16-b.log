@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask_v2_eta': 1.0} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T16-b_covmask_v2_eta1.pt (epoch 30, test acc 6.41)
+[T16-b_covmask_v2_eta1] loop-10 top-1 6.42 (logged 6.41)
+[T16-b_covmask_v2_eta1] fixed: 1:3.1 2:4.3 3:4.9 4:5.1 5:5.2 6:5.6 7:5.9 8:6.0 9:6.3 10:6.4
+[T16-b_covmask_v2_eta1] flip rate 9->10: 12.27%
+[T16-b_covmask_v2_eta1] confidence: best gain +0.00 at 10.0 loops; within 1.0 pt of loop 10 with 9.99 loops (6.39%) vs fixed 6
+[T16-b_covmask_v2_eta1] kl: best gain +0.08 at 3.74 loops; within 1.0 pt of loop 10 with 9.74 loops (6.35%) vs fixed 6
+[T16-b_covmask_v2_eta1] patience: best gain -0.03 at 4.61 loops; within 1.0 pt of loop 10 with 6.09 loops (5.55%) vs fixed 6
+wrote tasks/T16_coverage_mask_v2/results/exit_analysis.json

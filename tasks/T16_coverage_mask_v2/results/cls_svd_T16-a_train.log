@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'coverage_mask_v2_eta': 0.5} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T16-a_covmask_v2_eta05.pt (epoch 30, test acc 9.98)
+[apple] N=500 top1=18.8 centred effective rank by layer: 0.0 8.4 14.0 17.6 18.2 18.3 18.5 18.7 18.7 18.8 19.1 19.3 19.5 20.0
+[bicycle] N=500 top1=2.2 centred effective rank by layer: 0.0 13.2 16.6 21.1 22.3 22.8 22.6 22.3 22.2 22.3 22.4 22.7 23.0 23.4
+[fox] N=500 top1=0.0 centred effective rank by layer: 0.0 11.6 14.5 18.5 19.3 19.8 20.1 20.1 20.1 20.3 20.6 21.0 21.3 21.8
+[cloud] N=500 top1=33.2 centred effective rank by layer: 0.0 9.4 13.9 18.2 20.0 20.8 21.3 21.3 21.2 21.1 21.1 21.1 21.2 23.8
+[control (all classes)] N=500 top1=9.0 centred effective rank by layer: 0.0 11.3 15.6 19.3 20.2 20.9 21.3 21.4 21.5 21.6 21.8 22.1 22.3 23.2
+[separation, all classes] - 1.30 1.51 1.49 1.58 1.69 1.80 1.87 1.92 1.96 1.99 2.01 2.03 2.26
+wrote tasks/T16_coverage_mask_v2/results/cls_svd_T16-a_train.json

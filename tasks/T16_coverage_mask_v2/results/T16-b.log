@@ -1,0 +1,34 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_T16-b] params=1,539,940 GFLOPs=2.51 throughput=3516 img/s
+[unroll_T16-b] param groups: 1,539,940 @ lr 0.0005
+[unroll_T16-b] epoch 1/30 loss=4.5746 test_loss=4.3910 train_acc=3.09 acc=4.45 (95s) eta=1.0000
+[unroll_T16-b] epoch 2/30 loss=4.4753 test_loss=4.3143 train_acc=3.87 acc=5.47 (90s) eta=1.0000
+[unroll_T16-b] epoch 3/30 loss=4.3593 test_loss=4.1732 train_acc=5.51 acc=7.58 (83s) eta=1.0000
+[unroll_T16-b] epoch 4/30 loss=4.4367 test_loss=4.1949 train_acc=4.45 acc=7.37 (83s) eta=1.0000
+[unroll_T16-b] epoch 5/30 loss=4.3770 test_loss=4.1603 train_acc=5.34 acc=7.36 (85s) eta=1.0000
+[unroll_T16-b] epoch 6/30 loss=4.5520 test_loss=4.5612 train_acc=3.42 acc=2.08 (84s) eta=1.0000
+[unroll_T16-b] epoch 7/30 loss=4.6168 test_loss=4.4264 train_acc=2.37 acc=3.67 (83s) eta=1.0000
+[unroll_T16-b] epoch 8/30 loss=4.5660 test_loss=4.5425 train_acc=2.85 acc=1.80 (84s) eta=1.0000
+[unroll_T16-b] epoch 9/30 loss=4.5299 test_loss=4.4339 train_acc=3.01 acc=3.62 (85s) eta=1.0000
+[unroll_T16-b] epoch 10/30 loss=4.5079 test_loss=4.6102 train_acc=3.25 acc=1.91 (83s) eta=1.0000
+[unroll_T16-b] epoch 11/30 loss=4.5708 test_loss=4.4431 train_acc=2.62 acc=3.03 (83s) eta=1.0000
+[unroll_T16-b] epoch 12/30 loss=4.4900 test_loss=4.4159 train_acc=3.52 acc=3.99 (85s) eta=1.0000
+[unroll_T16-b] epoch 13/30 loss=4.5060 test_loss=4.4731 train_acc=3.20 acc=3.07 (86s) eta=1.0000
+[unroll_T16-b] epoch 14/30 loss=4.5660 test_loss=4.5403 train_acc=2.72 acc=2.93 (74s) eta=1.0000
+[unroll_T16-b] epoch 15/30 loss=4.5523 test_loss=4.4673 train_acc=2.82 acc=3.38 (70s) eta=1.0000
+[unroll_T16-b] epoch 16/30 loss=4.5083 test_loss=4.4032 train_acc=3.32 acc=3.99 (67s) eta=1.0000
+[unroll_T16-b] epoch 17/30 loss=4.4849 test_loss=4.4016 train_acc=3.60 acc=4.28 (83s) eta=1.0000
+[unroll_T16-b] epoch 18/30 loss=4.4768 test_loss=4.3424 train_acc=3.85 acc=4.91 (84s) eta=1.0000
+[unroll_T16-b] epoch 19/30 loss=4.4699 test_loss=4.3392 train_acc=3.89 acc=4.86 (82s) eta=1.0000
+[unroll_T16-b] epoch 20/30 loss=4.4614 test_loss=4.4540 train_acc=4.17 acc=4.45 (85s) eta=1.0000
+[unroll_T16-b] epoch 21/30 loss=4.4911 test_loss=4.3937 train_acc=3.68 acc=5.42 (84s) eta=1.0000
+[unroll_T16-b] epoch 22/30 loss=4.4694 test_loss=4.3838 train_acc=3.81 acc=4.98 (81s) eta=1.0000
+[unroll_T16-b] epoch 23/30 loss=4.4541 test_loss=4.3600 train_acc=4.09 acc=4.87 (82s) eta=1.0000
+[unroll_T16-b] epoch 24/30 loss=4.4420 test_loss=4.3470 train_acc=4.30 acc=5.03 (81s) eta=1.0000
+[unroll_T16-b] epoch 25/30 loss=4.4346 test_loss=4.3344 train_acc=4.42 acc=6.11 (81s) eta=1.0000
+[unroll_T16-b] epoch 26/30 loss=4.4260 test_loss=4.3287 train_acc=4.87 acc=6.23 (81s) eta=1.0000
+[unroll_T16-b] epoch 27/30 loss=4.4235 test_loss=4.3258 train_acc=4.93 acc=6.28 (83s) eta=1.0000
+[unroll_T16-b] epoch 28/30 loss=4.4195 test_loss=4.3223 train_acc=5.08 acc=6.42 (83s) eta=1.0000
+[unroll_T16-b] epoch 29/30 loss=4.4191 test_loss=4.3203 train_acc=5.11 acc=6.46 (83s) eta=1.0000
+[unroll_T16-b] epoch 30/30 loss=4.4170 test_loss=4.3199 train_acc=5.26 acc=6.41 (83s) eta=1.0000
+[unroll_T16-b] per-loop test acc: 1:3.11 2:4.35 3:4.91 4:5.11 5:5.24 6:5.59 7:5.87 8:6.00 9:6.26 10:6.41
