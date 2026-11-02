@@ -24,6 +24,7 @@ import loop_diagnostics as t12  # noqa: E402  (also puts the T5 / T8 helpers on 
 from src.coverage_mask import CoverageMaskBody, masked_block_parts  # noqa: E402
 
 DEFAULT_OUT = TASK_DIR / "results" / "t12_diag"
+LOW_SUPPLY = 0.1  # T16 reports the share of patches with supply below this after each loop
 
 
 def masked_batch_metrics(body: CoverageMaskBody, states: list[torch.Tensor]) -> tuple[dict, float, list[torch.Tensor]]:
@@ -74,6 +75,7 @@ def collect_masked_metrics(model: nn.Module, loader, device: torch.device) -> di
             if worst >= t12.RECOMPUTE_TOLERANCE:
                 raise RuntimeError(f"recomputed masked block output differs from the real one by {worst:.2e}")
             values["supply_mean"] = [supply.mean(dim=1) for supply in supplies]
+            values["supply_low"] = [(supply < LOW_SUPPLY).float().mean(dim=1) for supply in supplies]  # T16
             for key, per_loop in values.items():
                 batches.setdefault(key, []).append(torch.stack(per_loop).cpu())
     print(f"recompute check (with mask): max |recomputed - real| block output = {worst:.2e} "
@@ -93,12 +95,14 @@ def analyse(checkpoint: str, args, device: torch.device, out_dir: Path) -> dict:
     t12.check_top1(exits, checkpoint, full_test_set=not args.limit)
     per_image = collect_masked_metrics(model, loop_loader, device)
     supply = per_image.pop("supply_mean")
+    supply_low = per_image.pop("supply_low")
     means = t12.summarise(per_image)
     means["supply_mean"] = [round(v, 4) for v in supply.mean(dim=1).tolist()]
+    means["supply_share_below_0.1"] = [round(v, 4) for v in supply_low.mean(dim=1).tolist()]
     result = {"checkpoint": checkpoint, "model": model_name, "readout": kind, "eta": round(body.eta.item(), 5),
               "n_loop_images": per_image["rel_cls"].shape[1], "means": means, "exits": exits,
               "decision": t12.decision(means)}
-    torch.save({**per_image, "supply_mean": supply}, out_dir / f"per_image_{name}.pt")
+    torch.save({**per_image, "supply_mean": supply, "supply_low": supply_low}, out_dir / f"per_image_{name}.pt")
     (out_dir / f"diag_{name}.json").write_text(json.dumps(result, indent=1))
     (out_dir / f"table_{name}.md").write_text(t12.markdown_table(means, exits) + "\n")
     print(f"[{name}] eta {result['eta']}; (d) acc per loop: "
