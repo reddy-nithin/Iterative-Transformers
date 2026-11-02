@@ -39,5 +39,49 @@ Low confidence on all.
 "run T20" if, on T11-d, the mean share averaged over loops 6 to 10 is ≥ 0.5 AND ‖a_t‖ / ‖d_t‖ averaged over loops 6 to
 10 is ≥ 0.3; otherwise "skip T20" with the two numbers.
 
-## Results
-_Pending._
+## Results (all 10,000 test images, fp32; full tables in `results/tables.md`)
+Checks: parts + bias = a_t to ≤ 1.3e-6 and a_t + m_t = the real CLS update to ≤ 2e-6 on every batch; each model's
+loop-10 readout equals its own top-1 (74.12 / 72.82 / 73.19 vs logged 74.11 / 72.82 / 73.17, fp32 vs AMP); our
+cos(d_t, d_{t−1}) matches T12 (c) within 0.0028 / 0.0054 / 0.0016 (tolerance 0.02). B2 has no LayerScale and no
+drop-path in eval (asserted), so nothing extra had to be folded into a part. proj bias norm ≈ 2.64 in all three.
+
+**(a) + (b), averaged over loops 6 to 10**
+
+| model | ‖a‖/‖d‖ | ‖m‖/‖d‖ | mean share | self share | cos a | cos m | cos d | cos mean | cos dev |
+|---|---|---|---|---|---|---|---|---|---|
+| T11-d | 0.917 | 1.048 | 0.539 | 0.050 | 0.935 | 0.922 | 0.880 | 0.928 | 0.946 |
+| T13-c | 1.226 | 1.318 | 0.678 | 0.036 | 0.991 | 0.995 | 0.989 | 0.992 | 0.992 |
+| T13-d | 1.139 | 1.282 | 0.615 | 0.040 | 0.994 | 0.996 | 0.992 | 0.994 | 0.994 |
+
+(self share = ‖W·self‖ / (‖W·self‖ + ‖W·mean‖ + ‖W·dev‖); cos columns are successive-loop cos, mean over t = 6..10.)
+
+- Attention and MLP parts are each about as large as the whole update or larger (‖a‖/‖d‖ and ‖m‖/‖d‖ ≈ 0.9 to 1.5),
+  so they partly cancel: from the per-loop means, cos(a_t, m_t) ≈ −0.5 at loop 10 on T11-d and ≈ −0.75 on T13-c
+  (approximate, computed from the mean ratios, not measured per image).
+- Inside the attention part the mean part is only slightly larger than the deviation part (mean share 0.54 to 0.68),
+  far from Gemini's ≥ 0.9. The CLS-self part is small after loop 3 (≤ 5%).
+- Late loops repeat the same push in every part: on T13-c / T13-d every part has successive cos ≥ 0.99; on T11-d
+  0.92 to 0.95, with the full update (0.88) a bit less collinear than its parts.
+
+**(c) Collinear halting rule** (`results/exit_curves_collinear_rule.png`): best gain over the fixed-depth curve is +0.04
+(T11-d), +0.14 (T13-c), +0.18 (T13-d), versus T13's best rules +3.74 / +0.79 / +0.67 (T11-d's large confidence gain
+comes from its steep fixed curve). Best top-1 on T13-c: 73.57 at 5.97 loops (θ 0.95, ρ 0.2), +0.75 over loop 10 (72.82),
+i.e. it recovers the loop-6 peak (73.53). ρ = 0.1 almost never fires on T11-d (its updates stay > 10% of ‖CLS‖).
+
+Plots: `results/update_split_per_loop.png`, `results/successive_cos_parts.png`, `results/exit_curves_collinear_rule.png`.
+
+**Decision line:** run T20
+(T11-d: mean share averaged over loops 6 to 10 = 0.539 ≥ 0.5 AND ‖a_t‖/‖d_t‖ averaged over loops 6 to 10 = 0.917 ≥ 0.3.)
+
+**Is the late-loop push mostly attention-mean, attention-deviation, or MLP?** None of them alone: the MLP part is the
+largest (‖m‖ ≈ 1.0 to 1.3 × ‖d‖) but the attention part is almost as large and points partly against it; within
+attention the mean and deviation parts are roughly equal (mean share 0.54 to 0.68), and all parts repeat the same
+direction loop after loop (cos ≥ 0.92 on T11-d, ≥ 0.99 on T13-c/d).
+
+### Prediction check
+- Gemini, mean share ≥ 0.9: **wrong** (0.54 / 0.68 / 0.62).
+- Mac Claude, MLP part ≥ half of ‖d_t‖ in late loops: **right** (≥ 0.97 everywhere). MLP the most collinear part with
+  cos ≥ 0.95: **right on T13-c/d** (0.995, 0.996, highest), **wrong on T11-d** (0.922, the deviation part 0.946 and the
+  attention part 0.935 are more collinear).
+- Halting rule beats loop 10 on T13-c by ≤ 0.7 pts: **just missed** (+0.75 at the best grid point; the sign is right).
+- Does not beat fixed depth by more than T13's best rule: **right** (+0.14 vs +0.79 on T13-c; same on the others).
