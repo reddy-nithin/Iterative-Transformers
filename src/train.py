@@ -40,6 +40,8 @@ def parse_args():
     p.add_argument("--tail-idx", type=int, default=11, help="hbt --hbt-pretrained: pretrained block for the tail")
     p.add_argument("--coverage-mask", action="store_true",
                    help="unroll: coverage mask on the repeated block's CLS attention (T14; src.coverage_mask)")
+    p.add_argument("--coverage-mask-v2-eta", type=float, default=None,
+                   help="unroll: coverage mask v2 with this FIXED eta (T16; drains only above-fair-share reads)")
     p.add_argument("--readout-loss", choices=READOUT_LOSSES, default="none",
                    help="looped models: train on a readout after every body loop (T13; src.per_loop_readout); "
                         "none = only the final output, as before")
@@ -72,6 +74,8 @@ def model_kwargs(args) -> dict:
         kwargs = {"unique_blocks": args.unique_blocks}
         if getattr(args, "coverage_mask", False):  # added only when on, so older unroll checkpoints rebuild unchanged
             kwargs["coverage_mask"] = True
+        if getattr(args, "coverage_mask_v2_eta", None) is not None:  # same: only when on
+            kwargs["coverage_mask_v2_eta"] = args.coverage_mask_v2_eta
         return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}

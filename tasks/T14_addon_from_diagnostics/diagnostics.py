@@ -21,7 +21,7 @@ TASK_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(TASK_DIR.parent / "T12_per_loop_cls_diagnostics"))
 
 import loop_diagnostics as t12  # noqa: E402  (also puts the T5 / T8 helpers on the path)
-from src.coverage_mask import CoverageMaskBody, masked_block_parts, update_supply  # noqa: E402
+from src.coverage_mask import CoverageMaskBody, masked_block_parts  # noqa: E402
 
 DEFAULT_OUT = TASK_DIR / "results" / "t12_diag"
 
@@ -37,7 +37,7 @@ def masked_batch_metrics(body: CoverageMaskBody, states: list[torch.Tensor]) -> 
         previous, current = states[t - 1], states[t]
         parts = masked_block_parts(body.block, previous, supply)
         worst = max(worst, (parts["output"] - current).abs().max().item())
-        supply = update_supply(supply, parts["cls_attention"], body.eta)
+        supply = body.next_supply(supply, parts["cls_attention"])  # T14 rule v1, or T16's v2
         supplies.append(supply)
         rel_cls, rel_patch = t12.relative_update(previous, current)
         attention = t12.cls_patch_attention(parts["probs"])

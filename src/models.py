@@ -66,6 +66,7 @@ def build_unrolled(
     pretrained: bool = True,
     source: nn.Module | None = None,
     coverage_mask: bool = False,
+    coverage_mask_v2_eta: float | None = None,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
@@ -73,6 +74,7 @@ def build_unrolled(
     unique_blocks=1 is block 0 x12 (same as `build_iterative`); unique_blocks=12 is the normal ViT-Tiny.
     `coverage_mask=True` (T14) puts a coverage mask on the repeated block's CLS attention
     (`src.coverage_mask.CoverageMaskLoop`, +1 parameter); off, the blocks are a plain `nn.Sequential` as before.
+    `coverage_mask_v2_eta=<eta>` (T16) puts the v2 mask there instead: fixed eta, no new parameters.
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -81,8 +83,12 @@ def build_unrolled(
         raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
     distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
     n_loops = depth - unique_blocks + 1
+    if coverage_mask and coverage_mask_v2_eta is not None:
+        raise ValueError("pick one of coverage_mask (T14) and coverage_mask_v2_eta (T16)")
     if coverage_mask:
         model.blocks = CoverageMaskLoop(distinct, repeated, n_loops)
+    elif coverage_mask_v2_eta is not None:
+        model.blocks = CoverageMaskLoop(distinct, repeated, n_loops, eta_init=coverage_mask_v2_eta, rule="v2")
     else:
         model.blocks = nn.Sequential(*distinct, *[repeated] * n_loops)
     return model
