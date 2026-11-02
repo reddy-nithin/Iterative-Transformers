@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T17-a_orth_cls.pt (epoch 30, test acc 72.18)
+[apple] N=500 top1=97.4 centred effective rank by layer: 0.0 18.7 73.1 110.4 124.5 124.4 123.9 123.7 124.0 124.2 124.4 124.6 124.8 125.6
+[bicycle] N=500 top1=95.2 centred effective rank by layer: 0.0 20.3 76.6 120.1 137.6 137.4 136.8 136.6 136.8 137.0 137.2 137.4 137.7 137.2
+[fox] N=500 top1=89.4 centred effective rank by layer: 0.0 20.1 75.2 118.6 136.6 135.9 135.0 134.9 135.5 135.9 136.3 136.5 136.7 136.1
+[cloud] N=500 top1=86.4 centred effective rank by layer: 0.0 17.4 75.5 115.7 129.1 130.7 131.0 131.6 131.7 132.2 132.3 132.6 132.7 133.7
+[control (all classes)] N=500 top1=87.6 centred effective rank by layer: 0.0 20.0 80.7 126.3 145.9 147.3 147.1 148.0 148.8 149.7 150.5 151.2 151.8 151.6
+[separation, all classes] - 3.06 2.54 1.70 1.63 1.39 1.25 1.23 1.21 1.22 1.22 1.24 1.25 1.38
+wrote tasks/T17_orthogonal_cls_updates/results/cls_svd_T17-a_train.json

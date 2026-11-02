@@ -1,0 +1,7 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T17-b_orth_large_cls.pt (epoch 30, test acc 72.35)
+[T17-b_orth_large_cls] own top-1 72.32 (logged 72.35)
+[T17-b_orth_large_cls] (d) acc per loop: 1:48.0 2:65.2 3:71.2 4:72.6 5:73.0 6:73.2 7:73.1 8:72.8 9:72.7 10:72.3
+recompute check: max |recomputed - real| block output = 6.59e-06 (< 0.0001)
+[T17-b_orth_large_cls] decision: {'late_loop_mean_attn_cos': 0.9786, 'late_loop_mean_attn_cos_headavg': 0.9877, 'mean_ratio': 0.9963, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md and the 4 plots in tasks/T17_orthogonal_cls_updates/results/t12_diag

@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T17-b_orth_large_cls.pt (epoch 30, test acc 72.35)
+[T17-b_orth_large_cls] loop-10 top-1 72.32 (logged 72.35)
+[T17-b_orth_large_cls] fixed: 1:48.0 2:65.2 3:71.2 4:72.6 5:73.0 6:73.2 7:73.1 8:72.8 9:72.7 10:72.3
+[T17-b_orth_large_cls] flip rate 9->10: 2.12%
+[T17-b_orth_large_cls] confidence: best gain -0.56 at 7.68 loops; within 1.0 pt of loop 10 with 4.0 loops (71.41%) vs fixed 4
+[T17-b_orth_large_cls] kl: best gain +0.62 at 3.58 loops; within 1.0 pt of loop 10 with 3.58 loops (72.63%) vs fixed 4
+[T17-b_orth_large_cls] patience: best gain +0.81 at 2.56 loops; within 1.0 pt of loop 10 with 3.79 loops (72.82%) vs fixed 4
+wrote tasks/T17_orthogonal_cls_updates/results/exit_analysis.json

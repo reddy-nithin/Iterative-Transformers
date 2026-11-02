@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T17-a_orth_cls.pt (epoch 30, test acc 72.18)
+[T17-a_orth_cls] loop-10 top-1 72.17 (logged 72.18)
+[T17-a_orth_cls] fixed: 1:48.6 2:65.4 3:70.7 4:72.5 5:72.8 6:72.9 7:72.7 8:72.5 9:72.4 10:72.2
+[T17-a_orth_cls] flip rate 9->10: 1.69%
+[T17-a_orth_cls] confidence: best gain -0.40 at 7.7 loops; within 1.0 pt of loop 10 with 4.84 loops (71.86%) vs fixed 4
+[T17-a_orth_cls] kl: best gain +0.57 at 3.57 loops; within 1.0 pt of loop 10 with 3.57 loops (72.32%) vs fixed 4
+[T17-a_orth_cls] patience: best gain +0.57 at 2.53 loops; within 1.0 pt of loop 10 with 3.76 loops (71.97%) vs fixed 4
+wrote tasks/T17_orthogonal_cls_updates/results/exit_analysis.json
