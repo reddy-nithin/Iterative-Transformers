@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T15-e_t13d_seed1.pt (epoch 30, test acc 72.86)
+[T15-e_t13d_seed1] loop-10 top-1 72.86 (logged 72.86)
+[T15-e_t13d_seed1] fixed: 1:43.9 2:63.5 3:70.0 4:72.3 5:72.9 6:73.0 7:73.0 8:73.0 9:73.0 10:72.9
+[T15-e_t13d_seed1] flip rate 9->10: 1.53%
+[T15-e_t13d_seed1] confidence: best gain -0.08 at 7.95 loops; within 1.0 pt of loop 10 with 5.19 loops (72.39%) vs fixed 4
+[T15-e_t13d_seed1] kl: best gain +0.75 at 3.42 loops; within 1.0 pt of loop 10 with 4.14 loops (72.95%) vs fixed 4
+[T15-e_t13d_seed1] patience: best gain +0.40 at 2.52 loops; within 1.0 pt of loop 10 with 4.92 loops (72.64%) vs fixed 4
+wrote tasks/T15_seed_repeats/results/exit_analysis_T15-e.json
