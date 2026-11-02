@@ -25,5 +25,29 @@ Run (repo root, tmux, one GPU): `CUDA_VISIBLE_DEVICES=N bash tasks/T18_unroll_cu
 ## Predictions (written before running)
 Every n gains 3 to 8 pts from 10 → 30 ep; the gain shrinks as n grows. n=4 at 30 ep ≥ 78.
 
-## Results
-_Pending._
+## Results (CIFAR-100 test top-1, lr 5e-4, seed 0; `results/table.md`, `results/acc_vs_n_10_vs_30ep.png`)
+
+| n | params | top-1 10 ep | top-1 30 ep | gain 10 → 30 ep | 30-ep run |
+|---|---|---|---|---|---|
+| 1 | 0.65M | 46.02 | 58.06 | +12.04 | T4 iter b0 (reused) |
+| 2 | 1.10M | 57.65 | **66.95** | +9.30 | T18-n2 |
+| 3 | 1.54M | 67.12 | 74.11 | +6.99 | T11-d (reused) |
+| 4 | 1.98M | 74.03 | **77.45** | +3.42 | T18-n4 |
+| 5 | 2.43M | 77.67 | **80.04** | +2.37 | T18-n5 |
+| 6 | 2.87M | 79.34 | **81.96** | +2.62 | T18-n6 |
+
+Reference: all 12 blocks distinct (5.54M) 86.77 at 30 epochs. One seed per point; T15 puts the seed spread at
+~0.3 to 0.8 pt, so the n = 5 vs 6 gain difference (2.37 vs 2.62) is noise.
+
+- Longer training helps the small end most: +12 (n = 1), +9.3 (n = 2), +7.0 (n = 3), then only +2.4 to +3.4 for
+  n = 4 to 6. The 10-epoch curve understated n ≤ 3 badly and n ≥ 4 only a little.
+- At 30 epochs the curve flattens after n = 3: +7.2 from n = 2 to 3, then +3.3, +2.6, +1.9 per extra distinct block.
+  n = 3 (1.54M, 28% of the baseline's params) keeps 85% of the baseline's accuracy (74.11 / 86.77); n = 6 (52% of the
+  params) keeps 94%.
+
+### Prediction check
+- Every n gains 3 to 8 pts from 10 → 30 ep: **wrong**, in both directions: n = 1, 2 gain more (+12.0, +9.3), n = 5, 6
+  gain less (+2.4, +2.6); only n = 3, 4 are inside 3 to 8.
+- The gain shrinks as n grows: **right** in trend (12.0 → 9.3 → 7.0 → 3.4 → 2.4), with n = 6 (+2.6) level with n = 5
+  within seed noise.
+- n = 4 at 30 ep ≥ 78: **wrong**, just (77.45).
