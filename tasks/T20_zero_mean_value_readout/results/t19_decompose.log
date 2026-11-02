@@ -1,0 +1,16 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'zero_mean_value': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T20-a_zero_mean_value.pt (epoch 30, test acc 71.51)
+split check: parts + bias vs a_t 8.34e-07, a_t + m_t vs real update 4.05e-06 (< 0.0001)
+[T20-a_zero_mean_value] loop-10 top-1 71.51 (logged 71.51)
+[T20-a_zero_mean_value] attn_frac: 1.008 1.179 1.209 1.159 1.090 1.010 0.943 0.911 0.909 0.924
+[T20-a_zero_mean_value] mlp_frac: 0.744 1.048 1.135 1.121 1.050 1.014 1.027 1.056 1.091 1.125
+[T20-a_zero_mean_value] mean_share: 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+[T20-a_zero_mean_value] self_share: 0.550 0.390 0.303 0.172 0.118 0.114 0.090 0.082 0.091 0.107
+[T20-a_zero_mean_value] rel_d: 0.303 0.216 0.225 0.259 0.295 0.317 0.307 0.272 0.230 0.194
+[T20-a_zero_mean_value] cos_a (t=2..10): 0.580 0.824 0.905 0.929 0.961 0.974 0.980 0.985 0.989
+[T20-a_zero_mean_value] cos_m (t=2..10): 0.882 0.906 0.921 0.895 0.887 0.919 0.945 0.959 0.969
+[T20-a_zero_mean_value] cos_d (t=2..10): 0.469 0.685 0.809 0.824 0.853 0.895 0.924 0.941 0.953
+[T20-a_zero_mean_value] cos_mean (t=2..10): 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+[T20-a_zero_mean_value] cos_dev (t=2..10): 0.367 0.632 0.802 0.864 0.932 0.958 0.970 0.977 0.981
+[T20-a_zero_mean_value] halting best gain vs fixed +1.00 at 4.48 loops (theta 0.8, rho None); decision: skip T20 (mean share 0.000, ||a||/||d|| 0.940)
+wrote tasks/T20_zero_mean_value_readout/results/t19/decomposition.json

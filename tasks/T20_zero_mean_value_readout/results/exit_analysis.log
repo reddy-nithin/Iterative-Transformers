@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'zero_mean_value': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T20-a_zero_mean_value.pt (epoch 30, test acc 71.51)
+[T20-a_zero_mean_value] loop-10 top-1 71.51 (logged 71.51)
+[T20-a_zero_mean_value] fixed: 1:1.4 2:3.0 3:8.8 4:23.2 5:41.8 6:57.7 7:66.2 8:70.1 9:71.1 10:71.5
+[T20-a_zero_mean_value] flip rate 9->10: 5.91%
+[T20-a_zero_mean_value] confidence: best gain +2.55 at 6.48 loops; within 1.0 pt of loop 10 with 7.71 loops (70.65%) vs fixed 9
+[T20-a_zero_mean_value] kl: best gain +0.47 at 2.08 loops; within 1.0 pt of loop 10 with 9.5 loops (71.5%) vs fixed 9
+[T20-a_zero_mean_value] patience: best gain +0.80 at 2.54 loops; within 1.0 pt of loop 10 with none vs fixed 9
+wrote tasks/T20_zero_mean_value_readout/results/exit_analysis.json

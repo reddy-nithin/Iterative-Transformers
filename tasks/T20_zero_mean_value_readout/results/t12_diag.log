@@ -1,0 +1,7 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'zero_mean_value': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T20-a_zero_mean_value.pt (epoch 30, test acc 71.51)
+[T20-a_zero_mean_value] own top-1 71.51 (logged 71.51)
+[T20-a_zero_mean_value] (d) acc per loop: 1:1.4 2:3.0 3:8.8 4:23.2 5:41.8 6:57.7 7:66.2 8:70.1 9:71.1 10:71.5
+recompute check: max |recomputed - real| block output = 0.00e+00 (< 0.0001)
+[T20-a_zero_mean_value] decision: {'late_loop_mean_attn_cos': 0.9636, 'late_loop_mean_attn_cos_headavg': 0.9732, 'mean_ratio': 1.1367, 'pick': 'coverage mask'}
+wrote diag_*.json, per_image_*.pt, table_*.md and the 4 plots in tasks/T20_zero_mean_value_readout/results/t12_diag
