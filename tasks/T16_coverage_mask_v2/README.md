@@ -42,5 +42,30 @@ of T13-d (73.17); if H1 is right, at least one run is ≥ +1 pt AND its per-loop
 Competing prediction (Gemini Round 3): on flat attention the v2 mask shaves the few peaks and pushes CLS attention
 entropy UP toward uniform (5.28), with no accuracy gain. Report entropy per loop so the two can be told apart.
 
+## Pre-flight results (zero-shot on `T13-d_unroll_loss_margin.pt`, all 10,000 test images; `results/preflight.json`)
+The script's masked loop equals the training code's `CoverageMaskLoop` (rule v2) exactly (max logit diff 0).
+
+| | η = 0.5 | η = 1.0 | unmasked |
+|---|---|---|---|
+| mean supply after loop 10 | 0.009 | 0.000 | 1 |
+| share of patches with c < 0.1 after loop 10 | 96.7% | 100% | 0 |
+| late-loop CLS attention cos (pairs 6-7 .. 9-10) | 0.497 | 0.754 | 0.995 (T14 / T12) |
+| output change, loops 6 to 10 | 1.25 | 1.39 | 0 |
+| test top-1 | 28.53 | 4.99 | 73.19 |
+
+CLS attention entropy per loop (nats, max 5.28):
+
+| loop | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| unmasked | 4.48 | 4.36 | 4.54 | 4.70 | 4.80 | 4.87 | 4.91 | 4.94 | 4.97 | 4.99 |
+| η = 0.5 | 4.48 | 4.38 | 4.64 | 4.74 | 4.74 | 4.63 | 4.07 | 3.69 | 3.96 | 4.29 |
+| η = 1.0 | 4.48 | 4.29 | 4.48 | 4.37 | 3.56 | 1.58 | 4.69 | 4.96 | 5.00 | 5.02 |
+
+**Gate: passes at both η** (supply < 0.8 and output change ≥ 0.10 at both; late cos < 0.9 at both). Top-1 is below 5%
+only at η = 1.0 (4.99), not at both, so the collapse note does not apply. Zero-shot, the v2 mask empties almost the
+whole supply by loop 10: once the most-read patches are drained, the next ones are read above the fair share and get
+drained too. At η = 1.0 supply is gone by loop 6, every patch then gets the same −13.8 bias, so the relative
+attention over patches goes back to near uniform (entropy 5.0 in loops 8 to 10).
+
 ## Results
-_Pending._
+_Pending (training)._
