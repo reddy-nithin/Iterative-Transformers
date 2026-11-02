@@ -35,6 +35,7 @@ sys.path.insert(0, str(TASK_DIR.parent / "T8_collapse_and_kl_exit"))  # T8's fix
 
 from cls_svd import load_model  # noqa: E402
 from diagnostics import test_loaders  # noqa: E402  (T8's module)
+from src.zero_mean_value import ZeroMeanValueBlock, zero_mean_block_parts  # noqa: E402
 
 RECOMPUTE_TOLERANCE = 1e-4  # max abs difference between recomputed and real block output (fp32)
 TOP1_TOLERANCE = 0.5  # points; full-depth top-1 must match the checkpoint's logged test acc
@@ -109,6 +110,14 @@ def recompute_block(block: nn.Module, x: torch.Tensor) -> dict[str, torch.Tensor
     return {"output": output, "probs": probs, "attn_out": sublayer}
 
 
+def recompute_body(body: nn.Module, x: torch.Tensor) -> dict[str, torch.Tensor]:
+    """`recompute_block` for the looped body: a plain timm Block, or T20's `ZeroMeanValueBlock` (CLS row reads
+    zero-mean patch values), recomputed with its own rule so the check against the real output still holds."""
+    if isinstance(body, ZeroMeanValueBlock):
+        return zero_mean_block_parts(body.block, x)
+    return recompute_block(body, x)
+
+
 # ---------- metrics (each returns one value per image) ----------
 
 def relative_update(previous: torch.Tensor, current: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -178,7 +187,7 @@ def batch_metrics(body: nn.Module, states: list[torch.Tensor]) -> tuple[dict[str
     attentions, worst = [], 0.0
     for t in range(1, len(states)):
         previous, current = states[t - 1], states[t]
-        parts = recompute_block(body, previous)
+        parts = recompute_body(body, previous)
         worst = max(worst, (parts["output"] - current).abs().max().item())
         rel_cls, rel_patch = relative_update(previous, current)
         attention = cls_patch_attention(parts["probs"])

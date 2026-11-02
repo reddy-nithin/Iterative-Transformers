@@ -30,6 +30,7 @@ from loop_diagnostics import BodyRecorder, find_body, loop_states, readout_logit
 
 from cls_svd import load_model  # noqa: E402  (T5, put on the path by exit_analysis)
 from early_exit import exit_accuracies, rule_result  # noqa: E402
+from src.zero_mean_value import ZeroMeanValueBlock, zero_mean_mix  # noqa: E402
 
 SPLIT_TOLERANCE = 1e-4  # parts + bias must equal a_t; a_t + m_t must equal the real CLS update
 EPS = 1e-8
@@ -76,10 +77,11 @@ def check_plain_block(block: nn.Module) -> None:
         raise ValueError("attention has an inner norm or gate; the linear split does not apply")
 
 
-def split_cls_update(block: nn.Module, x: torch.Tensor) -> dict[str, torch.Tensor]:
+def split_cls_update(block: nn.Module, x: torch.Tensor, zero_mean: bool = False) -> dict[str, torch.Tensor]:
     """CLS update of one block call on state x (B, N, C), split into parts, each (B, C):
     a (attention row 0 after proj), m (MLP row 0), self / mean / dev (proj weight applied, no bias), and the
-    proj bias (C,). a = self + mean + dev + bias, d = a + m."""
+    proj bias (C,). a = self + mean + dev + bias, d = a + m.
+    zero_mean=True (T20 block): CLS reads zero-mean patch values, so the mean part is 0 and a = self + dev + bias."""
     attn = block.attn
     batch, n_tokens, _ = x.shape
     qkv = attn.qkv(block.norm1(x)).reshape(batch, n_tokens, 3, attn.num_heads, attn.head_dim).permute(2, 0, 3, 1, 4)
@@ -97,10 +99,24 @@ def split_cls_update(block: nn.Module, x: torch.Tensor) -> dict[str, torch.Tenso
         return F.linear(part.reshape(batch, -1), attn.proj.weight)
 
     parts = {"self": project(self_part), "mean": project(mean_part), "dev": project(deviation)}
-    mixed = (weights.unsqueeze(-1) * v).sum(dim=2).reshape(batch, -1)
+    if zero_mean:
+        mixed = zero_mean_mix(weights.unsqueeze(2), v)[:, :, 0].reshape(batch, -1)  # the T20 training code's rule
+        parts["mean"] = torch.zeros_like(parts["mean"])
+    else:
+        mixed = (weights.unsqueeze(-1) * v).sum(dim=2).reshape(batch, -1)
     a = attn.proj(mixed)
     m = block.mlp(block.norm2(x[:, 0] + a))
     return {**parts, "a": a, "m": m, "d": a + m, "bias": attn.proj.bias}
+
+
+def inner_block(body: nn.Module) -> nn.Module:
+    """The timm Block of the looped body (unwraps T20's `ZeroMeanValueBlock`)."""
+    return body.block if isinstance(body, ZeroMeanValueBlock) else body
+
+
+def split_body_update(body: nn.Module, x: torch.Tensor) -> dict[str, torch.Tensor]:
+    """`split_cls_update` for the looped body, with the zero-mean rule when the body is T20's block."""
+    return split_cls_update(inner_block(body), x, zero_mean=isinstance(body, ZeroMeanValueBlock))
 
 
 def split_error(parts: dict[str, torch.Tensor]) -> float:
@@ -144,7 +160,7 @@ def batch_values(body: nn.Module, states: list[torch.Tensor]) -> tuple[dict[str,
     before = None
     for t in range(1, len(states)):
         previous, current = states[t - 1], states[t]
-        parts = split_cls_update(body, previous)
+        parts = split_body_update(body, previous)
         worst_split = max(worst_split, split_error(parts))
         worst_update = max(worst_update, (parts["d"] - (current[:, 0] - previous[:, 0])).abs().max().item())
         for key, value in loop_metrics(parts, previous[:, 0]).items():
@@ -189,7 +205,7 @@ def collect(model: nn.Module, loader, device: torch.device) -> tuple[dict[str, t
     body, tail = find_body(model)
     if tail:
         raise ValueError("T19 is for the T11-d layout (no tail)")
-    check_plain_block(body)
+    check_plain_block(inner_block(body))
     batches: dict[str, list[torch.Tensor]] = {}
     logits, labels = [], []
     worst_split = worst_update = 0.0
@@ -257,7 +273,7 @@ def analyse_checkpoint(checkpoint: str, args: argparse.Namespace, device: torch.
     points = halting_curve(logits, labels, per_image["cos_d"], per_image["rel_d"], fixed)
     body, _ = find_body(model)
     return {"checkpoint": checkpoint, "n_images": len(labels), "own_top1": round(top1, 2), "means": means,
-            "bias_norm": round(body.attn.proj.bias.norm().item(), 4),
+            "bias_norm": round(inner_block(body).attn.proj.bias.norm().item(), 4),
             "acc_per_loop": fixed, "halting": points, "halting_vs_fixed": compare_with_fixed(points, fixed),
             "t12_check": compare_with_t12(name, means["cos_d"]), "decision": decision(means)}
 

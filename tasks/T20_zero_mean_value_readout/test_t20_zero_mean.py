@@ -68,3 +68,23 @@ def test_flag_only_added_when_set() -> None:
     assert model_kwargs(args) == {"unique_blocks": 3}
     args.zero_mean_value = True
     assert model_kwargs(args) == {"unique_blocks": 3, "zero_mean_value": True}
+
+
+def test_t12_and_t19_diagnostics_follow_the_zero_mean_rule() -> None:
+    import sys
+    from pathlib import Path
+    tasks = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(tasks / "T12_per_loop_cls_diagnostics"))
+    sys.path.insert(0, str(tasks / "T19_cls_update_decomposition"))
+    from decompose import split_body_update, split_error
+    from loop_diagnostics import recompute_body
+
+    wrapped = ZeroMeanValueBlock(tiny_vit().blocks[2])
+    x = torch.randn(3, 17, DIM)
+    with torch.no_grad():
+        real = wrapped(x)
+        assert (recompute_body(wrapped, x)["output"] - real).abs().max() < 1e-5
+        parts = split_body_update(wrapped, x)
+    assert parts["mean"].abs().max() == 0
+    assert split_error(parts) < 1e-5
+    assert (parts["d"] - (real[:, 0] - x[:, 0])).abs().max() < 1e-5
