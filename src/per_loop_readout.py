@@ -56,17 +56,23 @@ def readout(model: nn.Module, state: torch.Tensor, tail: list[nn.Module]) -> tor
 
 def per_loop_logits(model: nn.Module, images: torch.Tensor) -> list[torch.Tensor]:
     """Logits (B, classes) after every body loop t = 1..L; the last entry equals `model(images)`."""
+    return per_loop_logits_and_cls(model, images)[0]
+
+
+def per_loop_logits_and_cls(model: nn.Module, images: torch.Tensor) -> tuple[list[torch.Tensor], list[torch.Tensor]]:
+    """(logits after every body loop t = 1..L, raw CLS states [x_0[:, 0], ..., x_L[:, 0]] with x_0 = body input)."""
     head, body, tail, n_loops = split_loop(model)
     if hasattr(body, "reset"):  # stateful body (T14 coverage mask): start every pass with full supply
         body.reset()
     x = embed(model, images)
     for block in head:
         x = block(x)
-    logits = []
+    logits, cls_states = [], [x[:, 0]]
     for _ in range(n_loops):
         x = body(x)
         logits.append(readout(model, x, tail))
-    return logits
+        cls_states.append(x[:, 0])
+    return logits, cls_states
 
 
 def loop_weights(n_loops: int) -> torch.Tensor:

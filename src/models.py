@@ -9,6 +9,7 @@ from torch import nn
 from src.coverage_mask import CoverageMaskLoop
 from src.head_body_tail import InjectedLoop
 from src.lora_loop import LoRALoopBlocks
+from src.zero_mean_value import ZeroMeanValueBlock
 
 MODEL_NAME = "vit_tiny_patch16_224"
 NUM_CLASSES = 100
@@ -67,6 +68,7 @@ def build_unrolled(
     source: nn.Module | None = None,
     coverage_mask: bool = False,
     coverage_mask_v2_eta: float | None = None,
+    zero_mean_value: bool = False,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
@@ -75,6 +77,8 @@ def build_unrolled(
     `coverage_mask=True` (T14) puts a coverage mask on the repeated block's CLS attention
     (`src.coverage_mask.CoverageMaskLoop`, +1 parameter); off, the blocks are a plain `nn.Sequential` as before.
     `coverage_mask_v2_eta=<eta>` (T16) puts the v2 mask there instead: fixed eta, no new parameters.
+    `zero_mean_value=True` (T20): the repeated block's CLS row reads zero-mean patch values
+    (`src.zero_mean_value.ZeroMeanValueBlock`, no new parameters).
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -83,12 +87,15 @@ def build_unrolled(
         raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
     distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
     n_loops = depth - unique_blocks + 1
-    if coverage_mask and coverage_mask_v2_eta is not None:
-        raise ValueError("pick one of coverage_mask (T14) and coverage_mask_v2_eta (T16)")
+    if sum([coverage_mask, coverage_mask_v2_eta is not None, zero_mean_value]) > 1:
+        raise ValueError("pick at most one of coverage_mask (T14), coverage_mask_v2_eta (T16), zero_mean_value (T20)")
     if coverage_mask:
         model.blocks = CoverageMaskLoop(distinct, repeated, n_loops)
     elif coverage_mask_v2_eta is not None:
         model.blocks = CoverageMaskLoop(distinct, repeated, n_loops, eta_init=coverage_mask_v2_eta, rule="v2")
+    elif zero_mean_value:
+        looped = ZeroMeanValueBlock(repeated)
+        model.blocks = nn.Sequential(*distinct, *[looped] * n_loops)
     else:
         model.blocks = nn.Sequential(*distinct, *[repeated] * n_loops)
     return model

@@ -16,7 +16,8 @@ from torch import nn
 from src.data import make_loaders
 from src.metrics import count_gflops, count_params, measure_throughput
 from src.models import build
-from src.per_loop_readout import READOUT_LOSSES, per_loop_logits, readout_loss
+from src.cls_update_loss import CLS_UPDATE_LOSSES, cls_update_penalty
+from src.per_loop_readout import READOUT_LOSSES, per_loop_logits, per_loop_logits_and_cls, readout_loss
 
 
 def parse_args():
@@ -42,6 +43,11 @@ def parse_args():
                    help="unroll: coverage mask on the repeated block's CLS attention (T14; src.coverage_mask)")
     p.add_argument("--coverage-mask-v2-eta", type=float, default=None,
                    help="unroll: coverage mask v2 with this FIXED eta (T16; drains only above-fair-share reads)")
+    p.add_argument("--zero-mean-value", action="store_true",
+                   help="unroll: the repeated block's CLS row reads zero-mean patch values (T20; src.zero_mean_value)")
+    p.add_argument("--cls-update-loss", choices=CLS_UPDATE_LOSSES, default="none",
+                   help="looped models with --readout-loss: add the T17 term on successive CLS updates (orth = "
+                        "near-orthogonal, orth_large = + size floor; src.cls_update_loss); none = as before")
     p.add_argument("--readout-loss", choices=READOUT_LOSSES, default="none",
                    help="looped models: train on a readout after every body loop (T13; src.per_loop_readout); "
                         "none = only the final output, as before")
@@ -76,6 +82,8 @@ def model_kwargs(args) -> dict:
             kwargs["coverage_mask"] = True
         if getattr(args, "coverage_mask_v2_eta", None) is not None:  # same: only when on
             kwargs["coverage_mask_v2_eta"] = args.coverage_mask_v2_eta
+        if getattr(args, "zero_mean_value", False):  # same: only when on
+            kwargs["zero_mean_value"] = True
         return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
@@ -176,16 +184,23 @@ def evaluate_per_loop(model, loader, device, use_amp) -> list[float]:
     return [round(100.0 * c / total, 2) for c in correct.tolist()]
 
 
-def forward_and_loss(model, x, y, criterion, readout: str) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+def forward_and_loss(model, x, y, criterion, readout: str,
+                     cls_update: str = "none") -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """(final logits, training loss, CE of the final logits). With `readout` != "none" the loss covers the readout
-    after every body loop (src.per_loop_readout); the final logits are still the normal model output."""
+    after every body loop (src.per_loop_readout); the final logits are still the normal model output. With
+    `cls_update` != "none" (T17) the term on successive CLS updates (src.cls_update_loss) is added."""
     if readout == "none":
+        if cls_update != "none":
+            raise ValueError("--cls-update-loss needs a --readout-loss (T17 adds it to the per-loop loss)")
         logits = model(x)
         loss = criterion(logits, y)
         return logits, loss, loss
-    logits_per_loop = per_loop_logits(model, x)
+    logits_per_loop, cls_states = per_loop_logits_and_cls(model, x)
     logits = logits_per_loop[-1]
-    return logits, readout_loss(logits_per_loop, y, readout), criterion(logits, y)
+    loss = readout_loss(logits_per_loop, y, readout)
+    if cls_update != "none":
+        loss = loss + cls_update_penalty(cls_states, cls_update)
+    return logits, loss, criterion(logits, y)
 
 
 def main():
@@ -232,7 +247,8 @@ def main():
                 g["lr"] = cosine_lr(step, total_steps, warmup_steps, g["base_lr"])
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device.type, enabled=use_amp):
-                logits, loss, ce_final = forward_and_loss(model, x, y, criterion, args.readout_loss)
+                logits, loss, ce_final = forward_and_loss(model, x, y, criterion, args.readout_loss,
+                                                     args.cls_update_loss)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.step(opt)
