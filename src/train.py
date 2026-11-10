@@ -261,7 +261,8 @@ def main():
             step += 1
         acc, test_loss = evaluate(model, val_loader, device, use_amp, criterion)
         rec = {"epoch": epoch + 1, "train_loss": loss_sum / steps_per_epoch, "test_loss": test_loss,
-               "train_acc": 100.0 * train_correct / train_seen, "test_acc": acc, "epoch_time_s": time.time() - t0}
+               "train_acc": 100.0 * train_correct / train_seen, "test_acc": acc, "epoch_time_s": time.time() - t0,
+               "lr": opt.param_groups[0]["lr"]}  # lr of the epoch's last step (first param group)
         eta = coverage_eta(model)
         if eta is not None:
             rec["eta"] = round(eta, 5)
@@ -272,7 +273,7 @@ def main():
         history.append(rec)
         print(f"[{name}] epoch {rec['epoch']}/{args.epochs} loss={rec['train_loss']:.4f} "
               f"test_loss={test_loss:.4f} train_acc={rec['train_acc']:.2f} "
-              f"acc={acc:.2f} ({rec['epoch_time_s']:.0f}s)" + (f" eta={eta:.4f}" if eta is not None else ""),
+              f"acc={acc:.2f} lr={rec['lr']:.2e} ({rec['epoch_time_s']:.0f}s)" + (f" eta={eta:.4f}" if eta is not None else ""),
               flush=True)
         # write every epoch so a crash / dropped session still leaves partial results
         info.update(history=history, final_test_acc=acc, best_test_acc=max(h["test_acc"] for h in history))
