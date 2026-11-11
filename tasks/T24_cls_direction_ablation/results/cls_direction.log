@@ -1,0 +1,16 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt (epoch 30, test acc 74.11)
+[T11-d_unroll_n3_30ep] loop-10 top-1 74.12 (logged 74.11)
+[T11-d] energy share 0.132; LINE: H11 refuted (energy share 0.132, top-1 72.24 with u1 removed in loops 6-10 vs 74.12)
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-c_unroll_readout_every_loop.pt (epoch 30, test acc 72.82)
+[T13-c_unroll_readout_every_loop] loop-10 top-1 72.82 (logged 72.82)
+[T13-c] energy share 0.375; LINE: H11 mixed (energy share 0.375, top-1 72.10 with u1 removed in loops 6-10 vs 72.82)

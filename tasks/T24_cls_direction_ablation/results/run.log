@@ -1,0 +1,40 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt (epoch 30, test acc 74.11)
+[T11-d_unroll_n3_30ep] loop-10 top-1 74.12 (logged 74.11)
+[T11-d] energy share 0.132; LINE: H11 refuted (energy share 0.132, top-1 72.24 with u1 removed in loops 6-10 vs 74.12)
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T13-c_unroll_readout_every_loop.pt (epoch 30, test acc 72.82)
+[T13-c_unroll_readout_every_loop] loop-10 top-1 72.82 (logged 72.82)
+[T13-c] energy share 0.375; LINE: H11 mixed (energy share 0.375, top-1 72.10 with u1 removed in loops 6-10 vs 72.82)
+| model | energy share σ1² | top-5 cumulative | cos(u1, mean d) | centred energy share |
+| T11-d | 0.132 | 0.132 / 0.180 / 0.219 / 0.246 / 0.271 | 0.995 | 0.055 |
+| T13-c | 0.375 | 0.375 / 0.399 / 0.419 / 0.436 / 0.452 | 0.998 | 0.074 |
+
+| model | Fisher u1 | random median | random p95 | u1 percentile |
+| T11-d | 1.569 | 0.7051 | 0.9713 | 100.0 |
+| T13-c | 1.019 | 0.638 | 0.823 | 99.5 |
+[T11-d] ‖d_t‖:     3.896 3.501 3.404 3.982 4.503 4.386 4.378 4.180 3.866 3.579
+[T11-d] |d_t·u1|:  0.417 0.343 0.257 0.399 0.568 1.379 1.776 1.628 1.308 1.015
+[T13-c] ‖d_t‖:     7.440 5.708 5.405 4.325 3.497 2.949 2.602 2.372 2.212 2.097
+[T13-c] |d_t·u1|:  3.352 1.115 2.657 2.484 2.126 1.799 1.574 1.417 1.302 1.216
+
+| setting | T11-d | T13-c |
+| no edit | 74.12 (+0.00) | 72.82 (+0.00) |
+| u1 loops 6-10 | 72.24 (-1.88) | 72.10 (-0.72) |
+| u1 loops 1-10 | 71.53 (-2.59) | 68.22 (-4.60) |
+| random loops 6-10 | 73.97 (-0.15) (spread 0.26) | 72.74 (-0.08) (spread 0.08) |
+| u2 loops 6-10 | 73.72 (-0.40) | 72.77 (-0.05) |
+[T11-d] per-loop no edit: [1.22, 3.79, 11.3, 29.61, 49.67, 62.56, 69.6, 73.12, 74.25, 74.12]
+[T11-d] per-loop u1 loops 6-10: [1.22, 3.79, 11.3, 29.61, 49.67, 61.3, 67.49, 70.85, 71.9, 72.24]
+[T11-d] LINE: H11 refuted (energy share 0.132, top-1 72.24 with u1 removed in loops 6-10 vs 74.12)
+[T13-c] per-loop no edit: [49.0, 66.02, 71.38, 72.93, 73.27, 73.53, 73.36, 73.12, 73.04, 72.82]
+[T13-c] per-loop u1 loops 6-10: [49.0, 66.02, 71.38, 72.93, 73.27, 73.48, 73.23, 73.06, 72.71, 72.1]
+[T13-c] LINE: H11 mixed (energy share 0.375, top-1 72.10 with u1 removed in loops 6-10 vs 72.82)
