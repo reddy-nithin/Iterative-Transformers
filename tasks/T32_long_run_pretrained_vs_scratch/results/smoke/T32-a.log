@@ -1,0 +1,4 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[unroll_T32-a] params=1,539,940 GFLOPs=2.51 throughput=5794 img/s
+[unroll_T32-a] param groups: 1,539,940 @ lr 0.0005
+[unroll_T32-a] epoch 1/1 loss=5.2412 test_loss=5.3349 train_acc=0.78 acc=1.00 lr=5.00e-04 (2s)

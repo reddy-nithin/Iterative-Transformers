@@ -1,0 +1,3 @@
+[hbt_T32-b] params=1,539,940 GFLOPs=2.51 throughput=5769 img/s
+[hbt_T32-b] param groups: 1,539,940 @ lr 0.0005
+[hbt_T32-b] epoch 1/1 loss=4.6384 test_loss=4.5965 train_acc=1.56 acc=2.00 lr=5.00e-04 (2s)

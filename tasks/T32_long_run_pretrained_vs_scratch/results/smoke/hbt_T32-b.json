@@ -1,0 +1,53 @@
+{
+  "args": {
+    "model": "hbt",
+    "block_idx": 0,
+    "init": null,
+    "rank": 2,
+    "lora_init": "svd",
+    "unique_blocks": 1,
+    "head_blocks": 2,
+    "tail_blocks": 0,
+    "inject": false,
+    "hbt_pretrained": false,
+    "head_idx": 0,
+    "body_idx": 0,
+    "tail_idx": 11,
+    "coverage_mask": false,
+    "coverage_mask_v2_eta": null,
+    "zero_mean_value": false,
+    "cls_update_loss": "none",
+    "readout_loss": "none",
+    "epochs": 1,
+    "batch_size": 128,
+    "lr": 0.0005,
+    "head_lr": null,
+    "lora_lr": null,
+    "weight_decay": 0.05,
+    "warmup_epochs": 1.0,
+    "seed": 0,
+    "num_workers": 4,
+    "subset": 300,
+    "data_root": "data",
+    "out_dir": "tasks/T32_long_run_pretrained_vs_scratch/results/smoke",
+    "tag": "_T32-b",
+    "save_checkpoint": null
+  },
+  "device": "cuda",
+  "params": 1539940,
+  "gflops": 2.5070208,
+  "throughput_img_s": 5768.511698905315,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 4.638433218002319,
+      "test_loss": 4.5964708964029946,
+      "train_acc": 1.5625,
+      "test_acc": 2.0,
+      "epoch_time_s": 1.7851953506469727,
+      "lr": 0.0005
+    }
+  ],
+  "final_test_acc": 2.0,
+  "best_test_acc": 2.0
+}

@@ -68,4 +68,51 @@ Low confidence; copied verbatim from the task spec.
 whose learning rate had already decayed to about 0 by epoch 30, so it had settled. Compare T32-a with T32-b at the same
 epoch (they share the same schedule), and judge the final result at epoch 100.
 
-_Pending: runs not started yet._
+Both runs finished 100 epochs on 2026-11-10 (~52 s/epoch each, one GPU each). Smoke test: both models 1,539,940
+params; the random-init model started at 2.00 top-1 (300-image smoke subset), i.e. near chance. Checkpoints
+`T32-a_2p10_pretrained_100ep.pt` and `T32-b_2p10_scratch_100ep.pt` saved.
+
+### Test top-1 (%) at selected epochs
+
+| Run | ep 10 | ep 30 | ep 50 | ep 75 | ep 100 | best (epoch) | gain ep 90 → 100 |
+|---|---|---|---|---|---|---|---|
+| T32-a pretrained | 62.07 | 69.85 | 72.68 | 74.49 | **75.51** | 75.61 (95) | +0.03 |
+| T32-b scratch | 28.53 | 44.34 | 49.28 | 52.84 | **53.87** | 53.98 (92) | +0.19 |
+| gap g(e) | 33.54 | 25.51 | 23.40 | 21.65 | **21.64** | | |
+
+- Gap: smallest 16.93 at epoch 1, largest 36.31 at epoch 7, then shrinks slowly and stops shrinking around epoch 70
+  (21.5 at ep 70, 21.6 at ep 100). First epoch with g < 1 pt: **never**.
+- Both curves are flat at the end: the last 10 epochs add +0.03 (a) and +0.19 (b), both well under the seed spread.
+- Final losses: T32-a test 1.598 / train 1.34; T32-b test 2.360 / train 1.87. T32-b's test loss stops falling at
+  about epoch 70 (min 2.356 at ep 77) while its train loss keeps falling: the scratch model has run out of what it can
+  learn from 50k images, not out of epochs.
+- Throughput and FLOPs are identical (2.51 GFLOPs, ~5,800 img/s), as expected for the same architecture.
+
+**Does scratch catch pretrained within 100 epochs? No: gap 21.6 pt at epoch 100, and it has stopped shrinking.**
+
+### What this means for 30-epoch runs
+
+- T32-a first passes T11-d's 74.11 at **epoch 67** and ends at 75.51, so 100 epochs buys only **+1.4 pt** over the
+  30-epoch T11-d run (one seed each; about twice the seed spread). The 30-epoch runs are close to where 2+10 can go:
+  read a 30-ep number as roughly 1 to 1.5 pt below its 100-ep ceiling.
+- Pretraining is worth ~22 pt for this model on CIFAR-100. Scratch after 100 epochs (53.87) is about where
+  pretrained is after **4 epochs** (53.36). Earlier 30-ep scratch numbers (T9 44.87, T4 47.37) are in line with
+  T32-b's 44.34 at epoch 30.
+
+### Prediction check
+
+| Prediction | Result | Verdict |
+|---|---|---|
+| T32-a ends at 76 to 79 | 75.51 | wrong (just below the range) |
+| T32-a gain over the last 10 epochs < 0.5 pt | +0.03 | right |
+| T32-b ends at 52 to 62 | 53.87 | right (low end) |
+| T32-b still rising at epoch 100 | +0.19 over the last 10 epochs, best at ep 92, test loss flat since ~ep 70 | wrong |
+| T32-a at epoch 30 below 74.11 | 69.85 | right |
+| Gap never below 1 pt | min 16.93 | right |
+| Gap still over 10 pt at epoch 100 | 21.64 | right |
+
+### Plots
+
+`results/acc_vs_epoch_100ep.png`, `results/loss_vs_epoch_100ep.png`, `results/gap_vs_epoch.png`,
+`results/lr_vs_epoch.png` (made by `plot.py`, which also prints the numbers above). `results/plots/` holds
+presentation versions of the accuracy and loss curves (stacked, overlay, dual axis) for posting in Teams.
