@@ -9,6 +9,7 @@ RUN="T31-a"
 CHECKPOINT_NAME="T31-a_random_loops.pt"
 MODEL_ARGS=(--model unroll --unique-blocks 3 --random-loops)
 CLS_SVD="tasks/T5_cls_svd_per_block/cls_svd.py"
+DEPTH_SWEEP="$TASK_DIR/depth_sweep.py"
 EXIT_ANALYSIS="tasks/T13_per_loop_readout_loss/exit_analysis.py"
 PYTHON="${PYTHON:-.venv/bin/python}"
 OUT_ROOT="${OUT_ROOT:-$TASK_DIR/results}"
@@ -38,7 +39,7 @@ if [[ "$SMOKE" == "1" ]]; then
         --out-dir "$out" --tag "_$RUN" --save-checkpoint "$checkpoint" 2>&1 | tee "$out/$RUN.log"
     PYTHONPATH=. "$PYTHON" "$EXIT_ANALYSIS" "$checkpoint" --limit 500 --out "$out/exit_analysis.json" \
         2>&1 | tee "$out/exit_analysis.log"
-    exit 0
+    exit 0  # depth_sweep.py reads the full checkpoint; its smoke test is run by hand
 fi
 
 mkdir -p "$OUT_ROOT" "$CKPT_DIR"
@@ -59,4 +60,7 @@ PYTHONPATH=. "$PYTHON" "$CLS_SVD" --checkpoint "$checkpoint" --model-tag "${RUN}
     --out-dir "$OUT_ROOT" 2>&1 | tee "$OUT_ROOT/cls_svd_${RUN}_train.log"
 PYTHONPATH=. "$PYTHON" "$CLS_SVD" --checkpoint "$checkpoint" --split test --per-class 100 --control-size 100 \
     --model-tag "${RUN}_test" --out-dir "$OUT_ROOT" 2>&1 | tee "$OUT_ROOT/cls_svd_${RUN}_test.log"
+echo "[run] $RUN fixed r = 1..20 and exit rules with a 20-loop budget ($(date '+%F %T'))"
+PYTHONPATH=. "$PYTHON" "$DEPTH_SWEEP" 2>&1 | tee "$OUT_ROOT/depth_sweep.log"
+PYTHONPATH=. "$PYTHON" "$TASK_DIR/plot.py" 2>&1 | tee "$OUT_ROOT/plot.log"
 echo "[run] done ($(date '+%F %T'))"
