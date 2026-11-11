@@ -1,0 +1,118 @@
+{
+ "flops": {
+  "counted_without_fused_attention": {
+   "full_loop": 174292992,
+   "cls_only_as_coded": 29786112
+  },
+  "counted_with_attention": {
+   "full_loop": 204098304,
+   "cls_only_as_coded": 29937408
+  },
+  "formula": {
+   "full_loop": 204098304,
+   "cls_only_as_coded": 29937408,
+   "cls_only_kv_cached": 888576
+  },
+  "share_of_full_loop_pct": {
+   "full_loop": 100.0,
+   "cls_only_as_coded": 14.67,
+   "cls_only_kv_cached": 0.44
+  }
+ },
+ "train": {
+  "T11-d (ref)": {
+   "params": 1539940,
+   "gflops": 2.507,
+   "throughput_img_s": 5788,
+   "epochs": 30,
+   "final_top1": 74.11,
+   "best_top1": 74.13,
+   "median_epoch_s": 78.7
+  },
+  "T28-a CLS-only loop": {
+   "params": 1539940,
+   "gflops": 0.765,
+   "throughput_img_s": 12697,
+   "epochs": 30,
+   "final_top1": 67.93,
+   "best_top1": 68.03,
+   "median_epoch_s": 62.8
+  }
+ },
+ "readout": {
+  "T11-d (ref)": [
+   1.22,
+   3.79,
+   11.3,
+   29.61,
+   49.67,
+   62.56,
+   69.6,
+   73.12,
+   74.25,
+   74.12
+  ],
+  "T28-a CLS-only loop": [
+   9.82,
+   25.7,
+   39.97,
+   50.95,
+   59.05,
+   64.07,
+   66.76,
+   68.1,
+   68.24,
+   67.94
+  ]
+ },
+ "separation": {
+  "T11-d (ref) test": [
+   2.278,
+   2.167,
+   1.733,
+   1.346,
+   1.126,
+   1.062,
+   1.061,
+   1.084,
+   1.116,
+   1.151
+  ],
+  "T11-d (ref) train": [
+   2.358,
+   2.332,
+   1.864,
+   1.418,
+   1.15,
+   1.048,
+   1.013,
+   1.004,
+   1.008,
+   1.022
+  ],
+  "T28-a CLS-only loop test": [
+   2.127,
+   2.051,
+   1.937,
+   1.872,
+   1.802,
+   1.718,
+   1.635,
+   1.566,
+   1.514,
+   1.477
+  ],
+  "T28-a CLS-only loop train": [
+   2.261,
+   2.127,
+   1.996,
+   1.903,
+   1.796,
+   1.673,
+   1.558,
+   1.465,
+   1.395,
+   1.345
+  ]
+ }
+}

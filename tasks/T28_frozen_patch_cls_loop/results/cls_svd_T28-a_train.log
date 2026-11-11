@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'cls_only_loop': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T28-a_cls_only_loop.pt (epoch 30, test acc 67.93)
+[apple] N=500 top1=92.8 centred effective rank by layer: 0.0 18.2 72.9 99.8 108.5 115.7 119.5 120.7 120.8 120.3 119.6 118.7 117.7 122.4
+[bicycle] N=500 top1=92.0 centred effective rank by layer: 0.0 21.2 76.9 105.9 113.2 121.7 128.3 132.3 134.4 135.3 135.5 135.3 134.8 137.3
+[fox] N=500 top1=87.4 centred effective rank by layer: 0.0 21.0 79.5 106.6 113.7 122.5 129.5 133.9 136.3 137.4 137.9 138.0 138.0 138.7
+[cloud] N=500 top1=85.0 centred effective rank by layer: 0.0 18.0 80.4 106.9 114.4 120.2 123.4 125.3 126.3 126.8 126.9 126.8 126.7 130.7
+[control (all classes)] N=500 top1=84.0 centred effective rank by layer: 0.0 20.8 82.6 111.5 121.1 131.3 138.9 143.6 146.3 147.6 148.2 148.4 148.3 151.5
+[separation, all classes] - 2.59 2.31 2.26 2.13 2.00 1.90 1.80 1.67 1.56 1.47 1.40 1.35 1.69
+wrote tasks/T28_frozen_patch_cls_loop/results/cls_svd_T28-a_train.json

@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'cls_only_loop': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T28-a_cls_only_loop.pt (epoch 30, test acc 67.93)
+[T28-a_cls_only_loop] loop-10 top-1 67.94 (logged 67.93)
+[T28-a_cls_only_loop] fixed: 1:9.8 2:25.7 3:40.0 4:51.0 5:59.0 6:64.1 7:66.8 8:68.1 9:68.2 10:67.9
+[T28-a_cls_only_loop] flip rate 9->10: 4.9%
+[T28-a_cls_only_loop] confidence: best gain +1.72 at 5.12 loops; within 1.0 pt of loop 10 with 7.43 loops (67.59%) vs fixed 8
+[T28-a_cls_only_loop] kl: best gain +0.00 at 10.0 loops; within 1.0 pt of loop 10 with 8.57 loops (68.04%) vs fixed 8
+[T28-a_cls_only_loop] patience: best gain -2.66 at 2.74 loops; within 1.0 pt of loop 10 with none vs fixed 8
+wrote tasks/T28_frozen_patch_cls_loop/results/exit_analysis.json

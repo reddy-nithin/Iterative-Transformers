@@ -1,0 +1,20 @@
+{
+ "counted_without_fused_attention": {
+  "full_loop": 174292992,
+  "cls_only_as_coded": 29786112
+ },
+ "counted_with_attention": {
+  "full_loop": 204098304,
+  "cls_only_as_coded": 29937408
+ },
+ "formula": {
+  "full_loop": 204098304,
+  "cls_only_as_coded": 29937408,
+  "cls_only_kv_cached": 888576
+ },
+ "share_of_full_loop_pct": {
+  "full_loop": 100.0,
+  "cls_only_as_coded": 14.67,
+  "cls_only_kv_cached": 0.44
+ }
+}
