@@ -1,0 +1,18 @@
+
+[T11-d] top-1 74.12 (subset 83.6); PCA shares PC1-6 [0.1494, 0.0891, 0.0618, 0.0541, 0.0436, 0.0403]
+[T11-d] median dist to final: input 1.101, B0 1.051, B1 1.048, loop 1 1.016, loop 2 0.991, loop 3 0.950, loop 4 0.882, loop 5 0.783, loop 6 0.654, loop 7 0.494, loop 8 0.324, loop 9 0.158, loop 10 0.000
+[T11-d] p90 dist to final:    input 1.186, B0 1.140, B1 1.130, loop 1 1.083, loop 2 1.057, loop 3 1.020, loop 4 0.962, loop 5 0.880, loop 6 0.749, loop 7 0.575, loop 8 0.383, loop 9 0.187, loop 10 0.000
+[T11-d] settles (median < 0.1 from then on) at stage 12
+[T11-d] mean ||CLS||: input 13.3, B0 13.8, B1 14.1, loop 1 13.0, loop 2 12.6, loop 3 12.5, loop 4 13.2, loop 5 14.7, loop 6 16.3, loop 7 18.0, loop 8 19.8, loop 9 21.6, loop 10 23.2
+[T11-d] sep median / max over pairs: B0 0.36/0.71, B1 0.46/0.75, loop 1 0.44/0.66, loop 2 0.48/0.66, loop 3 0.51/0.72, loop 4 0.58/0.82, loop 5 0.65/0.90, loop 6 0.69/0.90, loop 7 0.69/0.88, loop 8 0.68/0.87, loop 9 0.67/0.86, loop 10 0.67/0.86
+[T11-d] split-step histogram: none: 45
+[T11-d] latest pairs: apple-pear (none); bee-raccoon (none); fox-raccoon (none); orange-pear (none); bee-fox (none)
+
+[T13-c] top-1 72.82 (subset 81.6); PCA shares PC1-6 [0.2292, 0.0897, 0.0581, 0.0444, 0.0401, 0.0351]
+[T13-c] median dist to final: input 1.027, B0 0.929, B1 0.913, loop 1 0.923, loop 2 0.818, loop 3 0.667, loop 4 0.533, loop 5 0.420, loop 6 0.322, loop 7 0.233, loop 8 0.150, loop 9 0.073, loop 10 0.000
+[T13-c] p90 dist to final:    input 1.063, B0 0.957, B1 0.941, loop 1 0.953, loop 2 0.860, loop 3 0.713, loop 4 0.578, loop 5 0.458, loop 6 0.351, loop 7 0.255, loop 8 0.166, loop 9 0.081, loop 10 0.000
+[T13-c] settles (median < 0.1 from then on) at stage 11
+[T13-c] mean ||CLS||: input 13.1, B0 11.3, B1 9.1, loop 1 6.4, loop 2 9.0, loop 3 12.9, loop 4 16.6, loop 5 19.7, loop 6 22.4, loop 7 24.8, loop 8 27.0, loop 9 29.0, loop 10 30.9
+[T13-c] sep median / max over pairs: B0 0.32/0.66, B1 0.44/0.64, loop 1 0.55/0.75, loop 2 0.54/0.75, loop 3 0.60/0.82, loop 4 0.64/0.85, loop 5 0.65/0.86, loop 6 0.66/0.87, loop 7 0.66/0.87, loop 8 0.66/0.87, loop 9 0.65/0.87, loop 10 0.65/0.87
+[T13-c] split-step histogram: none: 45
+[T13-c] latest pairs: apple-pear (none); cloud-rocket (none); bee-raccoon (none); fox-raccoon (none); bee-house (none)
