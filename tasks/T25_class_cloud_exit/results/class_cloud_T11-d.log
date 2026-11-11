@@ -1,0 +1,22 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt (epoch 30, test acc 74.11)
+[T11-d_unroll_n3_30ep] loop-10 top-1 74.12 (logged 74.11)
+[T11-d] loop  1  NCC per-loop 21.92  shared 2.04  readout 1.22  mismatch 98.61
+[T11-d] loop  2  NCC per-loop 29.34  shared 4.11  readout 3.79  mismatch 96.25
+[T11-d] loop  3  NCC per-loop 39.46  shared 11.01  readout 11.30  mismatch 88.53
+[T11-d] loop  4  NCC per-loop 50.96  shared 25.23  readout 29.61  mismatch 68.28
+[T11-d] loop  5  NCC per-loop 59.65  shared 43.39  readout 49.67  mismatch 46.54
+[T11-d] loop  6  NCC per-loop 65.19  shared 57.37  readout 62.56  mismatch 31.56
+[T11-d] loop  7  NCC per-loop 68.20  shared 65.82  readout 69.60  mismatch 23.05
+[T11-d] loop  8  NCC per-loop 69.81  shared 68.84  readout 73.12  mismatch 18.65
+[T11-d] loop  9  NCC per-loop 70.08  shared 69.90  readout 74.25  mismatch 17.23
+[T11-d] loop 10  NCC per-loop 70.03  shared 70.03  readout 74.12  mismatch 17.12
+[T11-d] best R1 radius (per_loop)   {'q': 0.25, 'acc': 3.85, 'mean_loops': 2.0, 'gain_vs_fixed': 0.06}
+[T11-d] best R2 ratio (per_loop)    {'tau': 0.5, 'acc': 72.58, 'mean_loops': 9.19, 'gain_vs_fixed': -1.65}
+[T11-d] best R3 agree (per_loop)    {'tau': 0.9, 'acc': 71.71, 'mean_loops': 6.45, 'gain_vs_fixed': 5.98}
+[T11-d] best R1 radius (shared)     {'q': 0.25, 'acc': 74.07, 'mean_loops': 9.43, 'gain_vs_fixed': -0.12}
+[T11-d] best R2 ratio (shared)      {'tau': 0.8, 'acc': 72.76, 'mean_loops': 7.8, 'gain_vs_fixed': 0.34}
+[T11-d] best R3 agree (shared)      {'tau': 0.8, 'acc': 73.27, 'mean_loops': 7.85, 'gain_vs_fixed': 0.68}
