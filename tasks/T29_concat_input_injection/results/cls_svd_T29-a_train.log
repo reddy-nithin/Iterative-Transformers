@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'concat_inject': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T29-a_concat_inject.pt (epoch 30, test acc 73.32)
+[apple] N=500 top1=96.2 centred effective rank by layer: 0.0 19.5 72.5 101.8 110.7 115.7 117.0 116.4 114.8 112.8 110.6 108.3 106.1 110.1
+[bicycle] N=500 top1=95.8 centred effective rank by layer: 0.0 20.9 76.3 107.5 116.3 120.6 123.2 124.2 124.6 124.4 124.0 123.5 122.9 125.5
+[fox] N=500 top1=91.8 centred effective rank by layer: 0.0 20.7 75.6 107.4 116.0 120.0 123.1 124.1 124.2 124.1 123.7 123.2 122.6 126.7
+[cloud] N=500 top1=85.6 centred effective rank by layer: 0.0 17.9 75.2 106.9 112.5 115.1 118.5 120.1 120.2 119.3 118.0 116.5 115.1 120.0
+[control (all classes)] N=500 top1=85.4 centred effective rank by layer: 0.0 20.7 80.1 111.6 121.5 126.6 131.3 134.4 136.1 136.6 136.2 135.4 134.4 139.3
+[separation, all classes] - 2.55 2.44 2.66 2.37 1.91 1.48 1.22 1.08 0.99 0.93 0.88 0.85 1.00
+wrote tasks/T29_concat_input_injection/results/cls_svd_T29-a_train.json

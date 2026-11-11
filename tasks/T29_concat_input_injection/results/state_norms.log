@@ -1,0 +1,20 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3, 'concat_inject': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T29-a_concat_inject.pt (epoch 30, test acc 73.32)
+[T29-a_concat_inject] loop-10 top-1 73.37 (logged 73.32)
+[T29-a] top-1 73.37  mean token norm x_0..x_10: [9.859, 10.38, 12.208, 14.155, 16.048, 17.788, 19.285, 20.57, 21.694, 22.704, 23.64]
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt (epoch 30, test acc 74.11)
+[T11-d_unroll_n3_30ep] loop-10 top-1 74.12 (logged 74.11)
+[T11-d] top-1 74.12  mean token norm x_0..x_10: [12.934, 12.075, 12.919, 13.879, 14.929, 16.1, 17.145, 18.087, 19.025, 19.985, 20.969]
+loaded hbt {'head_blocks': 1, 'tail_blocks': 1, 'inject': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T9-c_hbt_inject.pt (epoch 30, test acc 44.53)
+[T9-c_hbt_inject] loop-10 top-1 44.52 (logged 44.53)
+[T9-c] top-1 44.52  mean token norm x_0..x_10: [11.613, 21.314, 29.271, 37.651, 46.191, 54.819, 63.505, 72.234, 80.995, 89.78, 98.584]
+adapter: {'trained': {'w_state': 12.648197174072266, 'w_e': 2.9036428928375244, 'bias': 0.1491}, 'init': {'w_state': 13.856406211853027, 'w_e': 0.0, 'bias': 0.0}}

@@ -1,0 +1,178 @@
+{
+ "T29-a_concat_inject": {
+  "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T29-a_concat_inject.pt",
+  "n_images": 10000,
+  "logged_test_acc": 73.32,
+  "acc_per_loop": [
+   1.34,
+   1.82,
+   5.23,
+   18.21,
+   40.15,
+   57.77,
+   66.98,
+   71.07,
+   72.99,
+   73.37
+  ],
+  "flip_rate_9_10": 6.34,
+  "curves": {
+   "confidence": [
+    {
+     "threshold": 0.3,
+     "acc": 61.16,
+     "mean_loops": 6.1,
+     "gain_vs_fixed": 2.47
+    },
+    {
+     "threshold": 0.4,
+     "acc": 68.01,
+     "mean_loops": 6.89,
+     "gain_vs_fixed": 2.04
+    },
+    {
+     "threshold": 0.5,
+     "acc": 71.16,
+     "mean_loops": 7.52,
+     "gain_vs_fixed": 2.05
+    },
+    {
+     "threshold": 0.6,
+     "acc": 72.63,
+     "mean_loops": 8.01,
+     "gain_vs_fixed": 1.54
+    },
+    {
+     "threshold": 0.7,
+     "acc": 73.13,
+     "mean_loops": 8.44,
+     "gain_vs_fixed": 1.22
+    },
+    {
+     "threshold": 0.8,
+     "acc": 73.35,
+     "mean_loops": 8.84,
+     "gain_vs_fixed": 0.67
+    },
+    {
+     "threshold": 0.9,
+     "acc": 73.37,
+     "mean_loops": 9.36,
+     "gain_vs_fixed": 0.24
+    }
+   ],
+   "kl": [
+    {
+     "threshold": 0.0001,
+     "acc": 73.37,
+     "mean_loops": 10.0,
+     "gain_vs_fixed": 0.0
+    },
+    {
+     "threshold": 0.000316,
+     "acc": 73.37,
+     "mean_loops": 10.0,
+     "gain_vs_fixed": 0.0
+    },
+    {
+     "threshold": 0.001,
+     "acc": 73.36,
+     "mean_loops": 9.96,
+     "gain_vs_fixed": 0.01
+    },
+    {
+     "threshold": 0.00316,
+     "acc": 73.36,
+     "mean_loops": 9.82,
+     "gain_vs_fixed": 0.06
+    },
+    {
+     "threshold": 0.01,
+     "acc": 73.35,
+     "mean_loops": 9.52,
+     "gain_vs_fixed": 0.16
+    },
+    {
+     "threshold": 0.0316,
+     "acc": 72.99,
+     "mean_loops": 8.85,
+     "gain_vs_fixed": 0.29
+    },
+    {
+     "threshold": 0.1,
+     "acc": 64.23,
+     "mean_loops": 7.2,
+     "gain_vs_fixed": -3.57
+    }
+   ],
+   "patience": [
+    {
+     "threshold": 1,
+     "acc": 15.72,
+     "mean_loops": 3.65,
+     "gain_vs_fixed": 2.05
+    },
+    {
+     "threshold": 2,
+     "acc": 48.37,
+     "mean_loops": 6.19,
+     "gain_vs_fixed": -11.15
+    },
+    {
+     "threshold": 3,
+     "acc": 65.83,
+     "mean_loops": 8.07,
+     "gain_vs_fixed": -5.37
+    }
+   ]
+  },
+  "vs_fixed": {
+   "confidence": {
+    "best_gain": {
+     "threshold": 0.3,
+     "acc": 61.16,
+     "mean_loops": 6.1,
+     "gain_vs_fixed": 2.47
+    },
+    "cheapest_near_full": {
+     "threshold": 0.6,
+     "acc": 72.63,
+     "mean_loops": 8.01,
+     "gain_vs_fixed": 1.54
+    },
+    "fixed_loops_near_full": 9,
+    "loops_saved_pct_vs_fixed": 11.0,
+    "loops_saved_pct_vs_full": 19.9
+   },
+   "kl": {
+    "best_gain": {
+     "threshold": 0.0316,
+     "acc": 72.99,
+     "mean_loops": 8.85,
+     "gain_vs_fixed": 0.29
+    },
+    "cheapest_near_full": {
+     "threshold": 0.0316,
+     "acc": 72.99,
+     "mean_loops": 8.85,
+     "gain_vs_fixed": 0.29
+    },
+    "fixed_loops_near_full": 9,
+    "loops_saved_pct_vs_fixed": 1.7,
+    "loops_saved_pct_vs_full": 11.5
+   },
+   "patience": {
+    "best_gain": {
+     "threshold": 1,
+     "acc": 15.72,
+     "mean_loops": 3.65,
+     "gain_vs_fixed": 2.05
+    },
+    "cheapest_near_full": null,
+    "fixed_loops_near_full": 9,
+    "loops_saved_pct_vs_fixed": null,
+    "loops_saved_pct_vs_full": null
+   }
+  }
+ }
+}

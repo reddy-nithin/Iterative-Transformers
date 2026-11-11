@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3, 'concat_inject': True} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T29-a_concat_inject.pt (epoch 30, test acc 73.32)
+[T29-a_concat_inject] loop-10 top-1 73.37 (logged 73.32)
+[T29-a_concat_inject] fixed: 1:1.3 2:1.8 3:5.2 4:18.2 5:40.1 6:57.8 7:67.0 8:71.1 9:73.0 10:73.4
+[T29-a_concat_inject] flip rate 9->10: 6.34%
+[T29-a_concat_inject] confidence: best gain +2.47 at 6.1 loops; within 1.0 pt of loop 10 with 8.01 loops (72.63%) vs fixed 9
+[T29-a_concat_inject] kl: best gain +0.29 at 8.85 loops; within 1.0 pt of loop 10 with 8.85 loops (72.99%) vs fixed 9
+[T29-a_concat_inject] patience: best gain +2.05 at 3.65 loops; within 1.0 pt of loop 10 with none vs fixed 9
+wrote tasks/T29_concat_input_injection/results/exit_analysis.json
