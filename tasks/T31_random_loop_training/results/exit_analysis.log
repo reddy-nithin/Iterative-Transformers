@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T31-a_random_loops.pt (epoch 30, test acc 71.76)
+[T31-a_random_loops] loop-10 top-1 71.77 (logged 71.76)
+[T31-a_random_loops] fixed: 1:23.4 2:58.0 3:68.3 4:70.9 5:71.5 6:71.8 7:72.1 8:72.1 9:71.8 10:71.8
+[T31-a_random_loops] flip rate 9->10: 1.31%
+[T31-a_random_loops] confidence: best gain +0.06 at 5.53 loops; within 1.0 pt of loop 10 with 4.75 loops (71.21%) vs fixed 4
+[T31-a_random_loops] kl: best gain +0.21 at 4.59 loops; within 1.0 pt of loop 10 with 3.95 loops (70.93%) vs fixed 4
+[T31-a_random_loops] patience: best gain +0.16 at 5.33 loops; within 1.0 pt of loop 10 with 4.18 loops (70.9%) vs fixed 4
+wrote tasks/T31_random_loop_training/results/exit_analysis.json

@@ -1,0 +1,6 @@
+| model | r=1 | r=2 | r=3 | r=4 | r=5 | r=6 | r=7 | r=8 | r=9 | r=10 | r=11 | r=12 | r=13 | r=14 | r=15 | r=16 | r=17 | r=18 | r=19 | r=20 |
+| T31-a | 23.38 | 57.96 | 68.29 | 70.91 | 71.54 | 71.78 | 72.10 | 72.08 | 71.82 | 71.77 | 71.48 | 71.33 | 71.30 | 71.05 | 70.94 | 70.91 | 70.71 | 70.69 | 70.54 | 70.45 |
+| T11-d | 1.22 | 3.79 | 11.30 | 29.61 | 49.67 | 62.56 | 69.60 | 73.12 | 74.25 | 74.12 | 73.21 | 71.96 | 70.20 | 67.92 | 65.64 | 63.16 | 60.28 | 56.48 | 52.55 | 48.69 |
+| T31-a | confidence | threshold 0.9 | top-1 70.47 | mean loops 15.09 | gain -0.47 | cheapest near full: {'threshold': 0.5, 'acc': 70.49, 'mean_loops': 7.12, 'gain_vs_fixed': -1.61} | fixed loops near full 4 |
+| T31-a | kl | threshold 0.0316 | top-1 71.49 | mean loops 4.59 | gain +0.21 | cheapest near full: {'threshold': 0.1, 'acc': 70.93, 'mean_loops': 3.95, 'gain_vs_fixed': 0.15} | fixed loops near full 4 |
+| T31-a | patience | threshold 3 | top-1 71.78 | mean loops 5.33 | gain +0.16 | cheapest near full: {'threshold': 2, 'acc': 70.9, 'mean_loops': 4.18, 'gain_vs_fixed': -0.12} | fixed loops near full 4 |

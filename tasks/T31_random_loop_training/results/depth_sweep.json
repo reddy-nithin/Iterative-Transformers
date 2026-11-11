@@ -1,0 +1,221 @@
+{
+ "T31-a": {
+  "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T31-a_random_loops.pt",
+  "n_images": 10000,
+  "acc_per_loops": [
+   23.38,
+   57.96,
+   68.29,
+   70.91,
+   71.54,
+   71.78,
+   72.1,
+   72.08,
+   71.82,
+   71.77,
+   71.48,
+   71.33,
+   71.3,
+   71.05,
+   70.94,
+   70.91,
+   70.71,
+   70.69,
+   70.54,
+   70.45
+  ],
+  "flip_rate_19_20": 0.66,
+  "exit_rules_20_loops": {
+   "curves": {
+    "confidence": [
+     {
+      "threshold": 0.3,
+      "acc": 67.1,
+      "mean_loops": 3.73,
+      "gain_vs_fixed": -3.1
+     },
+     {
+      "threshold": 0.4,
+      "acc": 69.42,
+      "mean_loops": 5.31,
+      "gain_vs_fixed": -2.19
+     },
+     {
+      "threshold": 0.5,
+      "acc": 70.49,
+      "mean_loops": 7.12,
+      "gain_vs_fixed": -1.61
+     },
+     {
+      "threshold": 0.6,
+      "acc": 70.79,
+      "mean_loops": 8.9,
+      "gain_vs_fixed": -1.06
+     },
+     {
+      "threshold": 0.7,
+      "acc": 70.76,
+      "mean_loops": 10.61,
+      "gain_vs_fixed": -0.83
+     },
+     {
+      "threshold": 0.8,
+      "acc": 70.56,
+      "mean_loops": 12.56,
+      "gain_vs_fixed": -0.75
+     },
+     {
+      "threshold": 0.9,
+      "acc": 70.47,
+      "mean_loops": 15.09,
+      "gain_vs_fixed": -0.47
+     }
+    ],
+    "kl": [
+     {
+      "threshold": 0.0001,
+      "acc": 70.44,
+      "mean_loops": 17.78,
+      "gain_vs_fixed": -0.25
+     },
+     {
+      "threshold": 0.000316,
+      "acc": 70.39,
+      "mean_loops": 14.1,
+      "gain_vs_fixed": -0.65
+     },
+     {
+      "threshold": 0.001,
+      "acc": 70.79,
+      "mean_loops": 9.55,
+      "gain_vs_fixed": -1.0
+     },
+     {
+      "threshold": 0.00316,
+      "acc": 71.68,
+      "mean_loops": 6.75,
+      "gain_vs_fixed": -0.34
+     },
+     {
+      "threshold": 0.01,
+      "acc": 71.83,
+      "mean_loops": 5.4,
+      "gain_vs_fixed": 0.19
+     },
+     {
+      "threshold": 0.0316,
+      "acc": 71.49,
+      "mean_loops": 4.59,
+      "gain_vs_fixed": 0.21
+     },
+     {
+      "threshold": 0.1,
+      "acc": 70.93,
+      "mean_loops": 3.95,
+      "gain_vs_fixed": 0.15
+     }
+    ],
+    "patience": [
+     {
+      "threshold": 1,
+      "acc": 66.43,
+      "mean_loops": 2.92,
+      "gain_vs_fixed": -1.03
+     },
+     {
+      "threshold": 2,
+      "acc": 70.9,
+      "mean_loops": 4.18,
+      "gain_vs_fixed": -0.12
+     },
+     {
+      "threshold": 3,
+      "acc": 71.78,
+      "mean_loops": 5.33,
+      "gain_vs_fixed": 0.16
+     }
+    ]
+   },
+   "vs_fixed": {
+    "confidence": {
+     "best_gain": {
+      "threshold": 0.9,
+      "acc": 70.47,
+      "mean_loops": 15.09,
+      "gain_vs_fixed": -0.47
+     },
+     "cheapest_near_full": {
+      "threshold": 0.5,
+      "acc": 70.49,
+      "mean_loops": 7.12,
+      "gain_vs_fixed": -1.61
+     },
+     "fixed_loops_near_full": 4,
+     "loops_saved_pct_vs_fixed": -78.0,
+     "loops_saved_pct_vs_full": 64.4
+    },
+    "kl": {
+     "best_gain": {
+      "threshold": 0.0316,
+      "acc": 71.49,
+      "mean_loops": 4.59,
+      "gain_vs_fixed": 0.21
+     },
+     "cheapest_near_full": {
+      "threshold": 0.1,
+      "acc": 70.93,
+      "mean_loops": 3.95,
+      "gain_vs_fixed": 0.15
+     },
+     "fixed_loops_near_full": 4,
+     "loops_saved_pct_vs_fixed": 1.2,
+     "loops_saved_pct_vs_full": 80.2
+    },
+    "patience": {
+     "best_gain": {
+      "threshold": 3,
+      "acc": 71.78,
+      "mean_loops": 5.33,
+      "gain_vs_fixed": 0.16
+     },
+     "cheapest_near_full": {
+      "threshold": 2,
+      "acc": 70.9,
+      "mean_loops": 4.18,
+      "gain_vs_fixed": -0.12
+     },
+     "fixed_loops_near_full": 4,
+     "loops_saved_pct_vs_fixed": -4.5,
+     "loops_saved_pct_vs_full": 79.1
+    }
+   }
+  }
+ },
+ "T11-d": {
+  "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T11-d_unroll_n3_30ep.pt",
+  "n_images": 10000,
+  "acc_per_loops": [
+   1.22,
+   3.79,
+   11.3,
+   29.61,
+   49.67,
+   62.56,
+   69.6,
+   73.12,
+   74.25,
+   74.12,
+   73.21,
+   71.96,
+   70.2,
+   67.92,
+   65.64,
+   63.16,
+   60.28,
+   56.48,
+   52.55,
+   48.69
+  ],
+  "flip_rate_19_20": 8.43
+ }
+}
