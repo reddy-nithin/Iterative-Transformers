@@ -1,0 +1,24 @@
+
+[T11-d] sigma of learned token 0.48018, 10000 images
+| start | final top-1 | Δ vs learned | g after B0 | g after B1 | g loop 1 | g loop 5 | g loop 10 |
+| learned | 74.12 | +0.00 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| zeros | 59.27 | -14.85 | 0.420 | 0.407 | 0.447 | 0.589 | 0.638 |
+| noise (5 seeds, spread 1.42) | 42.33 | -31.79 | 0.647 | 0.624 | 0.645 | 0.796 | 0.841 |
+| learned+noise (5 seeds, spread 0.53) | 71.74 | -2.38 | 0.374 | 0.328 | 0.302 | 0.290 | 0.280 |
+| swap (other model's token) | 74.06 | -0.06 | 0.009 | 0.008 | 0.008 | 0.009 | 0.009 |
+[T11-d] per-loop top-1 learned: [1.22, 3.79, 11.3, 29.61, 49.67, 62.56, 69.6, 73.12, 74.25, 74.12]
+[T11-d] per-loop top-1 zeros:   [2.15, 4.17, 10.49, 28.39, 46.75, 56.95, 61.7, 62.96, 61.9, 59.27]
+[T11-d] per-loop top-1 noise (mean): [1.96, 3.65, 7.9, 17.64, 30.35, 39.95, 45.24, 46.64, 45.34, 42.33]
+[T11-d] LINE: start matters (zeros cost +14.85 pt, noise cost +31.79 pt (mean of 5 seeds), g_10 zeros 0.638, noise 0.841)
+
+[T13-c] sigma of learned token 0.47431, 10000 images
+| start | final top-1 | Δ vs learned | g after B0 | g after B1 | g loop 1 | g loop 5 | g loop 10 |
+| learned | 72.82 | +0.00 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| zeros | 53.68 | -19.14 | 0.444 | 0.531 | 0.972 | 0.642 | 0.592 |
+| noise (5 seeds, spread 0.68) | 50.32 | -22.50 | 0.699 | 0.818 | 1.263 | 0.702 | 0.641 |
+| learned+noise (5 seeds, spread 0.46) | 70.02 | -2.80 | 0.436 | 0.459 | 0.662 | 0.319 | 0.289 |
+| swap (other model's token) | 72.89 | +0.07 | 0.011 | 0.012 | 0.021 | 0.012 | 0.011 |
+[T13-c] per-loop top-1 learned: [49.0, 66.02, 71.38, 72.93, 73.27, 73.53, 73.36, 73.12, 73.04, 72.82]
+[T13-c] per-loop top-1 zeros:   [24.19, 28.57, 39.24, 46.12, 50.49, 52.83, 53.93, 54.05, 53.97, 53.68]
+[T13-c] per-loop top-1 noise (mean): [13.89, 23.57, 35.12, 42.91, 46.97, 49.0, 50.02, 50.42, 50.48, 50.32]
+[T13-c] LINE: start matters (zeros cost +19.14 pt, noise cost +22.50 pt (mean of 5 seeds), g_10 zeros 0.592, noise 0.641)
