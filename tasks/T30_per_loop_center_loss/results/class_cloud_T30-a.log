@@ -1,0 +1,24 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T30-a_center_loss.pt (epoch 30, test acc 72.59)
+[T30-a_center_loss] loop-10 top-1 72.57 (logged 72.59)
+[T30-a] loop  1  NCC per-loop 42.81  shared 35.35  readout 50.01  mismatch 37.38
+[T30-a] loop  2  NCC per-loop 61.45  shared 61.32  readout 66.20  mismatch 23.44
+[T30-a] loop  3  NCC per-loop 67.55  shared 67.16  readout 71.33  mismatch 17.56
+[T30-a] loop  4  NCC per-loop 69.43  shared 68.78  readout 73.01  mismatch 15.72
+[T30-a] loop  5  NCC per-loop 70.18  shared 69.53  readout 73.35  mismatch 14.92
+[T30-a] loop  6  NCC per-loop 70.53  shared 70.14  readout 73.26  mismatch 14.71
+[T30-a] loop  7  NCC per-loop 70.56  shared 70.40  readout 73.11  mismatch 14.61
+[T30-a] loop  8  NCC per-loop 70.48  shared 70.35  readout 72.97  mismatch 14.66
+[T30-a] loop  9  NCC per-loop 70.22  shared 70.26  readout 72.80  mismatch 14.94
+[T30-a] loop 10  NCC per-loop 70.01  shared 70.01  readout 72.57  mismatch 14.98
+[T30-a] best R1 radius (per_loop)   {'q': 0.25, 'acc': 72.55, 'mean_loops': 8.92, 'gain_vs_fixed': -0.26}
+[T30-a] best R2 ratio (per_loop)    {'tau': 0.5, 'acc': 72.57, 'mean_loops': 8.75, 'gain_vs_fixed': -0.27}
+[T30-a] best R3 agree (per_loop)    {'tau': 0.5, 'acc': 72.57, 'mean_loops': 8.75, 'gain_vs_fixed': -0.27}
+[T30-a] best R1 radius (shared)     {'q': 0.25, 'acc': 72.53, 'mean_loops': 9.23, 'gain_vs_fixed': -0.22}
+[T30-a] best R2 ratio (shared)      {'tau': 0.5, 'acc': 72.57, 'mean_loops': 9.0, 'gain_vs_fixed': -0.23}
+[T30-a] best R3 agree (shared)      {'tau': 0.5, 'acc': 72.57, 'mean_loops': 9.0, 'gain_vs_fixed': -0.23}

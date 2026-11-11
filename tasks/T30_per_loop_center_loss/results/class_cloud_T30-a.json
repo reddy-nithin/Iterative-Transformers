@@ -1,0 +1,303 @@
+{
+ "tag": "T30-a",
+ "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T30-a_center_loss.pt",
+ "top1_test": 72.57,
+ "n_train": 50000,
+ "n_test": 10000,
+ "acc_per_loop": [
+  50.01,
+  66.2,
+  71.33,
+  73.01,
+  73.35,
+  73.26,
+  73.11,
+  72.97,
+  72.8,
+  72.57
+ ],
+ "ncc": [
+  {
+   "loop": 1,
+   "ncc_per_loop": 42.81,
+   "ncc_shared": 35.35,
+   "readout": 50.01,
+   "mismatch": 37.38
+  },
+  {
+   "loop": 2,
+   "ncc_per_loop": 61.45,
+   "ncc_shared": 61.32,
+   "readout": 66.2,
+   "mismatch": 23.44
+  },
+  {
+   "loop": 3,
+   "ncc_per_loop": 67.55,
+   "ncc_shared": 67.16,
+   "readout": 71.33,
+   "mismatch": 17.56
+  },
+  {
+   "loop": 4,
+   "ncc_per_loop": 69.43,
+   "ncc_shared": 68.78,
+   "readout": 73.01,
+   "mismatch": 15.72
+  },
+  {
+   "loop": 5,
+   "ncc_per_loop": 70.18,
+   "ncc_shared": 69.53,
+   "readout": 73.35,
+   "mismatch": 14.92
+  },
+  {
+   "loop": 6,
+   "ncc_per_loop": 70.53,
+   "ncc_shared": 70.14,
+   "readout": 73.26,
+   "mismatch": 14.71
+  },
+  {
+   "loop": 7,
+   "ncc_per_loop": 70.56,
+   "ncc_shared": 70.4,
+   "readout": 73.11,
+   "mismatch": 14.61
+  },
+  {
+   "loop": 8,
+   "ncc_per_loop": 70.48,
+   "ncc_shared": 70.35,
+   "readout": 72.97,
+   "mismatch": 14.66
+  },
+  {
+   "loop": 9,
+   "ncc_per_loop": 70.22,
+   "ncc_shared": 70.26,
+   "readout": 72.8,
+   "mismatch": 14.94
+  },
+  {
+   "loop": 10,
+   "ncc_per_loop": 70.01,
+   "ncc_shared": 70.01,
+   "readout": 72.57,
+   "mismatch": 14.98
+  }
+ ],
+ "curves": {
+  "per_loop": {
+   "R1 radius": [
+    {
+     "q": 0.25,
+     "acc": 72.55,
+     "mean_loops": 8.92,
+     "gain_vs_fixed": -0.26
+    },
+    {
+     "q": 0.5,
+     "acc": 72.19,
+     "mean_loops": 7.24,
+     "gain_vs_fixed": -0.89
+    },
+    {
+     "q": 0.75,
+     "acc": 71.26,
+     "mean_loops": 4.91,
+     "gain_vs_fixed": -2.06
+    }
+   ],
+   "R2 ratio": [
+    {
+     "tau": 0.5,
+     "acc": 72.57,
+     "mean_loops": 8.75,
+     "gain_vs_fixed": -0.27
+    },
+    {
+     "tau": 0.6,
+     "acc": 72.55,
+     "mean_loops": 7.9,
+     "gain_vs_fixed": -0.43
+    },
+    {
+     "tau": 0.7,
+     "acc": 72.59,
+     "mean_loops": 6.86,
+     "gain_vs_fixed": -0.54
+    },
+    {
+     "tau": 0.8,
+     "acc": 72.41,
+     "mean_loops": 5.57,
+     "gain_vs_fixed": -0.89
+    },
+    {
+     "tau": 0.9,
+     "acc": 70.83,
+     "mean_loops": 3.75,
+     "gain_vs_fixed": -1.76
+    }
+   ],
+   "R3 agree": [
+    {
+     "tau": 0.5,
+     "acc": 72.57,
+     "mean_loops": 8.75,
+     "gain_vs_fixed": -0.27
+    },
+    {
+     "tau": 0.6,
+     "acc": 72.56,
+     "mean_loops": 7.9,
+     "gain_vs_fixed": -0.42
+    },
+    {
+     "tau": 0.7,
+     "acc": 72.59,
+     "mean_loops": 6.87,
+     "gain_vs_fixed": -0.54
+    },
+    {
+     "tau": 0.8,
+     "acc": 72.35,
+     "mean_loops": 5.63,
+     "gain_vs_fixed": -0.94
+    },
+    {
+     "tau": 0.9,
+     "acc": 71.59,
+     "mean_loops": 4.06,
+     "gain_vs_fixed": -1.44
+    }
+   ]
+  },
+  "shared": {
+   "R1 radius": [
+    {
+     "q": 0.25,
+     "acc": 72.53,
+     "mean_loops": 9.23,
+     "gain_vs_fixed": -0.22
+    },
+    {
+     "q": 0.5,
+     "acc": 72.53,
+     "mean_loops": 7.88,
+     "gain_vs_fixed": -0.46
+    },
+    {
+     "q": 0.75,
+     "acc": 72.4,
+     "mean_loops": 5.83,
+     "gain_vs_fixed": -0.88
+    }
+   ],
+   "R2 ratio": [
+    {
+     "tau": 0.5,
+     "acc": 72.57,
+     "mean_loops": 9.0,
+     "gain_vs_fixed": -0.23
+    },
+    {
+     "tau": 0.6,
+     "acc": 72.56,
+     "mean_loops": 8.23,
+     "gain_vs_fixed": -0.37
+    },
+    {
+     "tau": 0.7,
+     "acc": 72.61,
+     "mean_loops": 7.27,
+     "gain_vs_fixed": -0.46
+    },
+    {
+     "tau": 0.8,
+     "acc": 72.7,
+     "mean_loops": 6.0,
+     "gain_vs_fixed": -0.56
+    },
+    {
+     "tau": 0.9,
+     "acc": 71.9,
+     "mean_loops": 4.15,
+     "gain_vs_fixed": -1.16
+    }
+   ],
+   "R3 agree": [
+    {
+     "tau": 0.5,
+     "acc": 72.57,
+     "mean_loops": 9.0,
+     "gain_vs_fixed": -0.23
+    },
+    {
+     "tau": 0.6,
+     "acc": 72.56,
+     "mean_loops": 8.23,
+     "gain_vs_fixed": -0.37
+    },
+    {
+     "tau": 0.7,
+     "acc": 72.61,
+     "mean_loops": 7.28,
+     "gain_vs_fixed": -0.46
+    },
+    {
+     "tau": 0.8,
+     "acc": 72.59,
+     "mean_loops": 6.03,
+     "gain_vs_fixed": -0.67
+    },
+    {
+     "tau": 0.9,
+     "acc": 72.03,
+     "mean_loops": 4.36,
+     "gain_vs_fixed": -1.1
+    }
+   ]
+  }
+ },
+ "best_gain": {
+  "R1 radius (per_loop)": {
+   "q": 0.25,
+   "acc": 72.55,
+   "mean_loops": 8.92,
+   "gain_vs_fixed": -0.26
+  },
+  "R2 ratio (per_loop)": {
+   "tau": 0.5,
+   "acc": 72.57,
+   "mean_loops": 8.75,
+   "gain_vs_fixed": -0.27
+  },
+  "R3 agree (per_loop)": {
+   "tau": 0.5,
+   "acc": 72.57,
+   "mean_loops": 8.75,
+   "gain_vs_fixed": -0.27
+  },
+  "R1 radius (shared)": {
+   "q": 0.25,
+   "acc": 72.53,
+   "mean_loops": 9.23,
+   "gain_vs_fixed": -0.22
+  },
+  "R2 ratio (shared)": {
+   "tau": 0.5,
+   "acc": 72.57,
+   "mean_loops": 9.0,
+   "gain_vs_fixed": -0.23
+  },
+  "R3 agree (shared)": {
+   "tau": 0.5,
+   "acc": 72.57,
+   "mean_loops": 9.0,
+   "gain_vs_fixed": -0.23
+  }
+ }
+}

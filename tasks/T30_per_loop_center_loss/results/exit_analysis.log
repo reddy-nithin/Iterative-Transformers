@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T30-a_center_loss.pt (epoch 30, test acc 72.59)
+[T30-a_center_loss] loop-10 top-1 72.57 (logged 72.59)
+[T30-a_center_loss] fixed: 1:50.0 2:66.2 3:71.3 4:73.0 5:73.3 6:73.3 7:73.1 8:73.0 9:72.8 10:72.6
+[T30-a_center_loss] flip rate 9->10: 1.64%
+[T30-a_center_loss] confidence: best gain -0.44 at 7.69 loops; within 1.0 pt of loop 10 with 4.81 loops (72.33%) vs fixed 4
+[T30-a_center_loss] kl: best gain +0.80 at 3.41 loops; within 1.0 pt of loop 10 with 3.41 loops (72.82%) vs fixed 4
+[T30-a_center_loss] patience: best gain +0.84 at 2.5 loops; within 1.0 pt of loop 10 with 3.71 loops (72.72%) vs fixed 4
+wrote tasks/T30_per_loop_center_loss/results/exit_analysis.json
