@@ -31,8 +31,8 @@ prototypes), so it compares like for like with T13-c.
 
 ## Checklist
 
-- [ ] README + predictions committed before the first run
-- [ ] code + tests (`test_t30_center_loss.py`) pass
+- [x] README + predictions committed before the first run
+- [x] code + tests (`test_t30_center_loss.py`) pass
 - [ ] smoke run (`SMOKE=1`)
 - [ ] full run T30-a (tmux), per-loop readout, separation per loop vs T13-c
 - [ ] T25 (a) and (b) on T30-a

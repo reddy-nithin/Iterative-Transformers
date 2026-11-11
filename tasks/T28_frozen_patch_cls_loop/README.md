@@ -29,8 +29,8 @@ Shared recipe: pretrained init, lr 5e-4, wd 0.05, 1 warmup epoch + cosine, label
 
 ## Checklist
 
-- [ ] README + predictions committed before the first run
-- [ ] code + tests (`test_t28_cls_only.py`) pass
+- [x] README + predictions committed before the first run
+- [x] code + tests (`test_t28_cls_only.py`) pass
 - [ ] smoke run (`SMOKE=1`)
 - [ ] full run T28-a (tmux), per-loop readout, separation per loop
 - [ ] FLOPs of one loop (both models) and wall time per epoch

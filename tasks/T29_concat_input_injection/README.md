@@ -27,8 +27,8 @@ Shared recipe: pretrained init, lr 5e-4, wd 0.05, 1 warmup epoch + cosine, label
 
 ## Checklist
 
-- [ ] README + predictions committed before the first run
-- [ ] code + tests (`test_t29_concat_inject.py`) pass
+- [x] README + predictions committed before the first run
+- [x] code + tests (`test_t29_concat_inject.py`) pass
 - [ ] smoke run (`SMOKE=1`)
 - [ ] full run T29-a (tmux), per-loop readout, separation per loop
 - [ ] mean ‖x_t‖ per loop (T29-a, T11-d, T9 plain add), ‖W_state‖ vs ‖W_e‖

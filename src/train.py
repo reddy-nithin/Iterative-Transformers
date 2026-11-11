@@ -15,9 +15,13 @@ from torch import nn
 
 from src.data import make_loaders
 from src.metrics import count_gflops, count_params, measure_throughput
-from src.models import build
+from src.models import NUM_CLASSES, build
+from src.center_loss import center_loss, ema_update, loop_features
 from src.cls_update_loss import CLS_UPDATE_LOSSES, cls_update_penalty
 from src.per_loop_readout import READOUT_LOSSES, per_loop_logits, per_loop_logits_and_cls, readout_loss
+from src.random_loops import forward_loops, sample_loops
+
+CENTER_WARMUP_EPOCHS = 1  # T30: alpha = 0 during the first epoch while the prototypes warm up
 
 
 def parse_args():
@@ -45,6 +49,17 @@ def parse_args():
                    help="unroll: coverage mask v2 with this FIXED eta (T16; drains only above-fair-share reads)")
     p.add_argument("--zero-mean-value", action="store_true",
                    help="unroll: the repeated block's CLS row reads zero-mean patch values (T20; src.zero_mean_value)")
+    p.add_argument("--cls-only-loop", action="store_true",
+                   help="unroll: the repeated block updates only CLS; patches stay the head output (T28; src.cls_only_loop)")
+    p.add_argument("--concat-inject", action="store_true",
+                   help="unroll: concat + linear adapter injection of the head output before every loop (T29; "
+                        "src.concat_inject). Not the hbt --inject (T9, plain addition)")
+    p.add_argument("--center-loss-weight", type=float, default=0.0,
+                   help="with --readout-loss every_loop: add alpha * per-loop center loss to EMA class prototypes "
+                        "(T30; src.center_loss); alpha = 0 during epoch 1. 0 = off")
+    p.add_argument("--random-loops", action="store_true",
+                   help="unroll, final-only loss: sample the number of body loops per training batch (T31; "
+                        "src.random_loops). Evaluation keeps the fixed loop count")
     p.add_argument("--cls-update-loss", choices=CLS_UPDATE_LOSSES, default="none",
                    help="looped models with --readout-loss: add the T17 term on successive CLS updates (orth = "
                         "near-orthogonal, orth_large = + size floor; src.cls_update_loss); none = as before")
@@ -84,6 +99,10 @@ def model_kwargs(args) -> dict:
             kwargs["coverage_mask_v2_eta"] = args.coverage_mask_v2_eta
         if getattr(args, "zero_mean_value", False):  # same: only when on
             kwargs["zero_mean_value"] = True
+        if getattr(args, "cls_only_loop", False):  # same: only when on
+            kwargs["cls_only_loop"] = True
+        if getattr(args, "concat_inject", False):  # same: only when on
+            kwargs["concat_inject"] = True
         return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
@@ -94,12 +113,29 @@ def model_kwargs(args) -> dict:
     return {}
 
 
-def save_checkpoint(path: str, model: nn.Module, model_name: str, kwargs: dict, epoch: int, test_acc: float) -> None:
-    """Weights plus what is needed to rebuild the model (`src.models.build(model_name, **kwargs)`)."""
+def save_checkpoint(path: str, model: nn.Module, model_name: str, kwargs: dict, epoch: int, test_acc: float,
+                    extra: dict | None = None) -> None:
+    """Weights plus what is needed to rebuild the model (`src.models.build(model_name, **kwargs)`). `extra` adds
+    keys that are not part of the model (T30: the EMA class prototypes)."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"model": model_name, "model_kwargs": kwargs, "state_dict": model.state_dict(),
-                "epoch": epoch, "test_acc": test_acc}, path)
+                "epoch": epoch, "test_acc": test_acc, **(extra or {})}, path)
+
+
+def check_options(args) -> None:
+    """Reject flag combinations the T28-T31 options do not support (each is one change to its reference)."""
+    unroll_only = {"--cls-only-loop": args.cls_only_loop, "--concat-inject": args.concat_inject,
+                   "--random-loops": args.random_loops}
+    for flag, on in unroll_only.items():
+        if on and args.model != "unroll":
+            raise ValueError(f"{flag} works with --model unroll only")
+    if args.center_loss_weight < 0:
+        raise ValueError("--center-loss-weight must be >= 0")
+    if args.center_loss_weight > 0 and (args.readout_loss != "every_loop" or args.cls_update_loss != "none"):
+        raise ValueError("--center-loss-weight needs --readout-loss every_loop and no --cls-update-loss (T30)")
+    if args.random_loops and args.readout_loss != "none":
+        raise ValueError("--random-loops uses the final-only loss (T31); drop --readout-loss")
 
 
 def coverage_eta(model: nn.Module) -> float | None:
@@ -203,8 +239,31 @@ def forward_and_loss(model, x, y, criterion, readout: str,
     return logits, loss, criterion(logits, y)
 
 
+def forward_and_center_loss(model, x, y, criterion, readout: str, prototypes: torch.Tensor,
+                            alpha: float) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """T30 step: (final logits, loss, CE of the final logits, center term (detached), z_L (detached)).
+
+    loss = the per-loop readout loss, plus alpha * center loss when alpha > 0 (alpha = 0 leaves the T13 loss as is)."""
+    logits_per_loop, cls_states = per_loop_logits_and_cls(model, x)
+    logits = logits_per_loop[-1]
+    loss = readout_loss(logits_per_loop, y, readout)
+    features = loop_features(model, cls_states)
+    center = center_loss(features, y, prototypes)
+    if alpha > 0:
+        loss = loss + alpha * center
+    return logits, loss, criterion(logits, y), center.detach(), features[-1].detach()
+
+
+def forward_random_loops(model, x, y, criterion, n_loops: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """T31 step: the body run `n_loops` times, final-only loss; same return shape as `forward_and_loss`."""
+    logits = forward_loops(model, x, n_loops)
+    loss = criterion(logits, y)
+    return logits, loss, loss
+
+
 def main():
     args = parse_args()
+    check_options(args)
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     use_amp = device.type == "cuda"
@@ -237,22 +296,38 @@ def main():
     total_steps = args.epochs * steps_per_epoch
     warmup_steps = int(args.warmup_epochs * steps_per_epoch)
 
+    use_center = args.center_loss_weight > 0
+    prototypes = torch.zeros(NUM_CLASSES, model.embed_dim, device=device) if use_center else None
+    loop_rng = np.random.default_rng(args.seed) if args.random_loops else None  # own stream: data order unchanged
     history, step = [], 0
     for epoch in range(args.epochs):
         model.train()
         t0, loss_sum, ce_final_sum = time.time(), 0.0, 0.0
         train_correct = train_seen = 0
+        center_sum, loops_sum = 0.0, 0
+        alpha = (0.0 if epoch < CENTER_WARMUP_EPOCHS else args.center_loss_weight) if use_center else 0.0
         for x, y in train_loader:
             for g in opt.param_groups:
                 g["lr"] = cosine_lr(step, total_steps, warmup_steps, g["base_lr"])
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device.type, enabled=use_amp):
-                logits, loss, ce_final = forward_and_loss(model, x, y, criterion, args.readout_loss,
-                                                     args.cls_update_loss)
+                if use_center:
+                    logits, loss, ce_final, center, z_final = forward_and_center_loss(
+                        model, x, y, criterion, args.readout_loss, prototypes, alpha)
+                elif loop_rng is not None:
+                    n_loops = sample_loops(loop_rng)
+                    loops_sum += n_loops
+                    logits, loss, ce_final = forward_random_loops(model, x, y, criterion, n_loops)
+                else:
+                    logits, loss, ce_final = forward_and_loss(model, x, y, criterion, args.readout_loss,
+                                                         args.cls_update_loss)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.step(opt)
             scaler.update()
+            if use_center:
+                prototypes = ema_update(prototypes, z_final, y)
+                center_sum += center.item()
             loss_sum += loss.item()
             ce_final_sum += ce_final.item()
             # running train acc: augmented batches, train mode, weights changing within the epoch (no extra pass)
@@ -268,8 +343,13 @@ def main():
             rec["eta"] = round(eta, 5)
         if args.readout_loss != "none":  # train_loss is then the per-loop loss; keep the final-output CE comparable
             rec["train_ce_final"] = ce_final_sum / steps_per_epoch
-            if device.type == "cuda":
-                rec["peak_mem_gb"] = round(torch.cuda.max_memory_allocated(device) / 2**30, 2)
+        if use_center:
+            rec["center_alpha"] = alpha
+            rec["train_center_loss"] = center_sum / steps_per_epoch  # unweighted, logged in every epoch
+        if loop_rng is not None:
+            rec["mean_train_loops"] = loops_sum / steps_per_epoch
+        if (args.readout_loss != "none" or loop_rng is not None) and device.type == "cuda":
+            rec["peak_mem_gb"] = round(torch.cuda.max_memory_allocated(device) / 2**30, 2)
         history.append(rec)
         print(f"[{name}] epoch {rec['epoch']}/{args.epochs} loss={rec['train_loss']:.4f} "
               f"test_loss={test_loss:.4f} train_acc={rec['train_acc']:.2f} "
@@ -279,7 +359,8 @@ def main():
         info.update(history=history, final_test_acc=acc, best_test_acc=max(h["test_acc"] for h in history))
         (out_dir / f"{name}.json").write_text(json.dumps(info, indent=2))
         if args.save_checkpoint:
-            save_checkpoint(args.save_checkpoint, model, args.model, model_kwargs(args), rec["epoch"], acc)
+            extra = {"prototypes": prototypes.cpu()} if use_center else None
+            save_checkpoint(args.save_checkpoint, model, args.model, model_kwargs(args), rec["epoch"], acc, extra)
     if args.readout_loss != "none":
         info["per_loop_test_acc"] = evaluate_per_loop(model, val_loader, device, use_amp)
         print(f"[{name}] per-loop test acc: " + " ".join(

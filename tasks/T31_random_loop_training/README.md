@@ -29,8 +29,8 @@ Shared recipe: pretrained init, lr 5e-4, wd 0.05, 1 warmup epoch + cosine, label
 
 ## Checklist
 
-- [ ] README + predictions committed before the first run
-- [ ] code + tests (`test_t31_random_loops.py`) pass
+- [x] README + predictions committed before the first run
+- [x] code + tests (`test_t31_random_loops.py`) pass
 - [ ] smoke run (`SMOKE=1`)
 - [ ] full run T31-a (tmux)
 - [ ] test top-1 at fixed r = 1..20 for T31-a and T11-d, `results/acc_vs_loops.png`

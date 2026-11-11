@@ -6,6 +6,8 @@ import timm
 import torch
 from torch import nn
 
+from src.cls_only_loop import CLSOnlyBlock
+from src.concat_inject import ConcatInjectBody
 from src.coverage_mask import CoverageMaskLoop
 from src.head_body_tail import InjectedLoop
 from src.lora_loop import LoRALoopBlocks
@@ -69,6 +71,8 @@ def build_unrolled(
     coverage_mask: bool = False,
     coverage_mask_v2_eta: float | None = None,
     zero_mean_value: bool = False,
+    cls_only_loop: bool = False,
+    concat_inject: bool = False,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
@@ -79,6 +83,10 @@ def build_unrolled(
     `coverage_mask_v2_eta=<eta>` (T16) puts the v2 mask there instead: fixed eta, no new parameters.
     `zero_mean_value=True` (T20): the repeated block's CLS row reads zero-mean patch values
     (`src.zero_mean_value.ZeroMeanValueBlock`, no new parameters).
+    `cls_only_loop=True` (T28): the repeated block updates only the CLS row; patches stay the head output
+    (`src.cls_only_loop.CLSOnlyBlock`, no new parameters).
+    `concat_inject=True` (T29): concat + linear adapter injection of the head output before every loop
+    (`src.concat_inject.ConcatInjectBody`, +2C*C+C parameters).
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -87,14 +95,23 @@ def build_unrolled(
         raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
     distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
     n_loops = depth - unique_blocks + 1
-    if sum([coverage_mask, coverage_mask_v2_eta is not None, zero_mean_value]) > 1:
-        raise ValueError("pick at most one of coverage_mask (T14), coverage_mask_v2_eta (T16), zero_mean_value (T20)")
+    if sum([coverage_mask, coverage_mask_v2_eta is not None, zero_mean_value, cls_only_loop, concat_inject]) > 1:
+        raise ValueError("pick at most one of coverage_mask (T14), coverage_mask_v2_eta (T16), zero_mean_value (T20), "
+                         "cls_only_loop (T28), concat_inject (T29)")
     if coverage_mask:
         model.blocks = CoverageMaskLoop(distinct, repeated, n_loops)
     elif coverage_mask_v2_eta is not None:
         model.blocks = CoverageMaskLoop(distinct, repeated, n_loops, eta_init=coverage_mask_v2_eta, rule="v2")
     elif zero_mean_value:
         looped = ZeroMeanValueBlock(repeated)
+        model.blocks = nn.Sequential(*distinct, *[looped] * n_loops)
+    elif cls_only_loop:
+        looped = CLSOnlyBlock(repeated)
+        model.blocks = nn.Sequential(*distinct, *[looped] * n_loops)
+    elif concat_inject:
+        if not distinct:
+            raise ValueError("concat_inject needs at least one head block (its output is what gets injected)")
+        looped = ConcatInjectBody(repeated, n_loops, model.embed_dim)
         model.blocks = nn.Sequential(*distinct, *[looped] * n_loops)
     else:
         model.blocks = nn.Sequential(*distinct, *[repeated] * n_loops)
