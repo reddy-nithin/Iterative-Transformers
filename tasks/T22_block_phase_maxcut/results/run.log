@@ -1,0 +1,64 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+[pretrained S_tok] best k=3 {0..3}, {4..7}, {8..11} (cut score 30.744); T11-c rank 54, T11-d rank 53
+[pretrained S_cls] best k=3 {0..2}, {3..7}, {8..11} (cut score 16.392); T11-c rank 51, T11-d rank 55
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded baseline {} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-a_baseline_ft.pt (epoch 10, test acc 86.77)
+[T5-a_baseline_ft] loop-10 top-1 86.77 (logged 86.77)
+[baseline S_tok] best k=3 {0..3}, {4..7}, {8..11} (cut score 32.648); T11-c rank 53, T11-d rank 54
+[baseline S_cls] best k=3 {0..4}, {5..8}, {9..11} (cut score 21.432); T11-c rank 52, T11-d rank 55
+DECISION: run H8 step 2 with groups {0..3}, {4..7}, {8..11} (T11-c cut rank 54/55, T11-d cut rank 53/55)
+
+[pretrained S_tok]
+| rank | groups (k=3) | cut score | within | across mean |
+| 1 | {0..3} {4..7} {8..11} | 30.744 | 0.678 | 0.359 |
+| 2 | {0..2} {3..6} {7..11} | 30.741 | 0.685 | 0.346 |
+| 3 | {0..3} {4..6} {7..11} | 30.527 | 0.684 | 0.350 |
+| 4 | {0..2} {3..7} {8..11} | 30.384 | 0.680 | 0.354 |
+| 5 | {0..4} {5..7} {8..11} | 30.080 | 0.687 | 0.360 |
+| 54 (T11-c) | {0} {1..10} {11} | 15.000 | 0.521 | 0.286 |
+| 53 (T11-d) | {0} {1} {2..11} | 15.004 | 0.521 | 0.286 |
+best k2: {0..5} {6..11} cut 24.797 within 0.608 across 0.311
+best k4: {0..2} {3..5} {6..8} {9..11} cut 33.163 within 0.718 across 0.386
+
+[pretrained S_cls]
+| rank | groups (k=3) | cut score | within | across mean |
+| 1 | {0..2} {3..7} {8..11} | 16.392 | 0.845 | 0.651 |
+| 2 | {0..3} {4..7} {8..11} | 16.385 | 0.847 | 0.659 |
+| 3 | {0..3} {4..8} {9..11} | 16.362 | 0.831 | 0.652 |
+| 4 | {0..4} {5..8} {9..11} | 16.342 | 0.835 | 0.652 |
+| 5 | {0..2} {3..6} {7..11} | 16.137 | 0.859 | 0.657 |
+| 51 (T11-c) | {0} {1..10} {11} | 10.253 | 0.802 | 0.512 |
+| 55 (T11-d) | {0} {1} {2..11} | 7.569 | 0.743 | 0.640 |
+best k2: {0..6} {7..11} cut 13.946 within 0.818 across 0.602
+best k4: {0..2} {3..6} {7..9} {10..11} cut 17.803 within 0.853 across 0.664
+
+[baseline S_tok]
+| rank | groups (k=3) | cut score | within | across mean |
+| 1 | {0..3} {4..7} {8..11} | 32.648 | 0.671 | 0.320 |
+| 2 | {0..2} {3..6} {7..11} | 32.394 | 0.675 | 0.311 |
+| 3 | {0..3} {4..6} {7..11} | 32.299 | 0.672 | 0.313 |
+| 4 | {0..4} {5..7} {8..11} | 32.158 | 0.683 | 0.316 |
+| 5 | {0..2} {3..7} {8..11} | 32.128 | 0.674 | 0.316 |
+| 53 (T11-c) | {0} {1..10} {11} | 15.426 | 0.486 | 0.265 |
+| 54 (T11-d) | {0} {1} {2..11} | 15.326 | 0.483 | 0.270 |
+best k2: {0..5} {6..11} cut 26.374 within 0.593 across 0.267
+best k4: {0..2} {3..5} {6..8} {9..11} cut 35.149 within 0.715 across 0.349
+
+[baseline S_cls]
+| rank | groups (k=3) | cut score | within | across mean |
+| 1 | {0..4} {5..8} {9..11} | 21.432 | 0.769 | 0.544 |
+| 2 | {0..5} {6..9} {10..11} | 21.353 | 0.760 | 0.515 |
+| 3 | {0..3} {4..8} {9..11} | 21.320 | 0.769 | 0.546 |
+| 4 | {0..5} {6..8} {9..11} | 21.229 | 0.770 | 0.528 |
+| 5 | {0..4} {5..9} {10..11} | 21.178 | 0.757 | 0.529 |
+| 52 (T11-c) | {0} {1..10} {11} | 13.088 | 0.738 | 0.377 |
+| 55 (T11-d) | {0} {1} {2..11} | 8.049 | 0.626 | 0.617 |
+best k2: {0..6} {7..11} cut 17.902 within 0.726 across 0.489
+best k4: {0..2} {3..6} {7..9} {10..11} cut 23.147 within 0.809 across 0.563
+
+DECISION: run H8 step 2 with groups {0..3}, {4..7}, {8..11} (T11-c cut rank 54/55, T11-d cut rank 53/55)

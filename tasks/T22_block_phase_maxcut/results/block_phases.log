@@ -1,0 +1,14 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+[pretrained S_tok] best k=3 {0..3}, {4..7}, {8..11} (cut score 30.744); T11-c rank 54, T11-d rank 53
+[pretrained S_cls] best k=3 {0..2}, {3..7}, {8..11} (cut score 16.392); T11-c rank 51, T11-d rank 55
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded baseline {} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T5-a_baseline_ft.pt (epoch 10, test acc 86.77)
+[T5-a_baseline_ft] loop-10 top-1 86.77 (logged 86.77)
+[baseline S_tok] best k=3 {0..3}, {4..7}, {8..11} (cut score 32.648); T11-c rank 53, T11-d rank 54
+[baseline S_cls] best k=3 {0..4}, {5..8}, {9..11} (cut score 21.432); T11-c rank 52, T11-d rank 55
+DECISION: run H8 step 2 with groups {0..3}, {4..7}, {8..11} (T11-c cut rank 54/55, T11-d cut rank 53/55)
