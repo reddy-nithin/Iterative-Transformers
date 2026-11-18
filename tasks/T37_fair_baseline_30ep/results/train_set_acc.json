@@ -1,0 +1,7 @@
+{
+  "checkpoint": "/storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T37-a_baseline_12blk_30ep.pt",
+  "epoch": 30,
+  "n_images": 50000,
+  "train_top1": 99.682,
+  "train_loss": 0.8166624830627441
+}

@@ -1,0 +1,4 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[baseline_T37-a] params=5,543,716 GFLOPs=2.51 throughput=5806 img/s
+[baseline_T37-a] param groups: 5,543,716 @ lr 0.0005
+[baseline_T37-a] epoch 1/1 loss=4.7913 test_loss=4.6465 train_acc=1.95 acc=3.32 lr=5.00e-04 (2s)
