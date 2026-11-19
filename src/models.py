@@ -37,6 +37,16 @@ def _average_block(blocks: nn.ModuleList) -> nn.Module:
     return avg
 
 
+def _mean_of_block_range(blocks: list[nn.Module], block_range: tuple[int, int], plain_layout: bool) -> nn.Module:
+    """T38: a new block whose every parameter is the element-wise mean over blocks[start..end] (inclusive)."""
+    start, end = block_range
+    if not 0 <= start <= end < len(blocks):
+        raise ValueError(f"body_init_range needs 0 <= start <= end <= {len(blocks) - 1}, got ({start}, {end})")
+    if not plain_layout:
+        raise ValueError("body_init_range (T38) works with the plain unrolled layout only")
+    return _average_block(nn.ModuleList(blocks[start:end + 1]))
+
+
 def _shared_block(source: nn.Module, init: str, block_idx: int) -> nn.Module:
     if init not in INITS:
         raise ValueError(f"unknown init {init!r}; choose from {list(INITS)}")
@@ -74,6 +84,7 @@ def build_unrolled(
     cls_only_loop: bool = False,
     concat_inject: bool = False,
     body_loops: int | None = None,
+    body_init_range: tuple[int, int] | None = None,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
@@ -90,6 +101,9 @@ def build_unrolled(
     (`src.concat_inject.ConcatInjectBody`, +2C*C+C parameters).
     `body_loops=N` (T36): apply the repeated block N times instead of filling the remaining slots (default None =
     `depth - unique_blocks + 1`, as before). Plain layout only; the parameter count does not change.
+    `body_init_range=(start, end)` (T38): the repeated block starts as the element-wise mean of pretrained blocks
+    start..end (inclusive, 0-based) instead of block `unique_blocks - 1` (default None, as before). Plain layout only;
+    the parameter count does not change.
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -104,6 +118,10 @@ def build_unrolled(
         if coverage_mask or coverage_mask_v2_eta is not None or zero_mean_value or cls_only_loop or concat_inject:
             raise ValueError("body_loops (T36) works with the plain unrolled layout only")
         n_loops = body_loops
+    if body_init_range is not None:
+        repeated = _mean_of_block_range(blocks, body_init_range,
+                                        plain_layout=not (coverage_mask or coverage_mask_v2_eta is not None
+                                                          or zero_mean_value or cls_only_loop or concat_inject))
     if sum([coverage_mask, coverage_mask_v2_eta is not None, zero_mean_value, cls_only_loop, concat_inject]) > 1:
         raise ValueError("pick at most one of coverage_mask (T14), coverage_mask_v2_eta (T16), zero_mean_value (T20), "
                          "cls_only_loop (T28), concat_inject (T29)")

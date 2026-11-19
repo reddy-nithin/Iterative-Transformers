@@ -63,6 +63,9 @@ def parse_args():
     p.add_argument("--body-loops", type=int, default=None,
                    help="unroll: apply the repeated block N times, in training and at test (T36); "
                         "default: 12 - unique_blocks + 1, as before")
+    p.add_argument("--body-init-range", type=int, nargs=2, metavar=("START", "END"), default=None,
+                   help="unroll: start the repeated block as the element-wise mean of pretrained blocks START..END "
+                        "(inclusive, 0-based) (T38); default: pretrained block unique_blocks - 1, as before")
     p.add_argument("--cls-update-loss", choices=CLS_UPDATE_LOSSES, default="none",
                    help="looped models with --readout-loss: add the T17 term on successive CLS updates (orth = "
                         "near-orthogonal, orth_large = + size floor; src.cls_update_loss); none = as before")
@@ -108,6 +111,8 @@ def model_kwargs(args) -> dict:
             kwargs["concat_inject"] = True
         if getattr(args, "body_loops", None) is not None:  # same: only when set
             kwargs["body_loops"] = args.body_loops
+        if getattr(args, "body_init_range", None) is not None:  # same: only when set
+            kwargs["body_init_range"] = tuple(args.body_init_range)
         return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
@@ -144,6 +149,8 @@ def check_options(args) -> None:
         if body_loops == 1 and (args.readout_loss != "none" or args.random_loops):
             raise ValueError("--body-loops 1 has no repeated block, so per-loop readouts and --random-loops cannot "
                              "find the loop (src.per_loop_readout.split_loop)")
+    if getattr(args, "body_init_range", None) is not None and args.model != "unroll":
+        raise ValueError("--body-init-range works with --model unroll only")
     if args.center_loss_weight < 0:
         raise ValueError("--center-loss-weight must be >= 0")
     if args.center_loss_weight > 0 and (args.readout_loss != "every_loop" or args.cls_update_loss != "none"):
