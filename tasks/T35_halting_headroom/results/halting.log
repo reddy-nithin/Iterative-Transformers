@@ -1,0 +1,15 @@
+Loading pretrained weights from Hugging Face hub (timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k)
+HTTP Request: HEAD https://huggingface.co/timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[timm/vit_tiny_patch16_224.augreg_in21k_ft_in1k] Safe alternative available for 'pytorch_model.bin' (as 'model.safetensors'). Loading weights using safetensors.
+Missing keys (head.weight, head.bias) discovered while loading pretrained weights. This is expected if model is being adapted.
+loaded unroll {'unique_blocks': 3} from /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T31-a_random_loops.pt (epoch 30, test acc 71.76)
+stored 10000 images x 10 loops in /storage/INSLAB/Data/nrs3qy/checkpoints/itertf/T35_T31-a_per_loop_outputs.pt
+sanity (stored logits vs logged, loops 1..10): max diff 0.03, passed
+per-loop top-1: [23.4, 57.99, 68.3, 70.93, 71.54, 71.76, 72.11, 72.08, 71.81, 71.76]
+settling: mean 2.75, std 1.91
+oracle acc 79.55; at mean loops 2/3/4: {'2': 79.55, '3': 79.55, '4': 79.55}; loops to reach: {'fixed_depth_3': 1.524, 'fixed_depth_4': 1.576}
+headroom at 3: 11.25 -> Halting: worth a gate (next: fit a small gate on the stored outputs).
+pooled AUROC: {'margin': 0.8365, 'max_softmax': 0.8513, 'neg_kl': 0.6405, 'neg_angular_step': 0.5531, 'log_cls_norm': 0.5962}
+wrote tasks/T35_halting_headroom/results/halting_headroom.json
