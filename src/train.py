@@ -60,6 +60,9 @@ def parse_args():
     p.add_argument("--random-loops", action="store_true",
                    help="unroll, final-only loss: sample the number of body loops per training batch (T31; "
                         "src.random_loops). Evaluation keeps the fixed loop count")
+    p.add_argument("--body-loops", type=int, default=None,
+                   help="unroll: apply the repeated block N times, in training and at test (T36); "
+                        "default: 12 - unique_blocks + 1, as before")
     p.add_argument("--cls-update-loss", choices=CLS_UPDATE_LOSSES, default="none",
                    help="looped models with --readout-loss: add the T17 term on successive CLS updates (orth = "
                         "near-orthogonal, orth_large = + size floor; src.cls_update_loss); none = as before")
@@ -103,6 +106,8 @@ def model_kwargs(args) -> dict:
             kwargs["cls_only_loop"] = True
         if getattr(args, "concat_inject", False):  # same: only when on
             kwargs["concat_inject"] = True
+        if getattr(args, "body_loops", None) is not None:  # same: only when set
+            kwargs["body_loops"] = args.body_loops
         return kwargs
     if args.model == "hbt":
         kwargs = {"head_blocks": args.head_blocks, "tail_blocks": args.tail_blocks, "inject": args.inject}
@@ -130,6 +135,15 @@ def check_options(args) -> None:
     for flag, on in unroll_only.items():
         if on and args.model != "unroll":
             raise ValueError(f"{flag} works with --model unroll only")
+    body_loops = getattr(args, "body_loops", None)  # older callers build args without it
+    if body_loops is not None:
+        if args.model != "unroll":
+            raise ValueError("--body-loops works with --model unroll only")
+        if body_loops < 1:
+            raise ValueError("--body-loops must be >= 1")
+        if body_loops == 1 and (args.readout_loss != "none" or args.random_loops):
+            raise ValueError("--body-loops 1 has no repeated block, so per-loop readouts and --random-loops cannot "
+                             "find the loop (src.per_loop_readout.split_loop)")
     if args.center_loss_weight < 0:
         raise ValueError("--center-loss-weight must be >= 0")
     if args.center_loss_weight > 0 and (args.readout_loss != "every_loop" or args.cls_update_loss != "none"):

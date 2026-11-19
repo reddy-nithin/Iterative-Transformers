@@ -73,6 +73,7 @@ def build_unrolled(
     zero_mean_value: bool = False,
     cls_only_loop: bool = False,
     concat_inject: bool = False,
+    body_loops: int | None = None,
 ) -> nn.Module:
     """Progressive unrolling: the first `unique_blocks - 1` pretrained blocks keep their own weights, and
     pretrained block `unique_blocks - 1` fills every remaining slot (one shared object).
@@ -87,6 +88,8 @@ def build_unrolled(
     (`src.cls_only_loop.CLSOnlyBlock`, no new parameters).
     `concat_inject=True` (T29): concat + linear adapter injection of the head output before every loop
     (`src.concat_inject.ConcatInjectBody`, +2C*C+C parameters).
+    `body_loops=N` (T36): apply the repeated block N times instead of filling the remaining slots (default None =
+    `depth - unique_blocks + 1`, as before). Plain layout only; the parameter count does not change.
     """
     model = source if source is not None else build_baseline(num_classes, pretrained)
     blocks = list(model.blocks)
@@ -95,6 +98,12 @@ def build_unrolled(
         raise ValueError(f"unique_blocks must be in 1..{depth}, got {unique_blocks}")
     distinct, repeated = blocks[: unique_blocks - 1], blocks[unique_blocks - 1]
     n_loops = depth - unique_blocks + 1
+    if body_loops is not None:
+        if body_loops < 1:
+            raise ValueError(f"body_loops must be >= 1, got {body_loops}")
+        if coverage_mask or coverage_mask_v2_eta is not None or zero_mean_value or cls_only_loop or concat_inject:
+            raise ValueError("body_loops (T36) works with the plain unrolled layout only")
+        n_loops = body_loops
     if sum([coverage_mask, coverage_mask_v2_eta is not None, zero_mean_value, cls_only_loop, concat_inject]) > 1:
         raise ValueError("pick at most one of coverage_mask (T14), coverage_mask_v2_eta (T16), zero_mean_value (T20), "
                          "cls_only_loop (T28), concat_inject (T29)")
