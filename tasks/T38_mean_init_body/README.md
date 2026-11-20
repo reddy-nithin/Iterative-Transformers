@@ -53,4 +53,40 @@ T38-a 72.0 to 74.5, so a tie or slightly worse. Reason: in the old fully shared 
 all-12-block mean start scored 52.96 vs block 0's 58.06. Epoch-1 top-1 lower than T11-d's.
 
 ## Results
-(pending)
+Run finished 2026-11-19 on GPU 3 (about 48 s per epoch). All numbers are CIFAR-100 test top-1 (10,000 images, 224 px),
+seed 0, 30 epochs, T11-d recipe. Sources: `results/unroll_T38-a.json` and T11-d's
+`tasks/T11_pretrained_hbt_body_sweep/results/unroll_T11-d.json`. `tasks/T38_mean_init_body/plot.py` prints every
+number below.
+
+| Run | Looped block starts as | Params | GFLOPs / image | Top-1 epoch 1 | Top-1 epoch 10 | Top-1 epoch 30 | Best (epoch) |
+|---|---|---|---|---|---|---|---|
+| T38-a | mean of pretrained blocks 2..11 | 1,539,940 | 2.51 | 24.96 | 58.51 | 68.90 | 68.90 (30) |
+| T11-d (seed 0) | pretrained block 2 | 1,539,940 | 2.51 | 26.75 | 63.84 | 74.11 | 74.13 (29) |
+| T11-d 3-seed mean | pretrained block 2 | | | | | 73.79 | |
+
+T38-a vs T11-d: −1.79 pt at epoch 1, −5.33 at epoch 10, −5.21 at epoch 30 (−4.89 vs the 3-seed mean).
+GFLOPs come from `src/metrics.py:count_gflops`, the same counter and device as T37. Same layout means the same FLOPs.
+
+### Decision line (rule fixed in advance)
+**"Mean start hurts."** 68.90 is below 73.0 (4.89 pt below 73.79).
+
+### How big is this (honest sizing)
+**Big.** −4.9 pt is about 6x the 0.3 to 0.8 pt seed spread (T15), so one seed is enough to call it. It is also the
+same size and direction as the old fully shared model, where an all-12-block mean start scored 52.96 vs block 0's
+58.06 (−5.1). A likely reason (not tested here): each block's weights only make sense together with that block's own
+features, so the element-wise average of ten different blocks is a block none of them is, not a "typical" one. The gap
+opens in the first 10 epochs and never closes. The 30-epoch schedule does not recover from the worse start.
+
+![loss curves](results/loss_curves.png)
+
+**How to read this.** Left: loss per epoch. Dashed lines are the training loss (augmented images, label smoothing
+0.1). Solid lines are the test loss (plain cross-entropy). Lower is better. Right: test top-1 accuracy per epoch,
+dotted line at T11-d's 3-seed mean (73.79). Colours: red = T38-a (mean start), blue = T11-d (block-2 start, logged
+run). What to look for: whether red catches up with blue by the end. It does not. Takeaway: the mean start is behind
+from epoch 1, falls about 5 pt behind by epoch 10, and stays there. Its train loss at epoch 30 is also higher (1.79 vs
+1.68), so the model fits the training data worse. That means a harder optimisation, not overfitting.
+
+## Prediction check
+- T38-a 72.0 to 74.5 ("a tie or slightly worse"): **wrong**. It scored 68.90, 3.1 pt below the bottom of the range.
+  The direction was right (worse), but the size matched the old fully shared result (−5) rather than a tie.
+- Epoch-1 top-1 lower than T11-d's: **right** (24.96 vs 26.75).
